@@ -79,13 +79,15 @@
 .medium-editor-insert-image-active {
   outline: 2px solid #000; }
 
-.medium-editor-insert-images.align-left {
+.medium-editor-insert-images.align-left img {
   max-width: 50%;
-  float: left; }
+  float: left;
+  margin-right: 20px; }
 
-.medium-editor-insert-images.align-right {
+.medium-editor-insert-images.align-right img {
   max-width: 50%;
-  float: right; }
+  float: right;
+  margin-left: 20px; }
 
 .medium-editor-insert-images.align-center {
   display: block;
