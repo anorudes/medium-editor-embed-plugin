@@ -18,7 +18,9 @@ export default class Images {
         this._plugin = plugin;
         this._editor = this._plugin.base;
         this.elementClassName = 'medium-editor-insert-images';
+        this.loadingClassName = 'medium-editor-insert-images-loading';
         this.activeClassName = 'medium-editor-insert-image-active';
+        this.descriptionClassName = 'medium-editor-embed-image-description';
 		this.label = this.options.label;
 
         this.initToolbar();
@@ -38,7 +40,8 @@ export default class Images {
         if (this.options.onInsertButtonClick) {
             const uid = utils.generateRandomString();
             this.options.onInsertButtonClick(
-                (imageUrl) => this.insertImage(imageUrl, uid)
+                (imageUrl) => this.insertImage(imageUrl, uid),
+                (imageUrl) => this.insertImage(imageUrl, uid, true)
             );
         } else {
             this._input = document.createElement('input');
@@ -132,7 +135,7 @@ export default class Images {
 		xhr.send(data);
 	}
 
-    insertImage(imageUrl, uid) {
+    insertImage(imageUrl, uid, isLoader) {
         const paragraph = this._plugin.getCore().selectedElement;
 
           // Replace paragraph with div, because figure is a block element
@@ -147,18 +150,19 @@ export default class Images {
         const image = this._plugin.getCore().selectedElement.querySelector(`[data-uid="${uid}"]`);
 
         if (image) {
-            this.replaceImage(image, imageUrl);
+            this.replaceImage(image, imageUrl, isLoader);
         } else {
-            this.addImage(imageUrl, uid);
+            this.addImage(imageUrl, uid, isLoader);
         }
 
         this._plugin.getCore().hideButtons();
     }
 
-    addImage(url, uid) {
+    addImage(url, uid, isLoader) {
         const el = this._plugin.getCore().selectedElement,
             figure = document.createElement('figure'),
-            img = document.createElement('img');
+            img = document.createElement('img'),
+            description = document.createElement('div');
         let domImage;
 
         img.alt = '';
@@ -166,6 +170,9 @@ export default class Images {
         if (uid) {
             img.setAttribute('data-uid', uid);
         }
+
+        description.contentEditable = true;
+        description.classList.add(this.descriptionClassName);
 
         // If we're dealing with a preview image,
         // we don't have to preload it before displaying
@@ -178,9 +185,11 @@ export default class Images {
             domImage.onload = () => {
                 img.src = domImage.src;
                 figure.appendChild(img);
+                figure.appendChild(description);
                 el.appendChild(figure);
             };
             domImage.src = url;
+            if (isLoader) el.classList.add(this.loadingClassName);
         }
 
         el.classList.add(this.elementClassName);
@@ -189,8 +198,11 @@ export default class Images {
         return domImage;
     }
 
-    replaceImage(image, url) {
+    replaceImage(image, url, isLoader) {
         const domImage = new Image();
+        const el = this._plugin.getCore().selectedElement;
+
+        if (!isLoader) el.classList.remove(this.loadingClassName);
 
         domImage.onload = () => {
             image.src = domImage.src;
@@ -207,15 +219,22 @@ export default class Images {
         const el = e.target;
 
         if (el.nodeName.toLowerCase() === 'img' && utils.getClosestWithClassName(el, this.elementClassName)) {
-            el.classList.add(this.activeClassName);
+            const parentNode = el.parentNode.parentNode;
 
-            this._editor.selectElement(el);
+            if (!parentNode.classList.contains(this.loadingClassName)) {
+                el.classList.add(this.activeClassName);
+                parentNode.classList.add(this.activeClassName);
+
+                this._editor.selectElement(el);
+            }
         }
     }
 
     unselectImage(e) {
         const el = e.target;
         let clickedImage, images;
+
+        if (el.classList.contains(this.descriptionClassName)) return false;
 
         // Unselect all selected images. If an image is clicked, unselect all except this one.
         if (el.nodeName.toLowerCase() === 'img' && el.classList.contains(this.activeClassName)) {

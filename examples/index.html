@@ -51,15 +51,15 @@
             	'insert': new MediumEditorInsert({
                     addons: {
                         images: {
-                            onInsertButtonClick: function(callback) {
+                            onInsertButtonClick: function(insertImage, insertLoader) {
                               uploadcare.openDialog(null, {
                                 publicKey: '737e97f64c1930ddf4fc',
                                 imagesOnly: true,
                               }).done(function (file) {
                                   if (file) {
-                                    callback('./loader.gif');
+                                    insertLoader('./loader.gif');
                                     file.done(function(fileInfo) {
-                                      callback(fileInfo.cdnUrl);
+                                      insertImage(fileInfo.cdnUrl);
                                     });
                                   }
                               });

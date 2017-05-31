@@ -85,18 +85,40 @@
   clear: both; }
 
 .medium-editor-insert-images.align-left img {
-  max-width: 50%;
+  width: 50%;
   float: left;
   margin-right: 20px; }
 
+.medium-editor-insert-images.align-left .medium-editor-embed-image-description {
+  width: 50%; }
+
 .medium-editor-insert-images.align-right img {
-  max-width: 50%;
+  width: 50%;
   float: right;
   margin-left: 20px; }
+
+.medium-editor-insert-images.align-right .medium-editor-embed-image-description {
+  width: 50%; }
 
 .medium-editor-insert-images.align-center {
   display: block;
   text-align: center; }
+
+.medium-editor-embed-image-description {
+  display: inline-block;
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  vertical-align: top;
+  min-height: 25px;
+  width: 100%;
+  text-align: center;
+  font-style: italic;
+  position: relative; }
+
+.medium-editor-embed-image-description:empty {
+  display: none; }
+
+.medium-editor-insert-image-active ~ .medium-editor-embed-image-description {
+  display: inline-block; }
 
 .medium-insert-editor-embeds-input {
   position: relative;

@@ -929,7 +929,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._plugin = plugin;
 	        this._editor = this._plugin.base;
 	        this.elementClassName = 'medium-editor-insert-images';
+	        this.loadingClassName = 'medium-editor-insert-images-loading';
 	        this.activeClassName = 'medium-editor-insert-image-active';
+	        this.descriptionClassName = 'medium-editor-embed-image-description';
 	        this.label = this.options.label;
 
 	        this.initToolbar();
@@ -957,6 +959,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var uid = _utils2.default.generateRandomString();
 	                this.options.onInsertButtonClick(function (imageUrl) {
 	                    return _this2.insertImage(imageUrl, uid);
+	                }, function (imageUrl) {
+	                    return _this2.insertImage(imageUrl, uid, true);
 	                });
 	            } else {
 	                this._input = document.createElement('input');
@@ -1056,7 +1060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'insertImage',
-	        value: function insertImage(imageUrl, uid) {
+	        value: function insertImage(imageUrl, uid, isLoader) {
 	            var paragraph = this._plugin.getCore().selectedElement;
 
 	            // Replace paragraph with div, because figure is a block element
@@ -1071,19 +1075,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var image = this._plugin.getCore().selectedElement.querySelector('[data-uid="' + uid + '"]');
 
 	            if (image) {
-	                this.replaceImage(image, imageUrl);
+	                this.replaceImage(image, imageUrl, isLoader);
 	            } else {
-	                this.addImage(imageUrl, uid);
+	                this.addImage(imageUrl, uid, isLoader);
 	            }
 
 	            this._plugin.getCore().hideButtons();
 	        }
 	    }, {
 	        key: 'addImage',
-	        value: function addImage(url, uid) {
+	        value: function addImage(url, uid, isLoader) {
 	            var el = this._plugin.getCore().selectedElement,
 	                figure = document.createElement('figure'),
-	                img = document.createElement('img');
+	                img = document.createElement('img'),
+	                description = document.createElement('div');
 	            var domImage = void 0;
 
 	            img.alt = '';
@@ -1091,6 +1096,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (uid) {
 	                img.setAttribute('data-uid', uid);
 	            }
+
+	            description.contentEditable = true;
+	            description.classList.add(this.descriptionClassName);
 
 	            // If we're dealing with a preview image,
 	            // we don't have to preload it before displaying
@@ -1103,9 +1111,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                domImage.onload = function () {
 	                    img.src = domImage.src;
 	                    figure.appendChild(img);
+	                    figure.appendChild(description);
 	                    el.appendChild(figure);
 	                };
 	                domImage.src = url;
+	                if (isLoader) el.classList.add(this.loadingClassName);
 	            }
 
 	            el.classList.add(this.elementClassName);
@@ -1115,8 +1125,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'replaceImage',
-	        value: function replaceImage(image, url) {
+	        value: function replaceImage(image, url, isLoader) {
 	            var domImage = new Image();
+	            var el = this._plugin.getCore().selectedElement;
+
+	            if (!isLoader) el.classList.remove(this.loadingClassName);
 
 	            domImage.onload = function () {
 	                image.src = domImage.src;
@@ -1134,9 +1147,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var el = e.target;
 
 	            if (el.nodeName.toLowerCase() === 'img' && _utils2.default.getClosestWithClassName(el, this.elementClassName)) {
-	                el.classList.add(this.activeClassName);
+	                var parentNode = el.parentNode.parentNode;
 
-	                this._editor.selectElement(el);
+	                if (!parentNode.classList.contains(this.loadingClassName)) {
+	                    el.classList.add(this.activeClassName);
+	                    parentNode.classList.add(this.activeClassName);
+
+	                    this._editor.selectElement(el);
+	                }
 	            }
 	        }
 	    }, {
@@ -1147,6 +1165,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var el = e.target;
 	            var clickedImage = void 0,
 	                images = void 0;
+
+	            if (el.classList.contains(this.descriptionClassName)) return false;
 
 	            // Unselect all selected images. If an image is clicked, unselect all except this one.
 	            if (el.nodeName.toLowerCase() === 'img' && el.classList.contains(this.activeClassName)) {
