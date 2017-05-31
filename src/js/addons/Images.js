@@ -61,8 +61,7 @@ export default class Images {
                     action: 'left',
                     label: 'Left',
                     onClick: (function() {
-                        const el = this._plugin.getCore().selectedElement;
-                        this.changeAlign(el, 'align-left');
+                        this.changeAlign('align-left');
                     }).bind(this),
                 },
                 {
@@ -70,8 +69,7 @@ export default class Images {
                     action: 'center',
                     label: 'Center',
                     onClick: (function() {
-                        const el = this._plugin.getCore().selectedElement;
-                        this.changeAlign(el, 'align-center');
+                        this.changeAlign('align-center');
                     }).bind(this),
                 },
                 {
@@ -79,8 +77,7 @@ export default class Images {
                     action: 'right',
                     label: 'Right',
                     onClick: (function() {
-                        const el = this._plugin.getCore().selectedElement;
-                        this.changeAlign(el, 'align-right');
+                        this.changeAlign('align-right');
                     }).bind(this),
                 }
             ]
@@ -89,7 +86,8 @@ export default class Images {
         this._editor.extensions.push(this.toolbar);
     }
 
-    changeAlign(el, className) {
+    changeAlign(className) {
+        const el = this._plugin.getCore().selectedElement;
         el.classList.remove('align-left', 'align-center', 'align-right');
         el.classList.add(className);
     }

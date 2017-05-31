@@ -979,24 +979,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    action: 'left',
 	                    label: 'Left',
 	                    onClick: function () {
-	                        var el = this._plugin.getCore().selectedElement;
-	                        this.changeAlign(el, 'align-left');
+	                        this.changeAlign('align-left');
 	                    }.bind(this)
 	                }, {
 	                    name: 'align-center',
 	                    action: 'center',
 	                    label: 'Center',
 	                    onClick: function () {
-	                        var el = this._plugin.getCore().selectedElement;
-	                        this.changeAlign(el, 'align-center');
+	                        this.changeAlign('align-center');
 	                    }.bind(this)
 	                }, {
 	                    name: 'align-right',
 	                    action: 'right',
 	                    label: 'Right',
 	                    onClick: function () {
-	                        var el = this._plugin.getCore().selectedElement;
-	                        this.changeAlign(el, 'align-right');
+	                        this.changeAlign('align-right');
 	                    }.bind(this)
 	                }]
 	            });
@@ -1005,7 +1002,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'changeAlign',
-	        value: function changeAlign(el, className) {
+	        value: function changeAlign(className) {
+	            var el = this._plugin.getCore().selectedElement;
 	            el.classList.remove('align-left', 'align-center', 'align-right');
 	            el.classList.add(className);
 	        }
