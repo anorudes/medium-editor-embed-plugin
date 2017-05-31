@@ -35,13 +35,19 @@ export default class Images {
     }
 
 	handleClick() {
-		this._input = document.createElement('input');
-		this._input.type = 'file';
-		this._input.multiple = true;
+        if (this.options.onInsertButtonClick) {
+            const uid = utils.generateRandomString();
+            this.options.onInsertButtonClick(
+                (imageUrl) => this.insertImage(imageUrl, uid)
+            );
+        } else {
+            this._input = document.createElement('input');
+            this._input.type = 'file';
+            this._input.multiple = true;
+            this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
 
-		this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
-
-		this._input.click();
+            this._input.click();
+        }
 	}
 
     initToolbar() {
@@ -53,17 +59,29 @@ export default class Images {
                 {
                     name: 'align-left',
                     action: 'left',
-                    label: 'Left'
+                    label: 'Left',
+                    onClick: (function() {
+                        const el = this._plugin.getCore().selectedElement;
+                        this.changeAlign(el, 'align-left');
+                    }).bind(this),
                 },
                 {
                     name: 'align-center',
                     action: 'center',
-                    label: 'Center'
+                    label: 'Center',
+                    onClick: (function() {
+                        const el = this._plugin.getCore().selectedElement;
+                        this.changeAlign(el, 'align-center');
+                    }).bind(this),
                 },
                 {
                     name: 'align-right',
                     action: 'right',
-                    label: 'Right'
+                    label: 'Right',
+                    onClick: (function() {
+                        const el = this._plugin.getCore().selectedElement;
+                        this.changeAlign(el, 'align-right');
+                    }).bind(this),
                 }
             ]
         });
@@ -71,19 +89,12 @@ export default class Images {
         this._editor.extensions.push(this.toolbar);
     }
 
+    changeAlign(el, className) {
+        el.classList.remove('align-left', 'align-center', 'align-right');
+        el.classList.add(className);
+    }
+
 	uploadFiles() {
-		const paragraph = this._plugin.getCore().selectedElement;
-
-        // Replace paragraph with div, because figure is a block element
-        // and can't be nested inside paragraphs
-		if (paragraph.nodeName.toLowerCase() === 'p') {
-			const div = document.createElement('div');
-
-			paragraph.parentNode.insertBefore(div, paragraph);
-			this._plugin.getCore().selectElement(div);
-			paragraph.remove();
-		}
-
 		Array.prototype.forEach.call(this._input.files, (file) => {
             // Generate uid for this image, so we can identify it later
             // and we can replace preview image with uploaded one
@@ -95,8 +106,6 @@ export default class Images {
 
 			this.upload(file, uid);
 		});
-
-		this._plugin.getCore().hideButtons();
 	}
 
 	preview(file, uid) {
@@ -112,17 +121,12 @@ export default class Images {
 	upload(file, uid) {
 		const xhr = new XMLHttpRequest(),
 			data = new FormData();
+        const insertImage = this.insertImage.bind(this);
 
 		xhr.open("POST", this.options.uploadUrl, true);
 		xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                const image = this._plugin.getCore().selectedElement.querySelector(`[data-uid="${uid}"]`);
-
-                if (image) {
-                    this.replaceImage(image, xhr.responseText);
-                } else {
-                    this.insertImage(xhr.responseText);
-                }
+                insertImage(xhr.responseText, utils.generateRandomString());
             }
 		};
 
@@ -130,7 +134,30 @@ export default class Images {
 		xhr.send(data);
 	}
 
-    insertImage(url, uid) {
+    insertImage(imageUrl, uid) {
+        const paragraph = this._plugin.getCore().selectedElement;
+
+          // Replace paragraph with div, because figure is a block element
+          // and can't be nested inside paragraphs
+        if (paragraph.nodeName.toLowerCase() === 'p') {
+            const div = document.createElement('div');
+
+            paragraph.parentNode.insertBefore(div, paragraph);
+            this._plugin.getCore().selectElement(div);
+            paragraph.remove();
+        }
+        const image = this._plugin.getCore().selectedElement.querySelector(`[data-uid="${uid}"]`);
+
+        if (image) {
+            this.replaceImage(image, imageUrl);
+        } else {
+            this.addImage(imageUrl, uid);
+        }
+
+        this._plugin.getCore().hideButtons();
+    }
+
+    addImage(url, uid) {
         const el = this._plugin.getCore().selectedElement,
             figure = document.createElement('figure'),
             img = document.createElement('img');
@@ -297,7 +324,7 @@ export default class Images {
     }
 
     destroy() {
-        
+
     }
 
 }

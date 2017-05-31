@@ -12,7 +12,7 @@ const ToolbarButton = MediumEditor.extensions.button.extend({
     },
 
     handleClick: function() {
-        console.log(`${this.name} clicked!`);
+        this.onClick();
     }
 });
 

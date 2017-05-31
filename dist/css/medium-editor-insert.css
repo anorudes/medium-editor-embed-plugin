@@ -79,6 +79,18 @@
 .medium-editor-insert-image-active {
   outline: 2px solid #000; }
 
+.medium-editor-insert-images.align-left {
+  max-width: 50%;
+  float: left; }
+
+.medium-editor-insert-images.align-right {
+  max-width: 50%;
+  float: right; }
+
+.medium-editor-insert-images.align-center {
+  display: block;
+  text-align: center; }
+
 .medium-insert-editor-embeds-input {
   position: relative;
   color: #ccc;

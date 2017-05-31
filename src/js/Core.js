@@ -123,7 +123,6 @@ export default class Core {
             this.selectElement(el);
             this.showButtons();
         } else {
-            this.deselectElement();
             this.hideButtons();
         }
     }
@@ -173,10 +172,6 @@ export default class Core {
 
     selectElement(el) {
         this.selectedElement = el;
-    }
-
-    deselectElement() {
-        this.selectedElement = null;
     }
 
     showButtons() {

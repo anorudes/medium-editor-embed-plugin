@@ -8,6 +8,12 @@
 	<link rel="stylesheet" href="../node_modules/medium-editor/dist/css/medium-editor.min.css">
 	<link rel="stylesheet" href="../node_modules/medium-editor/dist/css/themes/default.css">
 	<link rel="stylesheet" href="../dist/css/medium-editor-insert.css">
+
+    <!-- Uploadcare -->
+    <script src="https://ucarecdn.com/libs/widget/2.10.3/uploadcare.full.min.js" charset="utf-8"></script>
+    <script>
+      UPLOADCARE_PUBLIC_KEY = '737e97f64c1930ddf4fc';
+    </script>
 </head>
 <body>
 	<div id="container">
@@ -44,8 +50,22 @@
             extensions: {
             	'insert': new MediumEditorInsert({
                     addons: {
-                        custom: CustomAddon
-                    }
+                        images: {
+                            onInsertButtonClick: function(callback) {
+                              uploadcare.openDialog(null, {
+                                publicKey: '737e97f64c1930ddf4fc',
+                                imagesOnly: true,
+                              }).done(function (file) {
+                                  if (file) {
+                                    callback('./loader.gif');
+                                    file.done(function(fileInfo) {
+                                      callback(fileInfo.cdnUrl);
+                                    });
+                                  }
+                              });
+                            },
+                        }
+                    },
                 })
             }
         });
