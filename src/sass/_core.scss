@@ -27,7 +27,7 @@
     }
 
     .medium-editor-insert-buttons-addons {
-    	display: block;
+    	display: none;
     	position: relative;
     	left: 55px;
         top: -32px;
@@ -67,6 +67,7 @@
             transform: rotate(45deg);
     	}
     	.medium-editor-insert-buttons-addons {
+            display: block;
     		opacity: 1;
     		li {
     			transition-duration: .2s;

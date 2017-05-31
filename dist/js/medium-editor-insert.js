@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -102,9 +102,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = MediumEditorInsert;
 	module.exports = exports['default'];
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -117,7 +117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    generateRandomString: function generateRandomString() {
-	        var length = arguments.length <= 0 || arguments[0] === undefined ? 15 : arguments[0];
+	        var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
 
 	        return Math.random().toString(36).substr(2, length);
 	    },
@@ -166,9 +166,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = utils;
 	module.exports = exports['default'];
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -182,11 +182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Images = __webpack_require__(4);
+	var _Images = __webpack_require__(5);
 
 	var _Images2 = _interopRequireDefault(_Images);
 
-	var _Embeds = __webpack_require__(3);
+	var _Embeds = __webpack_require__(6);
 
 	var _Embeds2 = _interopRequireDefault(_Embeds);
 
@@ -424,52 +424,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Core;
 	module.exports = exports['default'];
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Embeds = function () {
-		function Embeds(plugin, options) {
-			_classCallCheck(this, Embeds);
-
-			this._plugin = plugin;
-			this._editor = this._plugin.base;
-
-			this.options = {
-				label: '<span class="fa fa-youtube-play"></span>'
-			};
-
-			Object.assign(this.options, options);
-
-			this.label = this.options.label;
-		}
-
-		_createClass(Embeds, [{
-			key: 'handleClick',
-			value: function handleClick() {
-				window.console.log('embeds clicked');
-			}
-		}]);
-
-		return Embeds;
-	}();
-
-	exports.default = Embeds;
-	module.exports = exports['default'];
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -483,7 +440,227 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Toolbar = __webpack_require__(5);
+	var _ToolbarButton = __webpack_require__(4);
+
+	var _ToolbarButton2 = _interopRequireDefault(_ToolbarButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MediumEditorToolbar = MediumEditor.extensions.toolbar;
+
+	var Toolbar = function (_MediumEditorToolbar) {
+	    _inherits(Toolbar, _MediumEditorToolbar);
+
+	    function Toolbar(options) {
+	        _classCallCheck(this, Toolbar);
+
+	        var _this = _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, options));
+
+	        _this.name = options.type + 'Toolbar';
+
+	        options.buttons.forEach(function (buttonOptions) {
+	            var button = new _ToolbarButton2.default(Object.assign({}, {
+	                window: _this.plugin.window,
+	                document: _this.plugin.document,
+	                base: _this.plugin.base
+	            }, buttonOptions));
+
+	            button.init();
+	            _this.plugin.base.extensions.push(button);
+	        });
+
+	        _this.window = options.plugin.window;
+	        _this.document = options.plugin.document;
+	        _this.base = options.plugin.base;
+
+	        _this.init();
+	        return _this;
+	    }
+
+	    _createClass(Toolbar, [{
+	        key: 'createToolbar',
+	        value: function createToolbar() {
+	            var toolbar = this.document.createElement('div');
+
+	            toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
+	            toolbar.className = 'medium-editor-toolbar';
+
+	            if (this.static) {
+	                toolbar.className += ' static-toolbar';
+	            } else if (this.relativeContainer) {
+	                toolbar.className += ' medium-editor-relative-toolbar';
+	            } else {
+	                toolbar.className += ' medium-editor-stalker-toolbar';
+	            }
+
+	            toolbar.appendChild(this.createToolbarButtons());
+
+	            // Add any forms that extensions may have
+	            this.forEachExtension(function (extension) {
+	                if (extension.hasForm) {
+	                    toolbar.appendChild(extension.getForm());
+	                }
+	            });
+
+	            this.attachEventHandlers();
+
+	            return toolbar;
+	        }
+	    }, {
+	        key: 'createToolbarButtons',
+	        value: function createToolbarButtons() {
+	            var _this2 = this;
+
+	            var ul = this.document.createElement('ul');
+	            var li = void 0,
+	                btn = void 0,
+	                buttons = void 0,
+	                extension = void 0,
+	                buttonName = void 0,
+	                buttonOpts = void 0;
+
+	            ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
+	            ul.className = 'medium-editor-toolbar-actions';
+	            ul.style.display = 'block';
+
+	            this.buttons.forEach(function (button) {
+	                if (typeof button === 'string') {
+	                    buttonName = button;
+	                    buttonOpts = null;
+	                } else {
+	                    buttonName = button.name;
+	                    buttonOpts = button;
+	                }
+
+	                // If the button already exists as an extension, it'll be returned
+	                // othwerise it'll create the default built-in button
+	                extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
+
+	                if (extension && typeof extension.getButton === 'function') {
+	                    btn = extension.getButton(_this2.base);
+	                    li = _this2.document.createElement('li');
+	                    if (MediumEditor.util.isElement(btn)) {
+	                        li.appendChild(btn);
+	                    } else {
+	                        li.innerHTML = btn;
+	                    }
+	                    ul.appendChild(li);
+	                }
+	            }, this);
+
+	            buttons = ul.querySelectorAll('button');
+	            if (buttons.length > 0) {
+	                buttons[0].classList.add(this.firstButtonClass);
+	                buttons[buttons.length - 1].classList.add(this.lastButtonClass);
+	            }
+
+	            return ul;
+	        }
+	    }, {
+	        key: 'checkState',
+	        value: function checkState() {
+	            var _this3 = this;
+
+	            var activeElements = void 0;
+
+	            if (this.base.preventSelectionUpdates) {
+	                return;
+	            }
+
+	            // Wait for elements to be selected
+	            setTimeout(function () {
+	                activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
+
+	                // Hide toolbar when no elements are selected
+	                if (activeElements.length === 0) {
+	                    return _this3.hideToolbar();
+	                }
+
+	                // Now we know there's a focused editable with a selection
+	                _this3.showAndUpdateToolbar();
+	            }, 10);
+	        }
+	    }, {
+	        key: 'setToolbarPosition',
+	        value: function setToolbarPosition() {
+	            var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
+	            var anchorPreview = void 0;
+
+	            // If there isn't a valid selection, bail
+	            if (!container) {
+	                return this;
+	            }
+
+	            this.showToolbar();
+	            this.positionStaticToolbar(container);
+
+	            anchorPreview = this.base.getExtensionByName('anchor-preview');
+
+	            if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
+	                anchorPreview.hidePreview();
+	            }
+	        }
+	    }]);
+
+	    return Toolbar;
+	}(MediumEditorToolbar);
+
+	exports.default = Toolbar;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var ToolbarButton = MediumEditor.extensions.button.extend({
+	    init: function init() {
+	        this.button = this.document.createElement('button');
+	        this.button.classList.add('medium-editor-action');
+	        this.button.innerHTML = '<b>' + this.label + '</b>';
+
+	        this.on(this.button, 'click', this.handleClick.bind(this));
+	    },
+
+	    getButton: function getButton() {
+	        return this.button;
+	    },
+
+	    handleClick: function handleClick() {
+	        console.log(this.name + ' clicked!');
+	    }
+	});
+
+	exports.default = ToolbarButton;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(3);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
@@ -719,83 +896,81 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this6 = this;
 
 	            if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
-	                (function () {
-	                    var images = _utils2.default.getElementsByClassName(_this6._plugin.getEditorElements(), _this6.activeClassName),
-	                        selection = window.getSelection();
-	                    var selectedHtml = void 0;
+	                var images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
+	                    selection = window.getSelection();
+	                var selectedHtml = void 0;
 
-	                    // Remove image even if it's not selected, but backspace/del is pressed in text
-	                    if (selection && selection.rangeCount) {
-	                        var range = MediumEditor.selection.getSelectionRange(document),
-	                            focusedElement = MediumEditor.selection.getSelectedParentElement(range),
-	                            caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
-	                        var sibling = void 0;
+	                // Remove image even if it's not selected, but backspace/del is pressed in text
+	                if (selection && selection.rangeCount) {
+	                    var range = MediumEditor.selection.getSelectionRange(document),
+	                        focusedElement = MediumEditor.selection.getSelectedParentElement(range),
+	                        caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
+	                    var sibling = void 0;
 
-	                        // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
-	                        if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
-	                            sibling = focusedElement.previousElementSibling;
-	                            // Is del pressed and caret is at the end of a paragraph, get next element
-	                        } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {
-	                                sibling = focusedElement.nextElementSibling;
-	                            }
-
-	                        if (sibling && sibling.classList.contains('medium-editor-insert-images')) {
-	                            var newImages = sibling.getElementsByTagName('img');
-	                            Array.prototype.forEach.call(newImages, function (image) {
-	                                images.push(image);
-	                            });
-	                        }
-
-	                        // If text is selected, find images in the selection
-	                        selectedHtml = MediumEditor.selection.getSelectionHtml(document);
-	                        if (selectedHtml) {
-	                            var temp = document.createElement('div');
-	                            var wrappers = void 0,
-	                                _newImages = void 0;
-	                            temp.innerHTML = selectedHtml;
-
-	                            wrappers = temp.getElementsByClassName('medium-editor-insert-images');
-	                            _newImages = _utils2.default.getElementsByTagName(wrappers, 'img');
-
-	                            Array.prototype.forEach.call(_newImages, function (image) {
-	                                images.push(image);
-	                            });
-	                        }
+	                    // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
+	                    if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
+	                        sibling = focusedElement.previousElementSibling;
+	                        // Is del pressed and caret is at the end of a paragraph, get next element
+	                    } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {
+	                        sibling = focusedElement.nextElementSibling;
 	                    }
 
-	                    if (images.length) {
-	                        if (!selectedHtml) {
-	                            e.preventDefault();
-	                        }
+	                    if (sibling && sibling.classList.contains('medium-editor-insert-images')) {
+	                        var newImages = sibling.getElementsByTagName('img');
+	                        Array.prototype.forEach.call(newImages, function (image) {
+	                            images.push(image);
+	                        });
+	                    }
 
-	                        images.forEach(function (image) {
-	                            var wrapper = _utils2.default.getClosestWithClassName(image, 'medium-editor-insert-images');
-	                            _this6.deleteFile(image.src);
+	                    // If text is selected, find images in the selection
+	                    selectedHtml = MediumEditor.selection.getSelectionHtml(document);
+	                    if (selectedHtml) {
+	                        var temp = document.createElement('div');
+	                        var wrappers = void 0,
+	                            _newImages = void 0;
+	                        temp.innerHTML = selectedHtml;
 
-	                            image.parentNode.remove();
+	                        wrappers = temp.getElementsByClassName('medium-editor-insert-images');
+	                        _newImages = _utils2.default.getElementsByTagName(wrappers, 'img');
 
-	                            // If wrapper has no images anymore, remove it
-	                            if (wrapper.childElementCount === 0) {
-	                                var next = wrapper.nextElementSibling,
-	                                    prev = wrapper.previousElementSibling;
+	                        Array.prototype.forEach.call(_newImages, function (image) {
+	                            images.push(image);
+	                        });
+	                    }
+	                }
 
-	                                wrapper.remove();
+	                if (images.length) {
+	                    if (!selectedHtml) {
+	                        e.preventDefault();
+	                    }
 
-	                                // If there is no selection, move cursor at the beginning of next paragraph (if delete is pressed),
-	                                // or nove it at the end of previous paragraph (if backspace is pressed)
-	                                if (!selectedHtml) {
-	                                    if (next || prev) {
-	                                        if (next && e.which === MediumEditor.util.keyCode.DELETE || !prev) {
-	                                            MediumEditor.selection.moveCursor(document, next, 0);
-	                                        } else {
-	                                            MediumEditor.selection.moveCursor(document, prev.lastChild, prev.lastChild.textContent.length);
-	                                        }
+	                    images.forEach(function (image) {
+	                        var wrapper = _utils2.default.getClosestWithClassName(image, 'medium-editor-insert-images');
+	                        _this6.deleteFile(image.src);
+
+	                        image.parentNode.remove();
+
+	                        // If wrapper has no images anymore, remove it
+	                        if (wrapper.childElementCount === 0) {
+	                            var next = wrapper.nextElementSibling,
+	                                prev = wrapper.previousElementSibling;
+
+	                            wrapper.remove();
+
+	                            // If there is no selection, move cursor at the beginning of next paragraph (if delete is pressed),
+	                            // or nove it at the end of previous paragraph (if backspace is pressed)
+	                            if (!selectedHtml) {
+	                                if (next || prev) {
+	                                    if (next && e.which === MediumEditor.util.keyCode.DELETE || !prev) {
+	                                        MediumEditor.selection.moveCursor(document, next, 0);
+	                                    } else {
+	                                        MediumEditor.selection.moveCursor(document, prev.lastChild, prev.lastChild.textContent.length);
 	                                    }
 	                                }
 	                            }
-	                        });
-	                    }
-	                })();
+	                        }
+	                    });
+	                }
 	            }
 	        }
 	    }, {
@@ -811,6 +986,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xhr.send(data);
 	            }
 	        }
+	    }, {
+	        key: 'destroy',
+	        value: function destroy() {}
 	    }]);
 
 	    return Images;
@@ -819,236 +997,256 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Images;
 	module.exports = exports['default'];
 
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _utils = __webpack_require__(1);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	var _ToolbarButton = __webpack_require__(15);
-
-	var _ToolbarButton2 = _interopRequireDefault(_ToolbarButton);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	var Embeds = function () {
+	  function Embeds(plugin, options) {
+	    _classCallCheck(this, Embeds);
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
 
-	var MediumEditorToolbar = MediumEditor.extensions.toolbar;
+	    this.options = {
+	      label: '<span class="fa fa-youtube-play"></span>',
+	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
+	      oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
+	      captions: true,
+	      captionPlaceholder: 'Type caption (optional)',
+	      storeMeta: false,
+	      styles: {
+	        wide: {
+	          label: '<span class="fa fa-align-justify"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        left: {
+	          label: '<span class="fa fa-align-left"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        right: {
+	          label: '<span class="fa fa-align-right"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        }
+	      },
+	      actions: {
+	        remove: {
+	          label: '<span class="fa fa-times"></span>',
+	          clicked: function clicked() {
+	            // var $event = $.Event('keydown');
 
-	var Toolbar = function (_MediumEditorToolbar) {
-	    _inherits(Toolbar, _MediumEditorToolbar);
+	            // $event.which = 8;
+	            // $(document).trigger($event);
+	          }
+	        }
+	      },
+	      parseOnPaste: false
+	    };
 
-	    function Toolbar(options) {
-	        _classCallCheck(this, Toolbar);
+	    Object.assign(this.options, options);
 
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Toolbar).call(this, options));
+	    this.label = this.options.label;
+	  }
 
-	        _this.name = options.type + 'Toolbar';
+	  _createClass(Embeds, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      this.el = this._plugin.getCore().selectedElement;
+	      this.el.classList.add('medium-editor-insert-embeds-active');
+	      this.el.classList.add('medium-editor-insert-embeds-placeholder');
+	      this.el.setAttribute('data-placeholder', this.options.placeholder);
 
-	        options.buttons.forEach(function (buttonOptions) {
-	            var button = new _ToolbarButton2.default(Object.assign({}, {
-	                window: _this.plugin.window,
-	                document: _this.plugin.document,
-	                base: _this.plugin.base
-	            }, buttonOptions));
+	      this.instanceHandlePaste = this.handlePaste.bind(this);
+	      this.instanceHandleKeyDown = this.handleKeyDown.bind(this);
 
-	            button.init();
-	            _this.plugin.base.extensions.push(button);
-	        });
+	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
+	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
-	        _this.window = options.plugin.window;
-	        _this.document = options.plugin.document;
-	        _this.base = options.plugin.base;
+	      this._plugin.getCore().hideButtons();
 
-	        _this.init();
-	        return _this;
+	      // return focus to element, allow user to cancel embed by start writing
+	      this._editor.elements[0].focus();
+	      this.el.focus();
+
+	      // this._editor.selectElement(this.el);
+	      // console.log( this._editor.selection );
+	    }
+	  }, {
+	    key: 'handleKeyDown',
+	    value: function handleKeyDown(evt) {
+	      if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
+	      && (evt.which === 27 || this._plugin.selectedElement !== this.el)) {
+	        // Escape
+	        this.cancelEmbed();
+	        return false;
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'handlePaste',
+	    value: function handlePaste(evt) {
+	      var pastedUrl = evt.clipboardData.getData('text');
+	      var linkRegEx = new RegExp('^(http(s?):)?\/\/', 'i');
+
+	      if (linkRegEx.test(pastedUrl)) {
+	        var html = this.parseUrl(pastedUrl, true);
+	        console.log('yes!', html);
+	        // if (this.options.oembedProxy) {
+	        //     this.oembed(pastedUrl, true);
+	        // } else {
+	        //     this.parseUrl(pastedUrl, true);
+	        // }
+	      }
+
+	      console.log('paste!');
+	      // console.log( pastedUrl ); 
+	      this.cancelEmbed();
 	    }
 
-	    _createClass(Toolbar, [{
-	        key: 'createToolbar',
-	        value: function createToolbar() {
-	            var toolbar = this.document.createElement('div');
+	    /**
+	      * Get HTML using regexp
+	      *
+	      * @param {string} url
+	      * @param {bool} pasted
+	      * @return {void}
+	      */
 
-	            toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
-	            toolbar.className = 'medium-editor-toolbar';
+	  }, {
+	    key: 'parseUrl',
+	    value: function parseUrl(url, pasted) {
+	      var html = void 0;
 
-	            if (this.static) {
-	                toolbar.className += ' static-toolbar';
-	            } else if (this.relativeContainer) {
-	                toolbar.className += ' medium-editor-relative-toolbar';
-	            } else {
-	                toolbar.className += ' medium-editor-stalker-toolbar';
-	            }
+	      if (!new RegExp(['youtube', 'youtu.be', 'vimeo', 'instagram', 'twitter', 'facebook'].join('|')).test(url)) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
 
-	            toolbar.appendChild(this.createToolbarButtons());
+	      html = url.replace(/\n?/g, '').replace(/^((http(s)?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|v\/)?)([a-zA-Z0-9\-_]+)(.*)?$/, '<div class="video video-youtube"><iframe width="420" height="315" src="//www.youtube.com/embed/$7" frameborder="0" allowfullscreen></iframe></div>').replace(/^https?:\/\/vimeo\.com(\/.+)?\/([0-9]+)$/, '<div class="video video-vimeo"><iframe src="//player.vimeo.com/video/$2" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>').replace(/^https:\/\/twitter\.com\/(\w+)\/status\/(\d+)\/?$/, '<blockquote class="twitter-tweet" align="center" lang="en"><a href="https://twitter.com/$1/statuses/$2"></a></blockquote><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>').replace(/^(https:\/\/www\.facebook\.com\/(.*))$/, '<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script><div class="fb-post" data-href="$1"><div class="fb-xfbml-parse-ignore"><a href="$1">Loading Facebook post...</a></div></div>').replace(/^https?:\/\/instagram\.com\/p\/(.+)\/?$/, '<span class="instagram"><iframe src="//instagram.com/p/$1/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe></span>');
 
-	            // Add any forms that extensions may have
-	            this.forEachExtension(function (extension) {
-	                if (extension.hasForm) {
-	                    toolbar.appendChild(extension.getForm());
-	                }
-	            });
+	      if (/<("[^"]*"|'[^']*'|[^'">])*>/.test(html) === false) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
 
-	            this.attachEventHandlers();
-
-	            return toolbar;
-	        }
-	    }, {
-	        key: 'createToolbarButtons',
-	        value: function createToolbarButtons() {
-	            var _this2 = this;
-
-	            var ul = this.document.createElement('ul');
-	            var li = void 0,
-	                btn = void 0,
-	                buttons = void 0,
-	                extension = void 0,
-	                buttonName = void 0,
-	                buttonOpts = void 0;
-
-	            ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
-	            ul.className = 'medium-editor-toolbar-actions';
-	            ul.style.display = 'block';
-
-	            this.buttons.forEach(function (button) {
-	                if (typeof button === 'string') {
-	                    buttonName = button;
-	                    buttonOpts = null;
-	                } else {
-	                    buttonName = button.name;
-	                    buttonOpts = button;
-	                }
-
-	                // If the button already exists as an extension, it'll be returned
-	                // othwerise it'll create the default built-in button
-	                extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
-
-	                if (extension && typeof extension.getButton === 'function') {
-	                    btn = extension.getButton(_this2.base);
-	                    li = _this2.document.createElement('li');
-	                    if (MediumEditor.util.isElement(btn)) {
-	                        li.appendChild(btn);
-	                    } else {
-	                        li.innerHTML = btn;
-	                    }
-	                    ul.appendChild(li);
-	                }
-	            }, this);
-
-	            buttons = ul.querySelectorAll('button');
-	            if (buttons.length > 0) {
-	                buttons[0].classList.add(this.firstButtonClass);
-	                buttons[buttons.length - 1].classList.add(this.lastButtonClass);
-	            }
-
-	            return ul;
-	        }
-	    }, {
-	        key: 'checkState',
-	        value: function checkState() {
-	            var _this3 = this;
-
-	            var activeElements = void 0;
-
-	            if (this.base.preventSelectionUpdates) {
-	                return;
-	            }
-
-	            // Wait for elements to be selected
-	            setTimeout(function () {
-	                activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
-
-	                // Hide toolbar when no elements are selected
-	                if (activeElements.length === 0) {
-	                    return _this3.hideToolbar();
-	                }
-
-	                // Now we know there's a focused editable with a selection
-	                _this3.showAndUpdateToolbar();
-	            }, 10);
-	        }
-	    }, {
-	        key: 'setToolbarPosition',
-	        value: function setToolbarPosition() {
-	            var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
-	            var anchorPreview = void 0;
-
-	            // If there isn't a valid selection, bail
-	            if (!container) {
-	                return this;
-	            }
-
-	            this.showToolbar();
-	            this.positionStaticToolbar(container);
-
-	            anchorPreview = this.base.getExtensionByName('anchor-preview');
-
-	            if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
-	                anchorPreview.hidePreview();
-	            }
-	        }
-	    }]);
-
-	    return Toolbar;
-	}(MediumEditorToolbar);
-
-	exports.default = Toolbar;
-	module.exports = exports['default'];
-
-/***/ },
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	var ToolbarButton = MediumEditor.extensions.button.extend({
-	    init: function init() {
-	        this.button = this.document.createElement('button');
-	        this.button.classList.add('medium-editor-action');
-	        this.button.innerHTML = '<b>' + this.label + '</b>';
-
-	        this.on(this.button, 'click', this.handleClick.bind(this));
-	    },
-
-	    getButton: function getButton() {
-	        return this.button;
-	    },
-
-	    handleClick: function handleClick() {
-	        console.log(this.name + ' clicked!');
+	      if (pasted) {
+	        return this.embed(html, url);
+	      } else {
+	        return this.embed(html);
+	      }
 	    }
-	});
+	  }, {
+	    key: 'embed',
 
-	exports.default = ToolbarButton;
+
+	    /**
+	     * Add html to page
+	     *
+	     * @param {string} html
+	     * @param {string} pastedUrl
+	     * @return {void}
+	     */
+
+	    value: function embed(html, pastedUrl) {
+	      var el = void 0,
+	          figure = void 0,
+	          figureCaption = void 0,
+	          metacontainer = void 0,
+	          container = void 0,
+	          overlay = void 0;
+
+	      if (!html) {
+	        console.error('Incorrect URL format specified: ', pastedUrl);
+	        return false;
+	      }
+
+	      el = this._plugin.getCore().selectedElement;
+	      figure = document.createElement('figure');
+	      figure.classList.add('medium-editor-insert-embed');
+	      figureCaption = document.createElement('figcaption');
+	      figureCaption.classList.add('medium-editor-insert-embed-caption');
+	      figureCaption.setAttribute('contenteditable', true);
+	      figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
+
+	      metacontainer = document.createElement('div');
+	      metacontainer.classList.add('medium-editor-insert-embeds');
+	      metacontainer.setAttribute('contenteditable', false);
+
+	      container = document.createElement('div');
+	      container.classList.add('medium-editor-insert-embed-container');
+
+	      overlay = document.createElement('div');
+	      overlay.classList.add('medium-editor-insert-embeds-overlay');
+
+	      metacontainer.appendChild(figure);
+	      metacontainer.appendChild(overlay);
+	      figure.appendChild(container);
+
+	      el.replaceWith(metacontainer);
+
+	      container.innerHTML = html;
+
+	      console.log(html);
+	      // this.core.triggerInput();
+
+	      if (html.indexOf('facebook') !== -1) {
+	        if (typeof FB !== 'undefined') {
+	          setTimeout(function () {
+	            FB.XFBML.parse();
+	          }, 2000);
+	        }
+	      }
+
+	      return true;
+	    }
+	  }, {
+	    key: 'handleBlur',
+	    value: function handleBlur() {
+	      console.log('blur');
+	      // this.cancelEmbed();
+	    }
+	  }, {
+	    key: 'hidePlaceholder',
+	    value: function hidePlaceholder() {
+	      this.el.removeAttribute('data-placeholder');
+	      this.el.classList.remove('medium-editor-insert-embeds-placeholder');
+	    }
+	  }, {
+	    key: 'cancelEmbed',
+	    value: function cancelEmbed() {
+	      this.hidePlaceholder();
+	      this.el.classList.remove('medium-editor-insert-embeds-active');
+
+	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.cancelEmbed();
+	    }
+	  }]);
+
+	  return Embeds;
+	}();
+
+	exports.default = Embeds;
 	module.exports = exports['default'];
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

@@ -296,4 +296,8 @@ export default class Images {
         }
     }
 
+    destroy() {
+        
+    }
+
 }
