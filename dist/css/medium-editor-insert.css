@@ -98,7 +98,8 @@
   margin-left: 20px; }
 
 .medium-editor-insert-images.align-right .medium-editor-embed-image-description {
-  width: 50%; }
+  width: 50%;
+  float: right; }
 
 .medium-editor-insert-images.align-center {
   display: block;
