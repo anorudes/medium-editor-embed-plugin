@@ -79,6 +79,11 @@
 .medium-editor-insert-image-active {
   outline: 2px solid #000; }
 
+.medium-editor-insert-images:after {
+  content: "";
+  display: table;
+  clear: both; }
+
 .medium-editor-insert-images.align-left img {
   max-width: 50%;
   float: left;
