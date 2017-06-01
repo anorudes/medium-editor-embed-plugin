@@ -190,13 +190,19 @@ export default class Images {
             domImage = new Image();
             domImage.onload = () => {
                 img.src = domImage.src;
+                if (!isLoader) {
+                    img.classList.add(this.activeClassName);
+                }
                 figure.appendChild(img);
                 descriptionContainer.appendChild(description);
                 figure.appendChild(descriptionContainer);
                 el.appendChild(figure);
             };
+            
             domImage.src = url;
-            if (isLoader) el.classList.add(this.loadingClassName);
+            if (isLoader) {
+                el.classList.add(this.loadingClassName);
+            }
         }
 
         el.classList.add(this.elementClassName);
@@ -212,7 +218,11 @@ export default class Images {
         const domImage = new Image();
         const el = this._plugin.getCore().selectedElement;
 
-        if (!isLoader) el.classList.remove(this.loadingClassName);
+        if (!isLoader) {
+            el.classList.remove(this.loadingClassName);
+            el.querySelector('img').classList.add(this.activeClassName);
+        }
+
 
         domImage.onload = () => {
             image.src = domImage.src;
