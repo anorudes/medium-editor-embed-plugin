@@ -26,6 +26,8 @@ Based on [medium-editor-insert-plugin v3](https://github.com/orthes/medium-edito
  
 Call other upload widget, add description for image, description placeholder, loader, float: left, right, center
 
+Example with [uploadcare](https://uploadcare.com/documentation/widget/):
+ 
 ```js
 	var editor = new MediumEditor('.editable', {
             buttonLabels: 'fontawesome',
