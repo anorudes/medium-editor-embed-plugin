@@ -931,6 +931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.elementClassName = 'medium-editor-insert-images';
 	        this.loadingClassName = 'medium-editor-insert-images-loading';
 	        this.activeClassName = 'medium-editor-insert-image-active';
+	        this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
 	        this.descriptionClassName = 'medium-editor-embed-image-description';
 	        this.label = this.options.label;
 	        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
@@ -1089,8 +1090,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var el = this._plugin.getCore().selectedElement,
 	                figure = document.createElement('figure'),
 	                img = document.createElement('img'),
-	                description = document.createElement('div'),
-	                descriptionPlaceholder = document.createElement('span');
+	                descriptionContainer = document.createElement('div'),
+	                description = document.createElement('figcaption');
 
 	            var domImage = void 0;
 
@@ -1100,9 +1101,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                img.setAttribute('data-uid', uid);
 	            }
 
+	            descriptionContainer.classList.add(this.descriptionContainerClassName);
 	            description.contentEditable = true;
 	            description.classList.add(this.descriptionClassName);
-	            descriptionPlaceholder.dataset.placeholder = this.descriptionPlaceholder;
+	            description.dataset.placeholder = this.descriptionPlaceholder;
 
 	            // If we're dealing with a preview image,
 	            // we don't have to preload it before displaying
@@ -1115,8 +1117,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                domImage.onload = function () {
 	                    img.src = domImage.src;
 	                    figure.appendChild(img);
-	                    figure.appendChild(description);
-	                    figure.appendChild(descriptionPlaceholder);
+	                    descriptionContainer.appendChild(description);
+	                    figure.appendChild(descriptionContainer);
 	                    el.appendChild(figure);
 	                };
 	                domImage.src = url;
@@ -1124,6 +1126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            el.classList.add(this.elementClassName);
+	            el.contentEditable = false;
 
 	            // Return domImage so we can test this function easily
 	            return domImage;

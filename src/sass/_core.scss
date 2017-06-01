@@ -96,3 +96,11 @@
 .medium-editor-insert-buttons-active {
 	display: block;
 }
+
+.medium-editor-element {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
