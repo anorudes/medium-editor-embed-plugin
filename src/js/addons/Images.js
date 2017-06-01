@@ -31,7 +31,7 @@ export default class Images {
 
     events() {
         this._plugin.on(document, 'click', this.unselectImage.bind(this));
-        this._plugin.on(document, 'keydown', this.removeImage.bind(this));
+        this._plugin.on(document, 'keydown', this.handleKey.bind(this));
 
         this._plugin.getEditorElements().forEach((editor) => {
             this._plugin.on(editor, 'click', this.selectImage.bind(this));
@@ -259,7 +259,16 @@ export default class Images {
         });
     }
 
-    removeImage(e) {
+    handleKey(e) {
+        // Enter
+        if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+            const target = e.target;
+            if (target && target.classList && target.classList.contains(this.descriptionClassName)) {
+                e.preventDefault();
+            }
+        }
+
+        // Remove
         if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
             const images = utils.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
                 selection = window.getSelection();
