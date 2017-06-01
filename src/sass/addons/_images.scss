@@ -16,6 +16,11 @@
     }
 }
 
+.medium-editor-insert-images.align-center {
+    display: block;
+    text-align: center;
+}
+
 .medium-editor-insert-images.align-left {
     float: left;
     width: 50%;
@@ -26,9 +31,14 @@
     width: 50%;
 }
 
-.medium-editor-insert-images.align-center {
+.medium-editor-insert-images.align-center-full {
     display: block;
-    text-align: center;
+    margin-left: -25%;
+    margin-right: -25%;
+
+    img {
+        width: 100%;
+    }
 }
 
 .medium-editor-insert-image-active ~ .medium-editor-embed-image-description {

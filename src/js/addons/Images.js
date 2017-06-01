@@ -84,7 +84,15 @@ export default class Images {
                     onClick: (function() {
                         this.changeAlign('align-right');
                     }).bind(this),
-                }
+                },
+                {
+                    name: 'align-center-full',
+                    action: 'center-full',
+                    label: 'Center Full',
+                    onClick: (function() {
+                        this.changeAlign('align-center-full');
+                    }).bind(this),
+                },
             ]
         });
 
@@ -93,7 +101,7 @@ export default class Images {
 
     changeAlign(className) {
         const el = this._plugin.getCore().selectedElement;
-        el.classList.remove('align-left', 'align-center', 'align-right');
+        el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
         el.classList.add(className);
     }
 
@@ -201,6 +209,7 @@ export default class Images {
 
         el.classList.add(this.elementClassName);
         el.contentEditable = false;
+        el.classList.add('align-center');
 
 
         // Return domImage so we can test this function easily

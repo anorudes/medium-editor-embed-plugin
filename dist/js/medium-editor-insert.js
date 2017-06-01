@@ -1001,6 +1001,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
 	                    }.bind(this)
+	                }, {
+	                    name: 'align-center-full',
+	                    action: 'center-full',
+	                    label: 'Center Full',
+	                    onClick: function () {
+	                        this.changeAlign('align-center-full');
+	                    }.bind(this)
 	                }]
 	            });
 
@@ -1010,7 +1017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'changeAlign',
 	        value: function changeAlign(className) {
 	            var el = this._plugin.getCore().selectedElement;
-	            el.classList.remove('align-left', 'align-center', 'align-right');
+	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
 	            el.classList.add(className);
 	        }
 	    }, {
@@ -1127,6 +1134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            el.classList.add(this.elementClassName);
 	            el.contentEditable = false;
+	            el.classList.add('align-center');
 
 	            // Return domImage so we can test this function easily
 	            return domImage;
