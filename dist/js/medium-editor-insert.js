@@ -1001,6 +1001,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
 	                    }.bind(this)
+	                }, {
+	                    name: 'align-center-full',
+	                    action: 'center-full',
+	                    label: 'Center Full',
+	                    onClick: function () {
+	                        this.changeAlign('align-center-full');
+	                    }.bind(this)
 	                }]
 	            });
 
