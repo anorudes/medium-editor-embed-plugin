@@ -4,7 +4,7 @@ Vanilla ES2015 (transpiled with Babel) extension for MediumEditor. Extend your f
 
 No dependencies! Jiiihaaa :tada:
 
-## Usage
+## Default usage
 
 ```html
 <link href="dist/css/medium-editor-insert.css" rel="stylesheet">
@@ -18,6 +18,38 @@ No dependencies! Jiiihaaa :tada:
         }
     });
 </script>
+```
+
+## New features
+ 
+Call other upload widget, add description for image, description placeholder, loader, float: left, right, center
+
+```js
+	var editor = new MediumEditor('.editable', {
+            buttonLabels: 'fontawesome',
+            extensions: {
+            	'insert': new MediumEditorInsert({
+                    addons: {
+                        images: {
+                            descriptionPlaceholder: 'Описание',
+                            onInsertButtonClick: function(insertImage, insertLoader) {
+                              uploadcare.openDialog(null, {
+                                publicKey: pub_key,
+                                imagesOnly: true,
+                              }).done(function (file) {
+                                  if (file) {
+                                    insertLoader('./loader.gif');
+                                    file.done(function(fileInfo) {
+                                      insertImage(fileInfo.cdnUrl);
+                                    });
+                                  }
+                              });
+                            },
+                        }
+                    },
+                })
+            }
+        });
 ```
 
 ## Development
