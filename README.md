@@ -4,6 +4,8 @@ Vanilla ES2015 (transpiled with Babel) extension for MediumEditor. Extend your f
 
 No dependencies! Jiiihaaa :tada:
 
+Based on [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
+
 ## Default usage
 
 ```html
