@@ -209,6 +209,7 @@ export default class Images {
 
         el.classList.add(this.elementClassName);
         el.contentEditable = false;
+        el.classList.add('align-center');
 
 
         // Return domImage so we can test this function easily
