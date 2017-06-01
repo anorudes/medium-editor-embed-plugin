@@ -22,6 +22,7 @@ export default class Images {
         this.activeClassName = 'medium-editor-insert-image-active';
         this.descriptionClassName = 'medium-editor-embed-image-description';
 		this.label = this.options.label;
+        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
 
         this.initToolbar();
         this.events();
@@ -162,7 +163,9 @@ export default class Images {
         const el = this._plugin.getCore().selectedElement,
             figure = document.createElement('figure'),
             img = document.createElement('img'),
-            description = document.createElement('div');
+            description = document.createElement('div'),
+            descriptionPlaceholder = document.createElement('span');
+
         let domImage;
 
         img.alt = '';
@@ -173,6 +176,7 @@ export default class Images {
 
         description.contentEditable = true;
         description.classList.add(this.descriptionClassName);
+        descriptionPlaceholder.dataset.placeholder = this.descriptionPlaceholder;
 
         // If we're dealing with a preview image,
         // we don't have to preload it before displaying
@@ -186,6 +190,7 @@ export default class Images {
                 img.src = domImage.src;
                 figure.appendChild(img);
                 figure.appendChild(description);
+                figure.appendChild(descriptionPlaceholder);
                 el.appendChild(figure);
             };
             domImage.src = url;
