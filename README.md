@@ -38,7 +38,7 @@ Example with [uploadcare](https://uploadcare.com/documentation/widget/):
                             descriptionPlaceholder: 'Описание',
                             onInsertButtonClick: function(insertImage, insertLoader) {
                               uploadcare.openDialog(null, {
-                                publicKey: pub_key,
+                                publicKey: 'your_uploadcare_pub_key',
                                 imagesOnly: true,
                               }).done(function (file) {
                                   if (file) {
