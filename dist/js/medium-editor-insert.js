@@ -946,7 +946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this = this;
 
 	            this._plugin.on(document, 'click', this.unselectImage.bind(this));
-	            this._plugin.on(document, 'keydown', this.removeImage.bind(this));
+	            this._plugin.on(document, 'keydown', this.handleKey.bind(this));
 
 	            this._plugin.getEditorElements().forEach(function (editor) {
 	                _this._plugin.on(editor, 'click', _this.selectImage.bind(_this));
@@ -1197,10 +1197,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 	    }, {
-	        key: 'removeImage',
-	        value: function removeImage(e) {
+	        key: 'handleKey',
+	        value: function handleKey(e) {
 	            var _this6 = this;
 
+	            // Enter
+	            if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+	                var target = e.target;
+	                if (target && target.classList && target.classList.contains(this.descriptionClassName)) {
+	                    e.preventDefault();
+	                }
+	            }
+
+	            // Remove
 	            if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
 	                var images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
 	                    selection = window.getSelection();
