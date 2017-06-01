@@ -260,16 +260,18 @@ export default class Images {
     }
 
     handleKey(e) {
+        const target = e.target;
+        const isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
+
         // Enter key in description
         if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
-            const target = e.target;
-            if (target && target.classList && target.classList.contains(this.descriptionClassName)) {
+            if (isDescriptionElement) {
                 e.preventDefault();
             }
         }
 
         // Backspace, delete
-        if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
+        if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
             this.removeImage(e);
         }
     }
