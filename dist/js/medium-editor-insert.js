@@ -1017,7 +1017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'changeAlign',
 	        value: function changeAlign(className) {
 	            var el = this._plugin.getCore().selectedElement;
-	            el.classList.remove('align-left', 'align-center', 'align-right');
+	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
 	            el.classList.add(className);
 	        }
 	    }, {

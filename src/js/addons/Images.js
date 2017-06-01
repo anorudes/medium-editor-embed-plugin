@@ -101,7 +101,7 @@ export default class Images {
 
     changeAlign(className) {
         const el = this._plugin.getCore().selectedElement;
-        el.classList.remove('align-left', 'align-center', 'align-right');
+        el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
         el.classList.add(className);
     }
 
