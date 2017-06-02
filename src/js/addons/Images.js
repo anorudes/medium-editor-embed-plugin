@@ -165,7 +165,8 @@ export default class Images {
             figure = document.createElement('figure'),
             img = document.createElement('img'),
             descriptionContainer = document.createElement('div'),
-            description = document.createElement('figcaption');
+            description = document.createElement('figcaption'),
+            paragraph = document.createElement('p');
 
         let domImage;
 
@@ -197,8 +198,13 @@ export default class Images {
                 descriptionContainer.appendChild(description);
                 figure.appendChild(descriptionContainer);
                 el.appendChild(figure);
+                paragraph.innerHTML = '<br>';
+
+                if (!el.nextSibling || !el.nextSibling.nextSibling) {
+                    el.parentNode.insertBefore(paragraph, el.nextSibling);
+                }
             };
-            
+
             domImage.src = url;
             if (isLoader) {
                 el.classList.add(this.loadingClassName);
