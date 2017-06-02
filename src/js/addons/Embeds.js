@@ -2,7 +2,7 @@ export default class Embeds {
 
 	constructor(plugin, options) {
 		this._plugin = plugin;
-	      this._editor = this._plugin.base;
+	  this._editor = this._plugin.base;
 
 		this.options = {
 			label: '<span class="fa fa-youtube-play"></span>',
@@ -85,29 +85,50 @@ export default class Embeds {
 	handlePaste(evt) {
 		const pastedUrl = evt.clipboardData.getData('text');
     const linkRegEx = new RegExp('^(http(s?):)?\/\/','i');
+    const linkRegEx2 = new RegExp('^(www\.)?','i');
 
-    if (linkRegEx.test(pastedUrl)) {
-      const html = this.parseUrl(pastedUrl, true);
-      console.log('yes!', html);
-        // if (this.options.oembedProxy) {
-        //     this.oembed(pastedUrl, true);
-        // } else {
-        //     this.parseUrl(pastedUrl, true);
-        // }
+    if (linkRegEx.test(pastedUrl) || linkRegEx2.test(pastedUrl)) {
+      const html = (this.options.oembedProxy)
+        ? this.oembed(pastedUrl, true)
+        : this.parseUrl(pastedUrl, true);
     }
 
-		console.log('paste!');
-		// console.log( pastedUrl ); 
     this.cancelEmbed();
 	}
 
-   /**
-     * Get HTML using regexp
-     *
-     * @param {string} url
-     * @param {bool} pasted
-     * @return {void}
-     */
+  /**
+   * Get HTML via oEmbed proxy
+   *
+   * @param {string} url
+   * @return {void}
+   */
+
+  oembed(url, pasted) {
+
+    const urlOut = this.options.oembedProxy + '&url=' + url;
+    const xhr = new XMLHttpRequest();
+
+    console.log(urlOut);
+    xhr.open("GET", urlOut, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        this.embed(data.html, url);
+      }
+    };
+
+    xhr.send();
+
+    return true;
+  }
+
+  /**
+   * Get HTML using regexp
+   *
+   * @param {string} url
+   * @param {bool} pasted
+   * @return {void}
+   */
 
   parseUrl(url, pasted) {
 		let html;
@@ -138,13 +159,13 @@ export default class Embeds {
   };
 
 
-    /**
-     * Add html to page
-     *
-     * @param {string} html
-     * @param {string} pastedUrl
-     * @return {void}
-     */
+  /**
+   * Add html to page
+   *
+   * @param {string} html
+   * @param {string} pastedUrl
+   * @return {void}
+   */
 
   embed(html, pastedUrl) {
     let el, figure, figureCaption, metacontainer, container, overlay;
@@ -156,9 +177,9 @@ export default class Embeds {
 
     el = this._plugin.getCore().selectedElement;
     figure = document.createElement('figure');
-    figure.classList.add('medium-editor-insert-embed');
+    figure.classList.add('medium-editor-insert-embeds-item');
     figureCaption = document.createElement('figcaption');
-    figureCaption.classList.add('medium-editor-insert-embed-caption');
+    figureCaption.classList.add('medium-editor-insert-embeds-caption');
     figureCaption.setAttribute('contenteditable', true);
     figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
 
@@ -167,14 +188,14 @@ export default class Embeds {
     metacontainer.setAttribute('contenteditable', false);
 
     container = document.createElement('div');
-    container.classList.add('medium-editor-insert-embed-container');
+    container.classList.add('medium-editor-insert-embeds-item-container');
 
     overlay = document.createElement('div');
     overlay.classList.add('medium-editor-insert-embeds-overlay');
 
     metacontainer.appendChild(figure);
-    metacontainer.appendChild(overlay);
     figure.appendChild(container);
+    figure.appendChild(overlay);
 
     
     el.replaceWith(metacontainer);

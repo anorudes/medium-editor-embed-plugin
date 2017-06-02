@@ -182,11 +182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Images = __webpack_require__(6);
+	var _Images = __webpack_require__(5);
 
 	var _Images2 = _interopRequireDefault(_Images);
 
-	var _Embeds = __webpack_require__(5);
+	var _Embeds = __webpack_require__(6);
 
 	var _Embeds2 = _interopRequireDefault(_Embeds);
 
@@ -640,255 +640,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Embeds = function () {
-	  function Embeds(plugin, options) {
-	    _classCallCheck(this, Embeds);
-
-	    this._plugin = plugin;
-	    this._editor = this._plugin.base;
-
-	    this.options = {
-	      label: '<span class="fa fa-youtube-play"></span>',
-	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
-	      oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
-	      captions: true,
-	      captionPlaceholder: 'Type caption (optional)',
-	      storeMeta: false,
-	      styles: {
-	        wide: {
-	          label: '<span class="fa fa-align-justify"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        },
-	        left: {
-	          label: '<span class="fa fa-align-left"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        },
-	        right: {
-	          label: '<span class="fa fa-align-right"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        }
-	      },
-	      actions: {
-	        remove: {
-	          label: '<span class="fa fa-times"></span>',
-	          clicked: function clicked() {
-	            // var $event = $.Event('keydown');
-
-	            // $event.which = 8;
-	            // $(document).trigger($event);
-	          }
-	        }
-	      },
-	      parseOnPaste: false
-	    };
-
-	    Object.assign(this.options, options);
-
-	    this.label = this.options.label;
-	  }
-
-	  _createClass(Embeds, [{
-	    key: 'handleClick',
-	    value: function handleClick() {
-	      this.el = this._plugin.getCore().selectedElement;
-	      this.el.classList.add('medium-editor-insert-embeds-active');
-	      this.el.classList.add('medium-editor-insert-embeds-placeholder');
-	      this.el.setAttribute('data-placeholder', this.options.placeholder);
-
-	      this.instanceHandlePaste = this.handlePaste.bind(this);
-	      this.instanceHandleKeyDown = this.handleKeyDown.bind(this);
-
-	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
-	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
-	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
-
-	      this._plugin.getCore().hideButtons();
-
-	      // return focus to element, allow user to cancel embed by start writing
-	      this._editor.elements[0].focus();
-	      this.el.focus();
-
-	      // this._editor.selectElement(this.el);
-	      // console.log( this._editor.selection );
-	    }
-	  }, {
-	    key: 'handleKeyDown',
-	    value: function handleKeyDown(evt) {
-	      if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
-	      && (evt.which === 27 || this._plugin.selectedElement !== this.el)) {
-	        // Escape
-	        this.cancelEmbed();
-	        return false;
-	      }
-	      return true;
-	    }
-	  }, {
-	    key: 'handlePaste',
-	    value: function handlePaste(evt) {
-	      var pastedUrl = evt.clipboardData.getData('text');
-	      var linkRegEx = new RegExp('^(http(s?):)?\/\/', 'i');
-
-	      if (linkRegEx.test(pastedUrl)) {
-	        var html = this.parseUrl(pastedUrl, true);
-	        console.log('yes!', html);
-	        // if (this.options.oembedProxy) {
-	        //     this.oembed(pastedUrl, true);
-	        // } else {
-	        //     this.parseUrl(pastedUrl, true);
-	        // }
-	      }
-
-	      console.log('paste!');
-	      // console.log( pastedUrl ); 
-	      this.cancelEmbed();
-	    }
-
-	    /**
-	      * Get HTML using regexp
-	      *
-	      * @param {string} url
-	      * @param {bool} pasted
-	      * @return {void}
-	      */
-
-	  }, {
-	    key: 'parseUrl',
-	    value: function parseUrl(url, pasted) {
-	      var html = void 0;
-
-	      if (!new RegExp(['youtube', 'youtu.be', 'vimeo', 'instagram', 'twitter', 'facebook'].join('|')).test(url)) {
-	        // $.proxy(this, 'convertBadEmbed', url)();
-	        return false;
-	      }
-
-	      html = url.replace(/\n?/g, '').replace(/^((http(s)?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|v\/)?)([a-zA-Z0-9\-_]+)(.*)?$/, '<div class="video video-youtube"><iframe width="420" height="315" src="//www.youtube.com/embed/$7" frameborder="0" allowfullscreen></iframe></div>').replace(/^https?:\/\/vimeo\.com(\/.+)?\/([0-9]+)$/, '<div class="video video-vimeo"><iframe src="//player.vimeo.com/video/$2" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>').replace(/^https:\/\/twitter\.com\/(\w+)\/status\/(\d+)\/?$/, '<blockquote class="twitter-tweet" align="center" lang="en"><a href="https://twitter.com/$1/statuses/$2"></a></blockquote><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>').replace(/^(https:\/\/www\.facebook\.com\/(.*))$/, '<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script><div class="fb-post" data-href="$1"><div class="fb-xfbml-parse-ignore"><a href="$1">Loading Facebook post...</a></div></div>').replace(/^https?:\/\/instagram\.com\/p\/(.+)\/?$/, '<span class="instagram"><iframe src="//instagram.com/p/$1/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe></span>');
-
-	      if (/<("[^"]*"|'[^']*'|[^'">])*>/.test(html) === false) {
-	        // $.proxy(this, 'convertBadEmbed', url)();
-	        return false;
-	      }
-
-	      if (pasted) {
-	        return this.embed(html, url);
-	      } else {
-	        return this.embed(html);
-	      }
-	    }
-	  }, {
-	    key: 'embed',
-
-
-	    /**
-	     * Add html to page
-	     *
-	     * @param {string} html
-	     * @param {string} pastedUrl
-	     * @return {void}
-	     */
-
-	    value: function embed(html, pastedUrl) {
-	      var el = void 0,
-	          figure = void 0,
-	          figureCaption = void 0,
-	          metacontainer = void 0,
-	          container = void 0,
-	          overlay = void 0;
-
-	      if (!html) {
-	        console.error('Incorrect URL format specified: ', pastedUrl);
-	        return false;
-	      }
-
-	      el = this._plugin.getCore().selectedElement;
-	      figure = document.createElement('figure');
-	      figure.classList.add('medium-editor-insert-embed');
-	      figureCaption = document.createElement('figcaption');
-	      figureCaption.classList.add('medium-editor-insert-embed-caption');
-	      figureCaption.setAttribute('contenteditable', true);
-	      figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
-
-	      metacontainer = document.createElement('div');
-	      metacontainer.classList.add('medium-editor-insert-embeds');
-	      metacontainer.setAttribute('contenteditable', false);
-
-	      container = document.createElement('div');
-	      container.classList.add('medium-editor-insert-embed-container');
-
-	      overlay = document.createElement('div');
-	      overlay.classList.add('medium-editor-insert-embeds-overlay');
-
-	      metacontainer.appendChild(figure);
-	      metacontainer.appendChild(overlay);
-	      figure.appendChild(container);
-
-	      el.replaceWith(metacontainer);
-
-	      container.innerHTML = html;
-
-	      console.log(html);
-	      // this.core.triggerInput();
-
-	      if (html.indexOf('facebook') !== -1) {
-	        if (typeof FB !== 'undefined') {
-	          setTimeout(function () {
-	            FB.XFBML.parse();
-	          }, 2000);
-	        }
-	      }
-
-	      return true;
-	    }
-	  }, {
-	    key: 'handleBlur',
-	    value: function handleBlur() {
-	      console.log('blur');
-	      // this.cancelEmbed();
-	    }
-	  }, {
-	    key: 'hidePlaceholder',
-	    value: function hidePlaceholder() {
-	      this.el.removeAttribute('data-placeholder');
-	      this.el.classList.remove('medium-editor-insert-embeds-placeholder');
-	    }
-	  }, {
-	    key: 'cancelEmbed',
-	    value: function cancelEmbed() {
-	      this.hidePlaceholder();
-	      this.el.classList.remove('medium-editor-insert-embeds-active');
-
-	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
-	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
-	    }
-	  }, {
-	    key: 'destroy',
-	    value: function destroy() {
-	      this.cancelEmbed();
-	    }
-	  }]);
-
-	  return Embeds;
-	}();
-
-	exports.default = Embeds;
-	module.exports = exports['default'];
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1334,6 +1085,277 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	exports.default = Images;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Embeds = function () {
+	  function Embeds(plugin, options) {
+	    _classCallCheck(this, Embeds);
+
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
+
+	    this.options = {
+	      label: '<span class="fa fa-youtube-play"></span>',
+	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
+	      oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
+	      captions: true,
+	      captionPlaceholder: 'Type caption (optional)',
+	      storeMeta: false,
+	      styles: {
+	        wide: {
+	          label: '<span class="fa fa-align-justify"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        left: {
+	          label: '<span class="fa fa-align-left"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        right: {
+	          label: '<span class="fa fa-align-right"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        }
+	      },
+	      actions: {
+	        remove: {
+	          label: '<span class="fa fa-times"></span>',
+	          clicked: function clicked() {
+	            // var $event = $.Event('keydown');
+
+	            // $event.which = 8;
+	            // $(document).trigger($event);
+	          }
+	        }
+	      },
+	      parseOnPaste: false
+	    };
+
+	    Object.assign(this.options, options);
+
+	    this.label = this.options.label;
+	  }
+
+	  _createClass(Embeds, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      this.el = this._plugin.getCore().selectedElement;
+	      this.el.classList.add('medium-editor-insert-embeds-active');
+	      this.el.classList.add('medium-editor-insert-embeds-placeholder');
+	      this.el.setAttribute('data-placeholder', this.options.placeholder);
+
+	      this.instanceHandlePaste = this.handlePaste.bind(this);
+	      this.instanceHandleKeyDown = this.handleKeyDown.bind(this);
+
+	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
+	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
+
+	      this._plugin.getCore().hideButtons();
+
+	      // return focus to element, allow user to cancel embed by start writing
+	      this._editor.elements[0].focus();
+	      this.el.focus();
+
+	      // this._editor.selectElement(this.el);
+	      // console.log( this._editor.selection );
+	    }
+	  }, {
+	    key: 'handleKeyDown',
+	    value: function handleKeyDown(evt) {
+	      if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
+	      && (evt.which === 27 || this._plugin.selectedElement !== this.el)) {
+	        // Escape
+	        this.cancelEmbed();
+	        return false;
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'handlePaste',
+	    value: function handlePaste(evt) {
+	      var pastedUrl = evt.clipboardData.getData('text');
+	      var linkRegEx = new RegExp('^(http(s?):)?\/\/', 'i');
+	      var linkRegEx2 = new RegExp('^(www\.)?', 'i');
+
+	      if (linkRegEx.test(pastedUrl) || linkRegEx2.test(pastedUrl)) {
+	        var html = this.options.oembedProxy ? this.oembed(pastedUrl, true) : this.parseUrl(pastedUrl, true);
+	      }
+
+	      this.cancelEmbed();
+	    }
+
+	    /**
+	     * Get HTML via oEmbed proxy
+	     *
+	     * @param {string} url
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'oembed',
+	    value: function oembed(url, pasted) {
+	      var _this = this;
+
+	      var urlOut = this.options.oembedProxy + '&url=' + url;
+	      var xhr = new XMLHttpRequest();
+
+	      console.log(urlOut);
+	      xhr.open("GET", urlOut, true);
+	      xhr.onreadystatechange = function () {
+	        if (xhr.readyState === 4 && xhr.status === 200) {
+	          var data = JSON.parse(xhr.responseText);
+	          _this.embed(data.html, url);
+	        }
+	      };
+
+	      xhr.send();
+
+	      return true;
+	    }
+
+	    /**
+	     * Get HTML using regexp
+	     *
+	     * @param {string} url
+	     * @param {bool} pasted
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'parseUrl',
+	    value: function parseUrl(url, pasted) {
+	      var html = void 0;
+
+	      if (!new RegExp(['youtube', 'youtu.be', 'vimeo', 'instagram', 'twitter', 'facebook'].join('|')).test(url)) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
+
+	      html = url.replace(/\n?/g, '').replace(/^((http(s)?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|v\/)?)([a-zA-Z0-9\-_]+)(.*)?$/, '<div class="video video-youtube"><iframe width="420" height="315" src="//www.youtube.com/embed/$7" frameborder="0" allowfullscreen></iframe></div>').replace(/^https?:\/\/vimeo\.com(\/.+)?\/([0-9]+)$/, '<div class="video video-vimeo"><iframe src="//player.vimeo.com/video/$2" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>').replace(/^https:\/\/twitter\.com\/(\w+)\/status\/(\d+)\/?$/, '<blockquote class="twitter-tweet" align="center" lang="en"><a href="https://twitter.com/$1/statuses/$2"></a></blockquote><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>').replace(/^(https:\/\/www\.facebook\.com\/(.*))$/, '<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script><div class="fb-post" data-href="$1"><div class="fb-xfbml-parse-ignore"><a href="$1">Loading Facebook post...</a></div></div>').replace(/^https?:\/\/instagram\.com\/p\/(.+)\/?$/, '<span class="instagram"><iframe src="//instagram.com/p/$1/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe></span>');
+
+	      if (/<("[^"]*"|'[^']*'|[^'">])*>/.test(html) === false) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
+
+	      if (pasted) {
+	        return this.embed(html, url);
+	      } else {
+	        return this.embed(html);
+	      }
+	    }
+	  }, {
+	    key: 'embed',
+
+
+	    /**
+	     * Add html to page
+	     *
+	     * @param {string} html
+	     * @param {string} pastedUrl
+	     * @return {void}
+	     */
+
+	    value: function embed(html, pastedUrl) {
+	      var el = void 0,
+	          figure = void 0,
+	          figureCaption = void 0,
+	          metacontainer = void 0,
+	          container = void 0,
+	          overlay = void 0;
+
+	      if (!html) {
+	        console.error('Incorrect URL format specified: ', pastedUrl);
+	        return false;
+	      }
+
+	      el = this._plugin.getCore().selectedElement;
+	      figure = document.createElement('figure');
+	      figure.classList.add('medium-editor-insert-embeds-item');
+	      figureCaption = document.createElement('figcaption');
+	      figureCaption.classList.add('medium-editor-insert-embeds-caption');
+	      figureCaption.setAttribute('contenteditable', true);
+	      figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
+
+	      metacontainer = document.createElement('div');
+	      metacontainer.classList.add('medium-editor-insert-embeds');
+	      metacontainer.setAttribute('contenteditable', false);
+
+	      container = document.createElement('div');
+	      container.classList.add('medium-editor-insert-embeds-item-container');
+
+	      overlay = document.createElement('div');
+	      overlay.classList.add('medium-editor-insert-embeds-overlay');
+
+	      metacontainer.appendChild(figure);
+	      figure.appendChild(container);
+	      figure.appendChild(overlay);
+
+	      el.replaceWith(metacontainer);
+
+	      container.innerHTML = html;
+
+	      console.log(html);
+	      // this.core.triggerInput();
+
+	      if (html.indexOf('facebook') !== -1) {
+	        if (typeof FB !== 'undefined') {
+	          setTimeout(function () {
+	            FB.XFBML.parse();
+	          }, 2000);
+	        }
+	      }
+
+	      return true;
+	    }
+	  }, {
+	    key: 'handleBlur',
+	    value: function handleBlur() {
+	      console.log('blur');
+	      // this.cancelEmbed();
+	    }
+	  }, {
+	    key: 'hidePlaceholder',
+	    value: function hidePlaceholder() {
+	      this.el.removeAttribute('data-placeholder');
+	      this.el.classList.remove('medium-editor-insert-embeds-placeholder');
+	    }
+	  }, {
+	    key: 'cancelEmbed',
+	    value: function cancelEmbed() {
+	      this.hidePlaceholder();
+	      this.el.classList.remove('medium-editor-insert-embeds-active');
+
+	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.cancelEmbed();
+	    }
+	  }]);
+
+	  return Embeds;
+	}();
+
+	exports.default = Embeds;
 	module.exports = exports['default'];
 
 /***/ })

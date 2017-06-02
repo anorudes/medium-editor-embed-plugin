@@ -13,6 +13,7 @@
     <script src="https://ucarecdn.com/libs/widget/2.10.3/uploadcare.full.min.js" charset="utf-8"></script>
     <script>
       UPLOADCARE_PUBLIC_KEY = '737e97f64c1930ddf4fc';
+      IFRAMELY_API_KEY = 'a4920851894431b9654fc5';
     </script>
 </head>
 <body>
@@ -64,9 +65,12 @@
                                     });
                                   }
                               });
-                            },
+                            }
+                        },
+                        embeds: {
+                            oembedProxy: '//iframe.ly/api/oembed?api_key=' + IFRAMELY_API_KEY
                         }
-                    },
+                    }
                 })
             }
         });
