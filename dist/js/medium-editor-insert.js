@@ -1100,7 +1100,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                figure = document.createElement('figure'),
 	                img = document.createElement('img'),
 	                descriptionContainer = document.createElement('div'),
-	                description = document.createElement('figcaption');
+	                description = document.createElement('figcaption'),
+	                paragraph = document.createElement('p');
 
 	            var domImage = void 0;
 
@@ -1132,6 +1133,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    descriptionContainer.appendChild(description);
 	                    figure.appendChild(descriptionContainer);
 	                    el.appendChild(figure);
+	                    paragraph.innerHTML = '<br>';
+
+	                    if (!el.nextSibling || !el.nextSibling.nextSibling) {
+	                        el.parentNode.insertBefore(paragraph, el.nextSibling);
+	                    }
 	                };
 
 	                domImage.src = url;
