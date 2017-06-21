@@ -957,7 +957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.descriptionClassName = 'medium-editor-embed-image-description';
 	        this.label = this.options.label;
 	        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
-
+	        this.activeImageElement = null;
 	        this.initToolbar();
 	        this.events();
 	    }
@@ -1038,7 +1038,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'changeAlign',
 	        value: function changeAlign(className) {
-	            var el = this._plugin.getCore().selectedElement;
+	            var el = this.activeImageElement;
 	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
 	            el.classList.add(className);
 	        }
@@ -1207,8 +1207,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (!parentNode.classList.contains(this.loadingClassName)) {
 	                    el.classList.add(this.activeClassName);
 	                    parentNode.classList.add(this.activeClassName);
-
-	                    this._editor.selectElement(el);
+	                    // TODO: The value is correct, but the medium sometimes change
+	                    this._editor.selectElement(parentNode);
+	                    this.activeImageElement = parentNode;
 	                }
 	            }
 	        }
