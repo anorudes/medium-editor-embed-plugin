@@ -818,8 +818,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // FIXME: it doesn't work yet.  :(
 	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
-	      this._plugin.getCore().hideButtons();
-
 	      // return focus to element, allow user to cancel embed by start writing
 	      this._editor.elements[0].focus();
 	      this.el.focus();

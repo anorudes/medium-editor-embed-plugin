@@ -8,7 +8,7 @@ export default class Embeds {
 			label: '<span class="fa fa-youtube-play"></span>',
 			placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
       oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
-      captions: true, 
+      captions: true,
       captionPlaceholder: 'Type caption (optional)',
       storeMeta: false,
       styles: {
@@ -145,8 +145,6 @@ export default class Embeds {
 
     // FIXME: it doesn't work yet.  :(
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
-
-		this._plugin.getCore().hideButtons();
 
     // return focus to element, allow user to cancel embed by start writing
     this._editor.elements[0].focus();
@@ -318,7 +316,7 @@ export default class Embeds {
     if (!html) {
       console.error('Incorrect URL format specified: ', pastedUrl);
       return false;
-    } 
+    }
 
     el = this._plugin.getCore().selectedElement;
     figure = document.createElement('figure');
@@ -354,7 +352,7 @@ export default class Embeds {
     description.dataset.placeholder = this.descriptionPlaceholder;
 
 
-    
+
     el.replaceWith(metacontainer);
 
 
