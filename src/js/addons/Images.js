@@ -56,7 +56,6 @@ export default class Images {
     }
 
     initToolbar() {
-        console.log('toolb,images:', this.activeClassName);
         this.toolbar = new Toolbar({
             plugin: this._plugin,
             type: 'images',

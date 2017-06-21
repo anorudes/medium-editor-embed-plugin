@@ -758,25 +758,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var el = e.target;
 	      var clickedEmbed = void 0,
-	          embeds = void 0;
+	          clickedEmbedPlaceholder = void 0,
+	          embeds = void 0,
+	          embedsPlaceholders = void 0;
 
 	      if (el.classList.contains(this.descriptionClassName)) return false;
 
 	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
 
-	      if (!embeds || !embeds.length) return false;
+	      if (!embeds || !embeds.length) {
+	        return false;
+	      }
 
 	      // Unselect all selected images. If an image is clicked, unselect all except this one.
 	      if (el.classList.contains(this.overlayClassName)) {
 	        clickedEmbed = _utils2.default.getClosestWithClassName(el, this.elementClassName);
 	      }
 
-	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-	      Array.prototype.forEach.call(embeds, function (embed) {
-	        if (embed !== clickedEmbed) {
-	          embed.classList.remove(_this2.activeClassName);
-	        }
-	      });
+	      if (embeds) {
+	        Array.prototype.forEach.call(embeds, function (embed) {
+	          if (embed !== clickedEmbed) {
+	            embed.classList.remove(_this2.activeClassName);
+	          }
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'handleKey',
@@ -809,6 +814,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
 	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
+
+	      // FIXME: it doesn't work yet.  :(
 	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
 	      this._plugin.getCore().hideButtons();
@@ -1043,7 +1050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'handleBlur',
 	    value: function handleBlur() {
-	      // console.log('blur');
+	      console.log('blur');
 	      // this.cancelEmbed();
 	    }
 	  }, {
@@ -1163,7 +1170,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'initToolbar',
 	        value: function initToolbar() {
-	            console.log('toolb,images:', this.activeClassName);
 	            this.toolbar = new _Toolbar2.default({
 	                plugin: this._plugin,
 	                type: 'images',

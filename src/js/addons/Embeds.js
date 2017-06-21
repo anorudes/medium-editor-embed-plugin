@@ -89,25 +89,28 @@ export default class Embeds {
 
   unselectEmbed(e) {
     const el = e.target;
-    let clickedEmbed, embeds;
+    let clickedEmbed, clickedEmbedPlaceholder, embeds, embedsPlaceholders;
 
     if (el.classList.contains(this.descriptionClassName)) return false;
 
     embeds = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
 
-    if( !embeds || !embeds.length ) return false;
+    if(!embeds || !embeds.length) {
+      return false;
+    }
 
     // Unselect all selected images. If an image is clicked, unselect all except this one.
     if (el.classList.contains(this.overlayClassName)) {
       clickedEmbed = utils.getClosestWithClassName(el, this.elementClassName);
     }
 
-    embeds = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-    Array.prototype.forEach.call(embeds, (embed) => {
-      if (embed !== clickedEmbed) {
-        embed.classList.remove(this.activeClassName);
-      }
-    });
+    if (embeds) {
+      Array.prototype.forEach.call(embeds, (embed) => {
+        if (embed !== clickedEmbed) {
+          embed.classList.remove(this.activeClassName);
+        }
+      });
+    }
   }
 
   handleKey(e) {
@@ -139,6 +142,8 @@ export default class Embeds {
 
     this._plugin.on(document, 'paste', this.instanceHandlePaste);
     this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
+
+    // FIXME: it doesn't work yet.  :(
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
 		this._plugin.getCore().hideButtons();
@@ -146,6 +151,7 @@ export default class Embeds {
     // return focus to element, allow user to cancel embed by start writing
     this._editor.elements[0].focus();
     this.el.focus();
+
 
     // this._editor.selectElement(this.el);
     // console.log( this._editor.selection );
@@ -371,7 +377,7 @@ export default class Embeds {
 	}
 
   handleBlur() {
-    // console.log('blur');
+    console.log('blur');
     // this.cancelEmbed();
   }
 
