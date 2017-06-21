@@ -24,7 +24,7 @@ export default class Images {
         this.descriptionClassName = 'medium-editor-embed-image-description';
 		this.label = this.options.label;
         this.descriptionPlaceholder = this.options.descriptionPlaceholder;
-
+        this.activeImageElement = null;
         this.initToolbar();
         this.events();
 	}
@@ -100,7 +100,7 @@ export default class Images {
     }
 
     changeAlign(className) {
-        const el = this._plugin.getCore().selectedElement;
+        const el = this.activeImageElement;
         el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
         el.classList.add(className);
     }
@@ -258,8 +258,8 @@ export default class Images {
             if (!parentNode.classList.contains(this.loadingClassName)) {
                 el.classList.add(this.activeClassName);
                 parentNode.classList.add(this.activeClassName);
-
-                this._editor.selectElement(el);
+                this._editor.selectElement(parentNode);
+                this.activeImageElement = parentNode;
             }
         }
     }
