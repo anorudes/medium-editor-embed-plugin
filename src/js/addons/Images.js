@@ -3,17 +3,17 @@ import Toolbar from '../Toolbar';
 
 export default class Images {
 
-	constructor(plugin, options) {
-		this.options = {
-			label: '<span class="fa fa-camera"></span>',
-			preview: true,
-			uploadUrl: 'upload.php',
+    constructor(plugin, options) {
+        this.options = {
+            label: '<span class="fa fa-camera"></span>',
+            preview: true,
+            uploadUrl: 'upload.php',
             deleteUrl: 'delete.php',
             deleteMethod: 'DELETE',
             deleteData: {}
-		};
+        };
 
-		Object.assign(this.options, options);
+        Object.assign(this.options, options);
 
         this._plugin = plugin;
         this._editor = this._plugin.base;
@@ -22,12 +22,12 @@ export default class Images {
         this.activeClassName = 'medium-editor-insert-image-active';
         this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
         this.descriptionClassName = 'medium-editor-embed-image-description';
-		this.label = this.options.label;
+        this.label = this.options.label;
         this.descriptionPlaceholder = this.options.descriptionPlaceholder;
         this.activeImageElement = null;
         this.initToolbar();
         this.events();
-	}
+    }
 
     events() {
         this._plugin.on(document, 'click', this.unselectImage.bind(this));
@@ -38,7 +38,7 @@ export default class Images {
         });
     }
 
-	handleClick() {
+    handleClick() {
         if (this.options.onInsertButtonClick) {
             const uid = utils.generateRandomString();
             this.options.onInsertButtonClick(
@@ -53,16 +53,17 @@ export default class Images {
 
             this._input.click();
         }
-	}
+    }
 
     initToolbar() {
+        console.log('toolb,images:', this.activeClassName);
         this.toolbar = new Toolbar({
             plugin: this._plugin,
             type: 'images',
             activeClassName: this.activeClassName,
             buttons: [
                 {
-                    name: 'align-left',
+                    name: 'image-align-left',
                     action: 'left',
                     label: 'Left',
                     onClick: (function() {
@@ -70,7 +71,7 @@ export default class Images {
                     }).bind(this),
                 },
                 {
-                    name: 'align-center',
+                    name: 'image-align-center',
                     action: 'center',
                     label: 'Center',
                     onClick: (function() {
@@ -78,7 +79,7 @@ export default class Images {
                     }).bind(this),
                 },
                 {
-                    name: 'align-right',
+                    name: 'image-align-right',
                     action: 'right',
                     label: 'Right',
                     onClick: (function() {
@@ -86,7 +87,7 @@ export default class Images {
                     }).bind(this),
                 },
                 {
-                    name: 'align-center-full',
+                    name: 'image-align-center-full',
                     action: 'center-full',
                     label: 'Center Full',
                     onClick: (function() {
@@ -105,45 +106,45 @@ export default class Images {
         el.classList.add(className);
     }
 
-	uploadFiles() {
-		Array.prototype.forEach.call(this._input.files, (file) => {
+    uploadFiles() {
+        Array.prototype.forEach.call(this._input.files, (file) => {
             // Generate uid for this image, so we can identify it later
             // and we can replace preview image with uploaded one
-			const uid = utils.generateRandomString();
+            const uid = utils.generateRandomString();
 
-			if (this.options.preview) {
-				this.preview(file, uid);
-			}
+            if (this.options.preview) {
+                this.preview(file, uid);
+            }
 
-			this.upload(file, uid);
-		});
-	}
+            this.upload(file, uid);
+        });
+    }
 
-	preview(file, uid) {
-		const reader = new FileReader();
+    preview(file, uid) {
+        const reader = new FileReader();
 
-		reader.onload = (e) => {
-			this.insertImage(e.target.result, uid);
-		};
+        reader.onload = (e) => {
+            this.insertImage(e.target.result, uid);
+        };
 
-		reader.readAsDataURL(file);
-	}
+        reader.readAsDataURL(file);
+    }
 
-	upload(file, uid) {
-		const xhr = new XMLHttpRequest(),
-			data = new FormData();
+    upload(file, uid) {
+        const xhr = new XMLHttpRequest(),
+            data = new FormData();
         const insertImage = this.insertImage.bind(this);
 
-		xhr.open("POST", this.options.uploadUrl, true);
-		xhr.onreadystatechange = () => {
+        xhr.open("POST", this.options.uploadUrl, true);
+        xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 insertImage(xhr.responseText, utils.generateRandomString());
             }
-		};
+        };
 
-		data.append("file", file);
-		xhr.send(data);
-	}
+        data.append("file", file);
+        xhr.send(data);
+    }
 
     insertImage(imageUrl, uid, isLoader) {
         const paragraph = this._plugin.getCore().selectedElement;

@@ -179,3 +179,29 @@
   height: 100%;
   top: 0;
   left: 0; }
+
+.medium-editor-insert-embed-active {
+  outline: 2px solid #000; }
+
+.medium-editor-insert-embeds.align-center {
+  display: block;
+  text-align: center; }
+
+.medium-editor-insert-embeds.align-left {
+  float: left;
+  width: 50%;
+  margin-right: 24px;
+  margin-bottom: 16px; }
+
+.medium-editor-insert-embeds.align-right {
+  float: right;
+  width: 50%;
+  margin-left: 24px;
+  margin-bottom: 16px; }
+
+.medium-editor-insert-embeds.align-center-full {
+  display: block;
+  margin-left: -25%;
+  margin-right: -25%; }
+  .medium-editor-insert-embeds.align-center-full img {
+    width: 100%; }

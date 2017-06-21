@@ -82,6 +82,7 @@ export default class Embeds {
         if (!selectedEl.classList.contains(this.loadingClassName)) {
           selectedEl.classList.add(this.activeClassName);
           this._editor.selectElement(selectedEl);
+          this.activeEmbedElement = selectedEl;
         }
       }
   }
@@ -91,6 +92,10 @@ export default class Embeds {
     let clickedEmbed, embeds;
 
     if (el.classList.contains(this.descriptionClassName)) return false;
+
+    embeds = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+
+    if( !embeds || !embeds.length ) return false;
 
     // Unselect all selected images. If an image is clicked, unselect all except this one.
     if (el.classList.contains(this.overlayClassName)) {
@@ -135,7 +140,6 @@ export default class Embeds {
     this._plugin.on(document, 'paste', this.instanceHandlePaste);
     this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
-
 
 		this._plugin.getCore().hideButtons();
 
@@ -187,7 +191,15 @@ export default class Embeds {
       activeClassName: this.activeClassName,
       buttons: [
         {
-          name: 'align-left',
+          name: 'embed-align-center-full',
+          action: 'center-full',
+          label: 'Center Full',
+          onClick: (function() {
+              this.changeAlign('align-center-full');
+          }).bind(this),
+        },
+        {
+          name: 'embed-align-left',
           action: 'left',
           label: 'Left',
           onClick: (function() {
@@ -195,7 +207,7 @@ export default class Embeds {
           }).bind(this),
         },
         {
-          name: 'align-center',
+          name: 'embed-align-center',
           action: 'center',
           label: 'Center',
           onClick: (function() {
@@ -203,19 +215,11 @@ export default class Embeds {
           }).bind(this),
         },
         {
-          name: 'align-right',
+          name: 'embed-align-right',
           action: 'right',
           label: 'Right',
           onClick: (function() {
               this.changeAlign('align-right');
-          }).bind(this),
-        },
-        {
-          name: 'align-center-full',
-          action: 'center-full',
-          label: 'Center Full',
-          onClick: (function() {
-              this.changeAlign('align-center-full');
           }).bind(this),
         },
       ]
@@ -224,6 +228,11 @@ export default class Embeds {
     this._editor.extensions.push(this.toolbar);
   }
 
+  changeAlign(className) {
+      const el = this.activeEmbedElement;
+      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
+      el.classList.add(className);
+  }
 
   /**
    * Get HTML via oEmbed proxy

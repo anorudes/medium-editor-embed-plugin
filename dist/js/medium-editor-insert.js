@@ -747,6 +747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!selectedEl.classList.contains(this.loadingClassName)) {
 	          selectedEl.classList.add(this.activeClassName);
 	          this._editor.selectElement(selectedEl);
+	          this.activeEmbedElement = selectedEl;
 	        }
 	      }
 	    }
@@ -760,6 +761,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          embeds = void 0;
 
 	      if (el.classList.contains(this.descriptionClassName)) return false;
+
+	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+
+	      if (!embeds || !embeds.length) return false;
 
 	      // Unselect all selected images. If an image is clicked, unselect all except this one.
 	      if (el.classList.contains(this.overlayClassName)) {
@@ -856,37 +861,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	        type: 'embeds',
 	        activeClassName: this.activeClassName,
 	        buttons: [{
-	          name: 'align-left',
+	          name: 'embed-align-center-full',
+	          action: 'center-full',
+	          label: 'Center Full',
+	          onClick: function () {
+	            this.changeAlign('align-center-full');
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-left',
 	          action: 'left',
 	          label: 'Left',
 	          onClick: function () {
 	            this.changeAlign('align-left');
 	          }.bind(this)
 	        }, {
-	          name: 'align-center',
+	          name: 'embed-align-center',
 	          action: 'center',
 	          label: 'Center',
 	          onClick: function () {
 	            this.changeAlign('align-center');
 	          }.bind(this)
 	        }, {
-	          name: 'align-right',
+	          name: 'embed-align-right',
 	          action: 'right',
 	          label: 'Right',
 	          onClick: function () {
 	            this.changeAlign('align-right');
 	          }.bind(this)
-	        }, {
-	          name: 'align-center-full',
-	          action: 'center-full',
-	          label: 'Center Full',
-	          onClick: function () {
-	            this.changeAlign('align-center-full');
-	          }.bind(this)
 	        }]
 	      });
 
 	      this._editor.extensions.push(this.toolbar);
+	    }
+	  }, {
+	    key: 'changeAlign',
+	    value: function changeAlign(className) {
+	      var el = this.activeEmbedElement;
+	      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
+	      el.classList.add(className);
 	    }
 
 	    /**
@@ -1151,33 +1163,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'initToolbar',
 	        value: function initToolbar() {
+	            console.log('toolb,images:', this.activeClassName);
 	            this.toolbar = new _Toolbar2.default({
 	                plugin: this._plugin,
 	                type: 'images',
 	                activeClassName: this.activeClassName,
 	                buttons: [{
-	                    name: 'align-left',
+	                    name: 'image-align-left',
 	                    action: 'left',
 	                    label: 'Left',
 	                    onClick: function () {
 	                        this.changeAlign('align-left');
 	                    }.bind(this)
 	                }, {
-	                    name: 'align-center',
+	                    name: 'image-align-center',
 	                    action: 'center',
 	                    label: 'Center',
 	                    onClick: function () {
 	                        this.changeAlign('align-center');
 	                    }.bind(this)
 	                }, {
-	                    name: 'align-right',
+	                    name: 'image-align-right',
 	                    action: 'right',
 	                    label: 'Right',
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
 	                    }.bind(this)
 	                }, {
-	                    name: 'align-center-full',
+	                    name: 'image-align-center-full',
 	                    action: 'center-full',
 	                    label: 'Center Full',
 	                    onClick: function () {
