@@ -1,9 +1,9 @@
+import utils from '../utils';
+import Toolbar from '../Toolbar';
+
 export default class Embeds {
 
 	constructor(plugin, options) {
-		this._plugin = plugin;
-	  this._editor = this._plugin.base;
-
 		this.options = {
 			label: '<span class="fa fa-youtube-play"></span>',
 			placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
@@ -40,17 +40,93 @@ export default class Embeds {
         }
       },
       parseOnPaste: false
-   	};
+    };
 
 		Object.assign(this.options, options);
 
+    this._plugin = plugin;
+    this._editor = this._plugin.base;
+
+    this.activeClassName = 'medium-editor-insert-embeds-active';
+    this.placeholderClassName = 'medium-editor-insert-embeds-placeholder';
+    this.elementClassName = 'medium-editor-insert-embeds';
+    this.loadingClassName = 'medium-editor-insert-embeds-loading';
+    this.activeClassName = 'medium-editor-insert-embed-active';
+    this.descriptionContainerClassName = 'medium-editor-embed-embed-description-container';
+    this.descriptionClassName = 'medium-editor-embed-embed-description';
+    this.overlayClassName = 'medium-editor-insert-embeds-overlay';
+
 		this.label = this.options.label;
+    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+
+    this.initToolbar();
+    this.events();
+
 	}
+
+  events() {
+    this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
+    this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+    this._plugin.getEditorElements().forEach((editor) => {
+        this._plugin.on(editor, 'click', this.selectEmbed.bind(this));
+    });
+  }
+
+
+  selectEmbed(e) {
+      const el = e.target;
+
+      if (el.classList.contains(this.overlayClassName)) {
+        const selectedEl = utils.getClosestWithClassName(el, this.elementClassName);
+        if (!selectedEl.classList.contains(this.loadingClassName)) {
+          selectedEl.classList.add(this.activeClassName);
+          this._editor.selectElement(selectedEl);
+        }
+      }
+  }
+
+  unselectEmbed(e) {
+    const el = e.target;
+    let clickedEmbed, embeds;
+
+    if (el.classList.contains(this.descriptionClassName)) return false;
+
+    // Unselect all selected images. If an image is clicked, unselect all except this one.
+    if (el.classList.contains(this.overlayClassName)) {
+      clickedEmbed = utils.getClosestWithClassName(el, this.elementClassName);
+    }
+
+    embeds = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+    Array.prototype.forEach.call(embeds, (embed) => {
+      if (embed !== clickedEmbed) {
+        embed.classList.remove(this.activeClassName);
+      }
+    });
+  }
+
+  handleKey(e) {
+    const target = e.target;
+    const isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
+
+    // Enter key in description
+    if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+      if (isDescriptionElement) {
+        e.preventDefault();
+      }
+    }
+
+    // Backspace, delete
+    if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
+      this.removeImage(e);
+    }
+  }
+
 
 	handleClick() {
     this.el = this._plugin.getCore().selectedElement;
-    this.el.classList.add('medium-editor-insert-embeds-active');
-    this.el.classList.add('medium-editor-insert-embeds-placeholder');
+    this.el.classList.add( this.loadingClassName );
+    this.el.classList.add( this.placeholderClassName );
     this.el.setAttribute('data-placeholder', this.options.placeholder);
 
     this.instanceHandlePaste = this.handlePaste.bind(this);
@@ -96,10 +172,64 @@ export default class Embeds {
     this.cancelEmbed();
 	}
 
+
+  /**
+   * Init Toolbar for tuning embed position
+   *
+   * @param {string} url
+   * @param {pasted} boolean
+   * @return {void}
+   */
+  initToolbar() {
+    this.toolbar = new Toolbar({
+      plugin: this._plugin,
+      type: 'embeds',
+      activeClassName: this.activeClassName,
+      buttons: [
+        {
+          name: 'align-left',
+          action: 'left',
+          label: 'Left',
+          onClick: (function() {
+              this.changeAlign('align-left');
+          }).bind(this),
+        },
+        {
+          name: 'align-center',
+          action: 'center',
+          label: 'Center',
+          onClick: (function() {
+              this.changeAlign('align-center');
+          }).bind(this),
+        },
+        {
+          name: 'align-right',
+          action: 'right',
+          label: 'Right',
+          onClick: (function() {
+              this.changeAlign('align-right');
+          }).bind(this),
+        },
+        {
+          name: 'align-center-full',
+          action: 'center-full',
+          label: 'Center Full',
+          onClick: (function() {
+              this.changeAlign('align-center-full');
+          }).bind(this),
+        },
+      ]
+    });
+
+    this._editor.extensions.push(this.toolbar);
+  }
+
+
   /**
    * Get HTML via oEmbed proxy
    *
    * @param {string} url
+   * @param {pasted} boolean
    * @return {void}
    */
 
@@ -168,7 +298,7 @@ export default class Embeds {
    */
 
   embed(html, pastedUrl) {
-    let el, figure, figureCaption, metacontainer, container, overlay;
+    let el, figure, descriptionContainer, description, metacontainer, container, overlay;
 
     if (!html) {
       console.error('Incorrect URL format specified: ', pastedUrl);
@@ -178,24 +308,36 @@ export default class Embeds {
     el = this._plugin.getCore().selectedElement;
     figure = document.createElement('figure');
     figure.classList.add('medium-editor-insert-embeds-item');
-    figureCaption = document.createElement('figcaption');
-    figureCaption.classList.add('medium-editor-insert-embeds-caption');
-    figureCaption.setAttribute('contenteditable', true);
-    figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
+
+    descriptionContainer = document.createElement('div');
+    descriptionContainer.classList.add(this.descriptionContainerClassName);
+
+    description = document.createElement('figcaption');
+    description.classList.add(this.descriptionClassName);
+    description.setAttribute('contenteditable', true);
+    description.setAttribute('data-placeholder', 'Type caption for embed (optional)');
 
     metacontainer = document.createElement('div');
-    metacontainer.classList.add('medium-editor-insert-embeds');
+    metacontainer.classList.add(this.elementClassName);
+    // metacontainer.classList.add(this.activeClassName);
+
     metacontainer.setAttribute('contenteditable', false);
 
     container = document.createElement('div');
     container.classList.add('medium-editor-insert-embeds-item-container');
 
     overlay = document.createElement('div');
-    overlay.classList.add('medium-editor-insert-embeds-overlay');
+    overlay.classList.add( this.overlayClassName );
 
     metacontainer.appendChild(figure);
     figure.appendChild(container);
     figure.appendChild(overlay);
+
+    descriptionContainer.classList.add(this.descriptionContainerClassName);
+    description.contentEditable = true;
+    description.classList.add(this.descriptionClassName);
+    description.dataset.placeholder = this.descriptionPlaceholder;
+
 
     
     el.replaceWith(metacontainer);
@@ -203,8 +345,9 @@ export default class Embeds {
 
     container.innerHTML = html;
 
+    // this._editor.selectElement(metacontainer);
 
-    console.log(html);
+    // console.log(html);
     // this.core.triggerInput();
 
     if (html.indexOf('facebook') !== -1) {
