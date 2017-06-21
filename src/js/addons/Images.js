@@ -258,6 +258,7 @@ export default class Images {
             if (!parentNode.classList.contains(this.loadingClassName)) {
                 el.classList.add(this.activeClassName);
                 parentNode.classList.add(this.activeClassName);
+                // TODO: The value is correct, but the medium sometimes change
                 this._editor.selectElement(parentNode);
                 this.activeImageElement = parentNode;
             }
