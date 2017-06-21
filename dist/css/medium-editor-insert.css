@@ -90,6 +90,8 @@
     content: "";
     display: table;
     clear: both; }
+  .medium-editor-insert-images figure {
+    display: inline-block; }
   .medium-editor-insert-images img {
     max-width: 100%; }
 

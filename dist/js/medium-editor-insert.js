@@ -182,11 +182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Images = __webpack_require__(5);
+	var _Images = __webpack_require__(6);
 
 	var _Images2 = _interopRequireDefault(_Images);
 
-	var _Embeds = __webpack_require__(6);
+	var _Embeds = __webpack_require__(5);
 
 	var _Embeds2 = _interopRequireDefault(_Embeds);
 
@@ -640,455 +640,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _utils = __webpack_require__(1);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	var _Toolbar = __webpack_require__(3);
-
-	var _Toolbar2 = _interopRequireDefault(_Toolbar);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Images = function () {
-	    function Images(plugin, options) {
-	        _classCallCheck(this, Images);
-
-	        this.options = {
-	            label: '<span class="fa fa-camera"></span>',
-	            preview: true,
-	            uploadUrl: 'upload.php',
-	            deleteUrl: 'delete.php',
-	            deleteMethod: 'DELETE',
-	            deleteData: {}
-	        };
-
-	        Object.assign(this.options, options);
-
-	        this._plugin = plugin;
-	        this._editor = this._plugin.base;
-	        this.elementClassName = 'medium-editor-insert-images';
-	        this.loadingClassName = 'medium-editor-insert-images-loading';
-	        this.activeClassName = 'medium-editor-insert-image-active';
-	        this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
-	        this.descriptionClassName = 'medium-editor-embed-image-description';
-	        this.label = this.options.label;
-	        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
-
-	        this.initToolbar();
-	        this.events();
-	    }
-
-	    _createClass(Images, [{
-	        key: 'events',
-	        value: function events() {
-	            var _this = this;
-
-	            this._plugin.on(document, 'click', this.unselectImage.bind(this));
-	            this._plugin.on(document, 'keydown', this.handleKey.bind(this));
-
-	            this._plugin.getEditorElements().forEach(function (editor) {
-	                _this._plugin.on(editor, 'click', _this.selectImage.bind(_this));
-	            });
-	        }
-	    }, {
-	        key: 'handleClick',
-	        value: function handleClick() {
-	            var _this2 = this;
-
-	            if (this.options.onInsertButtonClick) {
-	                var uid = _utils2.default.generateRandomString();
-	                this.options.onInsertButtonClick(function (imageUrl) {
-	                    return _this2.insertImage(imageUrl, uid);
-	                }, function (imageUrl) {
-	                    return _this2.insertImage(imageUrl, uid, true);
-	                });
-	            } else {
-	                this._input = document.createElement('input');
-	                this._input.type = 'file';
-	                this._input.multiple = true;
-	                this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
-
-	                this._input.click();
-	            }
-	        }
-	    }, {
-	        key: 'initToolbar',
-	        value: function initToolbar() {
-	            this.toolbar = new _Toolbar2.default({
-	                plugin: this._plugin,
-	                type: 'images',
-	                activeClassName: this.activeClassName,
-	                buttons: [{
-	                    name: 'align-left',
-	                    action: 'left',
-	                    label: 'Left',
-	                    onClick: function () {
-	                        this.changeAlign('align-left');
-	                    }.bind(this)
-	                }, {
-	                    name: 'align-center',
-	                    action: 'center',
-	                    label: 'Center',
-	                    onClick: function () {
-	                        this.changeAlign('align-center');
-	                    }.bind(this)
-	                }, {
-	                    name: 'align-right',
-	                    action: 'right',
-	                    label: 'Right',
-	                    onClick: function () {
-	                        this.changeAlign('align-right');
-	                    }.bind(this)
-	                }, {
-	                    name: 'align-center-full',
-	                    action: 'center-full',
-	                    label: 'Center Full',
-	                    onClick: function () {
-	                        this.changeAlign('align-center-full');
-	                    }.bind(this)
-	                }]
-	            });
-
-	            this._editor.extensions.push(this.toolbar);
-	        }
-	    }, {
-	        key: 'changeAlign',
-	        value: function changeAlign(className) {
-	            var el = this._plugin.getCore().selectedElement;
-	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
-	            el.classList.add(className);
-	        }
-	    }, {
-	        key: 'uploadFiles',
-	        value: function uploadFiles() {
-	            var _this3 = this;
-
-	            Array.prototype.forEach.call(this._input.files, function (file) {
-	                // Generate uid for this image, so we can identify it later
-	                // and we can replace preview image with uploaded one
-	                var uid = _utils2.default.generateRandomString();
-
-	                if (_this3.options.preview) {
-	                    _this3.preview(file, uid);
-	                }
-
-	                _this3.upload(file, uid);
-	            });
-	        }
-	    }, {
-	        key: 'preview',
-	        value: function preview(file, uid) {
-	            var _this4 = this;
-
-	            var reader = new FileReader();
-
-	            reader.onload = function (e) {
-	                _this4.insertImage(e.target.result, uid);
-	            };
-
-	            reader.readAsDataURL(file);
-	        }
-	    }, {
-	        key: 'upload',
-	        value: function upload(file, uid) {
-	            var xhr = new XMLHttpRequest(),
-	                data = new FormData();
-	            var insertImage = this.insertImage.bind(this);
-
-	            xhr.open("POST", this.options.uploadUrl, true);
-	            xhr.onreadystatechange = function () {
-	                if (xhr.readyState === 4 && xhr.status === 200) {
-	                    insertImage(xhr.responseText, _utils2.default.generateRandomString());
-	                }
-	            };
-
-	            data.append("file", file);
-	            xhr.send(data);
-	        }
-	    }, {
-	        key: 'insertImage',
-	        value: function insertImage(imageUrl, uid, isLoader) {
-	            var paragraph = this._plugin.getCore().selectedElement;
-
-	            // Replace paragraph with div, because figure is a block element
-	            // and can't be nested inside paragraphs
-	            if (paragraph.nodeName.toLowerCase() === 'p') {
-	                var div = document.createElement('div');
-
-	                paragraph.parentNode.insertBefore(div, paragraph);
-	                this._plugin.getCore().selectElement(div);
-	                paragraph.remove();
-	            }
-	            var image = this._plugin.getCore().selectedElement.querySelector('[data-uid="' + uid + '"]');
-
-	            if (image) {
-	                this.replaceImage(image, imageUrl, isLoader);
-	            } else {
-	                this.addImage(imageUrl, uid, isLoader);
-	            }
-
-	            this._plugin.getCore().hideButtons();
-	        }
-	    }, {
-	        key: 'addImage',
-	        value: function addImage(url, uid, isLoader) {
-	            var _this5 = this;
-
-	            var el = this._plugin.getCore().selectedElement,
-	                figure = document.createElement('figure'),
-	                img = document.createElement('img'),
-	                descriptionContainer = document.createElement('div'),
-	                description = document.createElement('figcaption'),
-	                paragraph = document.createElement('p');
-
-	            var domImage = void 0;
-
-	            img.alt = '';
-
-	            if (uid) {
-	                img.setAttribute('data-uid', uid);
-	            }
-
-	            descriptionContainer.classList.add(this.descriptionContainerClassName);
-	            description.contentEditable = true;
-	            description.classList.add(this.descriptionClassName);
-	            description.dataset.placeholder = this.descriptionPlaceholder;
-
-	            // If we're dealing with a preview image,
-	            // we don't have to preload it before displaying
-	            if (url.match(/^data:/)) {
-	                img.src = url;
-	                figure.appendChild(img);
-	                el.appendChild(figure);
-	            } else {
-	                domImage = new Image();
-	                domImage.onload = function () {
-	                    img.src = domImage.src;
-	                    if (!isLoader) {
-	                        img.classList.add(_this5.activeClassName);
-	                    }
-	                    figure.appendChild(img);
-	                    descriptionContainer.appendChild(description);
-	                    figure.appendChild(descriptionContainer);
-	                    el.appendChild(figure);
-	                    paragraph.innerHTML = '<br>';
-
-	                    if (!el.nextSibling || !el.nextSibling.nextSibling) {
-	                        el.parentNode.insertBefore(paragraph, el.nextSibling);
-	                    }
-	                };
-
-	                domImage.src = url;
-	                if (isLoader) {
-	                    el.classList.add(this.loadingClassName);
-	                }
-	            }
-
-	            el.classList.add(this.elementClassName);
-	            el.contentEditable = false;
-	            el.classList.add('align-center');
-
-	            // Return domImage so we can test this function easily
-	            return domImage;
-	        }
-	    }, {
-	        key: 'replaceImage',
-	        value: function replaceImage(image, url, isLoader) {
-	            var domImage = new Image();
-	            var el = this._plugin.getCore().selectedElement;
-
-	            if (!isLoader) {
-	                el.classList.remove(this.loadingClassName);
-	                el.querySelector('img').classList.add(this.activeClassName);
-	            }
-
-	            domImage.onload = function () {
-	                image.src = domImage.src;
-	                image.removeAttribute('data-uid');
-	            };
-
-	            domImage.src = url;
-
-	            // Return domImage so we can test this function easily
-	            return domImage;
-	        }
-	    }, {
-	        key: 'selectImage',
-	        value: function selectImage(e) {
-	            var el = e.target;
-
-	            if (el.nodeName.toLowerCase() === 'img' && _utils2.default.getClosestWithClassName(el, this.elementClassName)) {
-	                var parentNode = el.parentNode.parentNode;
-
-	                if (!parentNode.classList.contains(this.loadingClassName)) {
-	                    el.classList.add(this.activeClassName);
-	                    parentNode.classList.add(this.activeClassName);
-
-	                    this._editor.selectElement(el);
-	                }
-	            }
-	        }
-	    }, {
-	        key: 'unselectImage',
-	        value: function unselectImage(e) {
-	            var _this6 = this;
-
-	            var el = e.target;
-	            var clickedImage = void 0,
-	                images = void 0;
-
-	            if (el.classList.contains(this.descriptionClassName)) return false;
-
-	            // Unselect all selected images. If an image is clicked, unselect all except this one.
-	            if (el.nodeName.toLowerCase() === 'img' && el.classList.contains(this.activeClassName)) {
-	                clickedImage = el;
-	            }
-
-	            images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName);
-	            Array.prototype.forEach.call(images, function (image) {
-	                if (image !== clickedImage) {
-	                    image.classList.remove(_this6.activeClassName);
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'handleKey',
-	        value: function handleKey(e) {
-	            var target = e.target;
-	            var isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
-
-	            // Enter key in description
-	            if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
-	                if (isDescriptionElement) {
-	                    e.preventDefault();
-	                }
-	            }
-
-	            // Backspace, delete
-	            if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
-	                this.removeImage(e);
-	            }
-	        }
-	    }, {
-	        key: 'removeImage',
-	        value: function removeImage(e) {
-	            var _this7 = this;
-
-	            var images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
-	                selection = window.getSelection();
-	            var selectedHtml = void 0;
-
-	            // Remove image even if it's not selected, but backspace/del is pressed in text
-	            if (selection && selection.rangeCount) {
-	                var range = MediumEditor.selection.getSelectionRange(document),
-	                    focusedElement = MediumEditor.selection.getSelectedParentElement(range),
-	                    caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
-	                var sibling = void 0;
-
-	                // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
-	                if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
-	                    sibling = focusedElement.previousElementSibling;
-	                    // Is del pressed and caret is at the end of a paragraph, get next element
-	                } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {
-	                    sibling = focusedElement.nextElementSibling;
-	                }
-
-	                if (sibling && sibling.classList.contains('medium-editor-insert-images')) {
-	                    var newImages = sibling.getElementsByTagName('img');
-	                    Array.prototype.forEach.call(newImages, function (image) {
-	                        images.push(image);
-	                    });
-	                }
-
-	                // If text is selected, find images in the selection
-	                selectedHtml = MediumEditor.selection.getSelectionHtml(document);
-	                if (selectedHtml) {
-	                    var temp = document.createElement('div');
-	                    var wrappers = void 0,
-	                        _newImages = void 0;
-	                    temp.innerHTML = selectedHtml;
-
-	                    wrappers = temp.getElementsByClassName('medium-editor-insert-images');
-	                    _newImages = _utils2.default.getElementsByTagName(wrappers, 'img');
-
-	                    Array.prototype.forEach.call(_newImages, function (image) {
-	                        images.push(image);
-	                    });
-	                }
-	            }
-
-	            if (images.length) {
-	                if (!selectedHtml) {
-	                    e.preventDefault();
-	                }
-
-	                images.forEach(function (image) {
-	                    var wrapper = _utils2.default.getClosestWithClassName(image, 'medium-editor-insert-images');
-	                    _this7.deleteFile(image.src);
-
-	                    image.parentNode.remove();
-
-	                    // If wrapper has no images anymore, remove it
-	                    if (wrapper.childElementCount === 0) {
-	                        var next = wrapper.nextElementSibling,
-	                            prev = wrapper.previousElementSibling;
-
-	                        wrapper.remove();
-
-	                        // If there is no selection, move cursor at the beginning of next paragraph (if delete is pressed),
-	                        // or nove it at the end of previous paragraph (if backspace is pressed)
-	                        if (!selectedHtml) {
-	                            if (next || prev) {
-	                                if (next && e.which === MediumEditor.util.keyCode.DELETE || !prev) {
-	                                    MediumEditor.selection.moveCursor(document, next, 0);
-	                                } else {
-	                                    MediumEditor.selection.moveCursor(document, prev.lastChild, prev.lastChild.textContent.length);
-	                                }
-	                            }
-	                        }
-	                    }
-	                });
-	            }
-	        }
-	    }, {
-	        key: 'deleteFile',
-	        value: function deleteFile(image) {
-	            if (this.options.deleteUrl) {
-	                var xhr = new XMLHttpRequest(),
-	                    data = Object.assign({}, {
-	                    file: image
-	                }, this.options.deleteData);
-
-	                xhr.open(this.options.deleteMethod, this.options.deleteUrl, true);
-	                xhr.send(data);
-	            }
-	        }
-	    }, {
-	        key: 'destroy',
-	        value: function destroy() {}
-	    }]);
-
-	    return Images;
-	}();
-
-	exports.default = Images;
-	module.exports = exports['default'];
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -1356,6 +907,456 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	exports.default = Embeds;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(3);
+
+	var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Images = function () {
+	    function Images(plugin, options) {
+	        _classCallCheck(this, Images);
+
+	        this.options = {
+	            label: '<span class="fa fa-camera"></span>',
+	            preview: true,
+	            uploadUrl: 'upload.php',
+	            deleteUrl: 'delete.php',
+	            deleteMethod: 'DELETE',
+	            deleteData: {}
+	        };
+
+	        Object.assign(this.options, options);
+
+	        this._plugin = plugin;
+	        this._editor = this._plugin.base;
+	        this.elementClassName = 'medium-editor-insert-images';
+	        this.loadingClassName = 'medium-editor-insert-images-loading';
+	        this.activeClassName = 'medium-editor-insert-image-active';
+	        this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
+	        this.descriptionClassName = 'medium-editor-embed-image-description';
+	        this.label = this.options.label;
+	        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+	        this.activeImageElement = null;
+	        this.initToolbar();
+	        this.events();
+	    }
+
+	    _createClass(Images, [{
+	        key: 'events',
+	        value: function events() {
+	            var _this = this;
+
+	            this._plugin.on(document, 'click', this.unselectImage.bind(this));
+	            this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+	            this._plugin.getEditorElements().forEach(function (editor) {
+	                _this._plugin.on(editor, 'click', _this.selectImage.bind(_this));
+	            });
+	        }
+	    }, {
+	        key: 'handleClick',
+	        value: function handleClick() {
+	            var _this2 = this;
+
+	            if (this.options.onInsertButtonClick) {
+	                var uid = _utils2.default.generateRandomString();
+	                this.options.onInsertButtonClick(function (imageUrl) {
+	                    return _this2.insertImage(imageUrl, uid);
+	                }, function (imageUrl) {
+	                    return _this2.insertImage(imageUrl, uid, true);
+	                });
+	            } else {
+	                this._input = document.createElement('input');
+	                this._input.type = 'file';
+	                this._input.multiple = true;
+	                this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
+
+	                this._input.click();
+	            }
+	        }
+	    }, {
+	        key: 'initToolbar',
+	        value: function initToolbar() {
+	            this.toolbar = new _Toolbar2.default({
+	                plugin: this._plugin,
+	                type: 'images',
+	                activeClassName: this.activeClassName,
+	                buttons: [{
+	                    name: 'align-left',
+	                    action: 'left',
+	                    label: 'Left',
+	                    onClick: function () {
+	                        this.changeAlign('align-left');
+	                    }.bind(this)
+	                }, {
+	                    name: 'align-center',
+	                    action: 'center',
+	                    label: 'Center',
+	                    onClick: function () {
+	                        this.changeAlign('align-center');
+	                    }.bind(this)
+	                }, {
+	                    name: 'align-right',
+	                    action: 'right',
+	                    label: 'Right',
+	                    onClick: function () {
+	                        this.changeAlign('align-right');
+	                    }.bind(this)
+	                }, {
+	                    name: 'align-center-full',
+	                    action: 'center-full',
+	                    label: 'Center Full',
+	                    onClick: function () {
+	                        this.changeAlign('align-center-full');
+	                    }.bind(this)
+	                }]
+	            });
+
+	            this._editor.extensions.push(this.toolbar);
+	        }
+	    }, {
+	        key: 'changeAlign',
+	        value: function changeAlign(className) {
+	            var el = this.activeImageElement;
+	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
+	            el.classList.add(className);
+	        }
+	    }, {
+	        key: 'uploadFiles',
+	        value: function uploadFiles() {
+	            var _this3 = this;
+
+	            Array.prototype.forEach.call(this._input.files, function (file) {
+	                // Generate uid for this image, so we can identify it later
+	                // and we can replace preview image with uploaded one
+	                var uid = _utils2.default.generateRandomString();
+
+	                if (_this3.options.preview) {
+	                    _this3.preview(file, uid);
+	                }
+
+	                _this3.upload(file, uid);
+	            });
+	        }
+	    }, {
+	        key: 'preview',
+	        value: function preview(file, uid) {
+	            var _this4 = this;
+
+	            var reader = new FileReader();
+
+	            reader.onload = function (e) {
+	                _this4.insertImage(e.target.result, uid);
+	            };
+
+	            reader.readAsDataURL(file);
+	        }
+	    }, {
+	        key: 'upload',
+	        value: function upload(file, uid) {
+	            var xhr = new XMLHttpRequest(),
+	                data = new FormData();
+	            var insertImage = this.insertImage.bind(this);
+
+	            xhr.open("POST", this.options.uploadUrl, true);
+	            xhr.onreadystatechange = function () {
+	                if (xhr.readyState === 4 && xhr.status === 200) {
+	                    insertImage(xhr.responseText, _utils2.default.generateRandomString());
+	                }
+	            };
+
+	            data.append("file", file);
+	            xhr.send(data);
+	        }
+	    }, {
+	        key: 'insertImage',
+	        value: function insertImage(imageUrl, uid, isLoader) {
+	            var paragraph = this._plugin.getCore().selectedElement;
+
+	            // Replace paragraph with div, because figure is a block element
+	            // and can't be nested inside paragraphs
+	            if (paragraph.nodeName.toLowerCase() === 'p') {
+	                var div = document.createElement('div');
+
+	                paragraph.parentNode.insertBefore(div, paragraph);
+	                this._plugin.getCore().selectElement(div);
+	                paragraph.remove();
+	            }
+	            var image = this._plugin.getCore().selectedElement.querySelector('[data-uid="' + uid + '"]');
+
+	            if (image) {
+	                this.replaceImage(image, imageUrl, isLoader);
+	            } else {
+	                this.addImage(imageUrl, uid, isLoader);
+	            }
+
+	            this._plugin.getCore().hideButtons();
+	        }
+	    }, {
+	        key: 'addImage',
+	        value: function addImage(url, uid, isLoader) {
+	            var _this5 = this;
+
+	            var el = this._plugin.getCore().selectedElement,
+	                figure = document.createElement('figure'),
+	                img = document.createElement('img'),
+	                descriptionContainer = document.createElement('div'),
+	                description = document.createElement('figcaption'),
+	                paragraph = document.createElement('p');
+
+	            var domImage = void 0;
+
+	            img.alt = '';
+
+	            if (uid) {
+	                img.setAttribute('data-uid', uid);
+	            }
+
+	            descriptionContainer.classList.add(this.descriptionContainerClassName);
+	            description.contentEditable = true;
+	            description.classList.add(this.descriptionClassName);
+	            description.dataset.placeholder = this.descriptionPlaceholder;
+
+	            // If we're dealing with a preview image,
+	            // we don't have to preload it before displaying
+	            if (url.match(/^data:/)) {
+	                img.src = url;
+	                figure.appendChild(img);
+	                el.appendChild(figure);
+	            } else {
+	                domImage = new Image();
+	                domImage.onload = function () {
+	                    img.src = domImage.src;
+	                    if (!isLoader) {
+	                        img.classList.add(_this5.activeClassName);
+	                    }
+	                    figure.appendChild(img);
+	                    descriptionContainer.appendChild(description);
+	                    figure.appendChild(descriptionContainer);
+	                    el.appendChild(figure);
+	                    paragraph.innerHTML = '<br>';
+
+	                    if (!el.nextSibling || !el.nextSibling.nextSibling) {
+	                        el.parentNode.insertBefore(paragraph, el.nextSibling);
+	                    }
+	                };
+
+	                domImage.src = url;
+	                if (isLoader) {
+	                    el.classList.add(this.loadingClassName);
+	                }
+	            }
+
+	            el.classList.add(this.elementClassName);
+	            el.contentEditable = false;
+	            el.classList.add('align-center');
+
+	            // Return domImage so we can test this function easily
+	            return domImage;
+	        }
+	    }, {
+	        key: 'replaceImage',
+	        value: function replaceImage(image, url, isLoader) {
+	            var domImage = new Image();
+	            var el = this._plugin.getCore().selectedElement;
+
+	            if (!isLoader) {
+	                el.classList.remove(this.loadingClassName);
+	                el.querySelector('img').classList.add(this.activeClassName);
+	            }
+
+	            domImage.onload = function () {
+	                image.src = domImage.src;
+	                image.removeAttribute('data-uid');
+	            };
+
+	            domImage.src = url;
+
+	            // Return domImage so we can test this function easily
+	            return domImage;
+	        }
+	    }, {
+	        key: 'selectImage',
+	        value: function selectImage(e) {
+	            var el = e.target;
+
+	            if (el.nodeName.toLowerCase() === 'img' && _utils2.default.getClosestWithClassName(el, this.elementClassName)) {
+	                var parentNode = el.parentNode.parentNode;
+
+	                if (!parentNode.classList.contains(this.loadingClassName)) {
+	                    el.classList.add(this.activeClassName);
+	                    parentNode.classList.add(this.activeClassName);
+	                    // TODO: The value is correct, but the medium sometimes change
+	                    this._editor.selectElement(parentNode);
+	                    this.activeImageElement = parentNode;
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'unselectImage',
+	        value: function unselectImage(e) {
+	            var _this6 = this;
+
+	            var el = e.target;
+	            var clickedImage = void 0,
+	                images = void 0;
+
+	            if (el.classList.contains(this.descriptionClassName)) return false;
+
+	            // Unselect all selected images. If an image is clicked, unselect all except this one.
+	            if (el.nodeName.toLowerCase() === 'img' && el.classList.contains(this.activeClassName)) {
+	                clickedImage = el;
+	            }
+
+	            images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName);
+	            Array.prototype.forEach.call(images, function (image) {
+	                if (image !== clickedImage) {
+	                    image.classList.remove(_this6.activeClassName);
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'handleKey',
+	        value: function handleKey(e) {
+	            var target = e.target;
+	            var isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
+
+	            // Enter key in description
+	            if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+	                if (isDescriptionElement) {
+	                    e.preventDefault();
+	                }
+	            }
+
+	            // Backspace, delete
+	            if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
+	                this.removeImage(e);
+	            }
+	        }
+	    }, {
+	        key: 'removeImage',
+	        value: function removeImage(e) {
+	            var _this7 = this;
+
+	            var images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
+	                selection = window.getSelection();
+	            var selectedHtml = void 0;
+
+	            // Remove image even if it's not selected, but backspace/del is pressed in text
+	            if (selection && selection.rangeCount) {
+	                var range = MediumEditor.selection.getSelectionRange(document),
+	                    focusedElement = MediumEditor.selection.getSelectedParentElement(range),
+	                    caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
+	                var sibling = void 0;
+
+	                // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
+	                if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
+	                    sibling = focusedElement.previousElementSibling;
+	                    // Is del pressed and caret is at the end of a paragraph, get next element
+	                } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {
+	                    sibling = focusedElement.nextElementSibling;
+	                }
+
+	                if (sibling && sibling.classList.contains('medium-editor-insert-images')) {
+	                    var newImages = sibling.getElementsByTagName('img');
+	                    Array.prototype.forEach.call(newImages, function (image) {
+	                        images.push(image);
+	                    });
+	                }
+
+	                // If text is selected, find images in the selection
+	                selectedHtml = MediumEditor.selection.getSelectionHtml(document);
+	                if (selectedHtml) {
+	                    var temp = document.createElement('div');
+	                    var wrappers = void 0,
+	                        _newImages = void 0;
+	                    temp.innerHTML = selectedHtml;
+
+	                    wrappers = temp.getElementsByClassName('medium-editor-insert-images');
+	                    _newImages = _utils2.default.getElementsByTagName(wrappers, 'img');
+
+	                    Array.prototype.forEach.call(_newImages, function (image) {
+	                        images.push(image);
+	                    });
+	                }
+	            }
+
+	            if (images.length) {
+	                if (!selectedHtml) {
+	                    e.preventDefault();
+	                }
+
+	                images.forEach(function (image) {
+	                    var wrapper = _utils2.default.getClosestWithClassName(image, 'medium-editor-insert-images');
+	                    _this7.deleteFile(image.src);
+
+	                    image.parentNode.remove();
+
+	                    // If wrapper has no images anymore, remove it
+	                    if (wrapper.childElementCount === 0) {
+	                        var next = wrapper.nextElementSibling,
+	                            prev = wrapper.previousElementSibling;
+
+	                        wrapper.remove();
+
+	                        // If there is no selection, move cursor at the beginning of next paragraph (if delete is pressed),
+	                        // or nove it at the end of previous paragraph (if backspace is pressed)
+	                        if (!selectedHtml) {
+	                            if (next || prev) {
+	                                if (next && e.which === MediumEditor.util.keyCode.DELETE || !prev) {
+	                                    MediumEditor.selection.moveCursor(document, next, 0);
+	                                } else {
+	                                    MediumEditor.selection.moveCursor(document, prev.lastChild, prev.lastChild.textContent.length);
+	                                }
+	                            }
+	                        }
+	                    }
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'deleteFile',
+	        value: function deleteFile(image) {
+	            if (this.options.deleteUrl) {
+	                var xhr = new XMLHttpRequest(),
+	                    data = Object.assign({}, {
+	                    file: image
+	                }, this.options.deleteData);
+
+	                xhr.open(this.options.deleteMethod, this.options.deleteUrl, true);
+	                xhr.send(data);
+	            }
+	        }
+	    }, {
+	        key: 'destroy',
+	        value: function destroy() {}
+	    }]);
+
+	    return Images;
+	}();
+
+	exports.default = Images;
 	module.exports = exports['default'];
 
 /***/ })
