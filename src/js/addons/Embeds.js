@@ -362,7 +362,7 @@ export default class Embeds {
 	}
 
   handleBlur() {
-    console.log('blur');
+    // console.log('blur');
     // this.cancelEmbed();
   }
 

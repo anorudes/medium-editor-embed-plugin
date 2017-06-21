@@ -60,7 +60,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _Core = __webpack_require__(2);
+	var _Core = __webpack_require__(3);
 
 	var _Core2 = _interopRequireDefault(_Core);
 
@@ -168,6 +168,196 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _ToolbarButton = __webpack_require__(4);
+
+	var _ToolbarButton2 = _interopRequireDefault(_ToolbarButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MediumEditorToolbar = MediumEditor.extensions.toolbar;
+
+	var Toolbar = function (_MediumEditorToolbar) {
+	    _inherits(Toolbar, _MediumEditorToolbar);
+
+	    function Toolbar(options) {
+	        _classCallCheck(this, Toolbar);
+
+	        var _this = _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, options));
+
+	        _this.name = options.type + 'Toolbar';
+
+	        options.buttons.forEach(function (buttonOptions) {
+	            var button = new _ToolbarButton2.default(Object.assign({}, {
+	                window: _this.plugin.window,
+	                document: _this.plugin.document,
+	                base: _this.plugin.base
+	            }, buttonOptions));
+
+	            button.init();
+	            _this.plugin.base.extensions.push(button);
+	        });
+
+	        _this.window = options.plugin.window;
+	        _this.document = options.plugin.document;
+	        _this.base = options.plugin.base;
+
+	        _this.init();
+	        return _this;
+	    }
+
+	    _createClass(Toolbar, [{
+	        key: 'createToolbar',
+	        value: function createToolbar() {
+	            var toolbar = this.document.createElement('div');
+
+	            toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
+	            toolbar.className = 'medium-editor-toolbar';
+
+	            if (this.static) {
+	                toolbar.className += ' static-toolbar';
+	            } else if (this.relativeContainer) {
+	                toolbar.className += ' medium-editor-relative-toolbar';
+	            } else {
+	                toolbar.className += ' medium-editor-stalker-toolbar';
+	            }
+
+	            toolbar.appendChild(this.createToolbarButtons());
+
+	            // Add any forms that extensions may have
+	            this.forEachExtension(function (extension) {
+	                if (extension.hasForm) {
+	                    toolbar.appendChild(extension.getForm());
+	                }
+	            });
+
+	            this.attachEventHandlers();
+
+	            return toolbar;
+	        }
+	    }, {
+	        key: 'createToolbarButtons',
+	        value: function createToolbarButtons() {
+	            var _this2 = this;
+
+	            var ul = this.document.createElement('ul');
+	            var li = void 0,
+	                btn = void 0,
+	                buttons = void 0,
+	                extension = void 0,
+	                buttonName = void 0,
+	                buttonOpts = void 0;
+
+	            ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
+	            ul.className = 'medium-editor-toolbar-actions';
+	            ul.style.display = 'block';
+
+	            this.buttons.forEach(function (button) {
+	                if (typeof button === 'string') {
+	                    buttonName = button;
+	                    buttonOpts = null;
+	                } else {
+	                    buttonName = button.name;
+	                    buttonOpts = button;
+	                }
+
+	                // If the button already exists as an extension, it'll be returned
+	                // othwerise it'll create the default built-in button
+	                extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
+
+	                if (extension && typeof extension.getButton === 'function') {
+	                    btn = extension.getButton(_this2.base);
+	                    li = _this2.document.createElement('li');
+	                    if (MediumEditor.util.isElement(btn)) {
+	                        li.appendChild(btn);
+	                    } else {
+	                        li.innerHTML = btn;
+	                    }
+	                    ul.appendChild(li);
+	                }
+	            }, this);
+
+	            buttons = ul.querySelectorAll('button');
+	            if (buttons.length > 0) {
+	                buttons[0].classList.add(this.firstButtonClass);
+	                buttons[buttons.length - 1].classList.add(this.lastButtonClass);
+	            }
+
+	            return ul;
+	        }
+	    }, {
+	        key: 'checkState',
+	        value: function checkState() {
+	            var _this3 = this;
+
+	            var activeElements = void 0;
+
+	            if (this.base.preventSelectionUpdates) {
+	                return;
+	            }
+
+	            // Wait for elements to be selected
+	            setTimeout(function () {
+	                activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
+
+	                // Hide toolbar when no elements are selected
+	                if (activeElements.length === 0) {
+	                    return _this3.hideToolbar();
+	                }
+
+	                // Now we know there's a focused editable with a selection
+	                _this3.showAndUpdateToolbar();
+	            }, 10);
+	        }
+	    }, {
+	        key: 'setToolbarPosition',
+	        value: function setToolbarPosition() {
+	            var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
+	            var anchorPreview = void 0;
+
+	            // If there isn't a valid selection, bail
+	            if (!container) {
+	                return this;
+	            }
+
+	            this.showToolbar();
+	            this.positionStaticToolbar(container);
+
+	            anchorPreview = this.base.getExtensionByName('anchor-preview');
+
+	            if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
+	                anchorPreview.hidePreview();
+	            }
+	        }
+	    }]);
+
+	    return Toolbar;
+	}(MediumEditorToolbar);
+
+	exports.default = Toolbar;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -419,196 +609,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _utils = __webpack_require__(1);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	var _ToolbarButton = __webpack_require__(4);
-
-	var _ToolbarButton2 = _interopRequireDefault(_ToolbarButton);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var MediumEditorToolbar = MediumEditor.extensions.toolbar;
-
-	var Toolbar = function (_MediumEditorToolbar) {
-	    _inherits(Toolbar, _MediumEditorToolbar);
-
-	    function Toolbar(options) {
-	        _classCallCheck(this, Toolbar);
-
-	        var _this = _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, options));
-
-	        _this.name = options.type + 'Toolbar';
-
-	        options.buttons.forEach(function (buttonOptions) {
-	            var button = new _ToolbarButton2.default(Object.assign({}, {
-	                window: _this.plugin.window,
-	                document: _this.plugin.document,
-	                base: _this.plugin.base
-	            }, buttonOptions));
-
-	            button.init();
-	            _this.plugin.base.extensions.push(button);
-	        });
-
-	        _this.window = options.plugin.window;
-	        _this.document = options.plugin.document;
-	        _this.base = options.plugin.base;
-
-	        _this.init();
-	        return _this;
-	    }
-
-	    _createClass(Toolbar, [{
-	        key: 'createToolbar',
-	        value: function createToolbar() {
-	            var toolbar = this.document.createElement('div');
-
-	            toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
-	            toolbar.className = 'medium-editor-toolbar';
-
-	            if (this.static) {
-	                toolbar.className += ' static-toolbar';
-	            } else if (this.relativeContainer) {
-	                toolbar.className += ' medium-editor-relative-toolbar';
-	            } else {
-	                toolbar.className += ' medium-editor-stalker-toolbar';
-	            }
-
-	            toolbar.appendChild(this.createToolbarButtons());
-
-	            // Add any forms that extensions may have
-	            this.forEachExtension(function (extension) {
-	                if (extension.hasForm) {
-	                    toolbar.appendChild(extension.getForm());
-	                }
-	            });
-
-	            this.attachEventHandlers();
-
-	            return toolbar;
-	        }
-	    }, {
-	        key: 'createToolbarButtons',
-	        value: function createToolbarButtons() {
-	            var _this2 = this;
-
-	            var ul = this.document.createElement('ul');
-	            var li = void 0,
-	                btn = void 0,
-	                buttons = void 0,
-	                extension = void 0,
-	                buttonName = void 0,
-	                buttonOpts = void 0;
-
-	            ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
-	            ul.className = 'medium-editor-toolbar-actions';
-	            ul.style.display = 'block';
-
-	            this.buttons.forEach(function (button) {
-	                if (typeof button === 'string') {
-	                    buttonName = button;
-	                    buttonOpts = null;
-	                } else {
-	                    buttonName = button.name;
-	                    buttonOpts = button;
-	                }
-
-	                // If the button already exists as an extension, it'll be returned
-	                // othwerise it'll create the default built-in button
-	                extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
-
-	                if (extension && typeof extension.getButton === 'function') {
-	                    btn = extension.getButton(_this2.base);
-	                    li = _this2.document.createElement('li');
-	                    if (MediumEditor.util.isElement(btn)) {
-	                        li.appendChild(btn);
-	                    } else {
-	                        li.innerHTML = btn;
-	                    }
-	                    ul.appendChild(li);
-	                }
-	            }, this);
-
-	            buttons = ul.querySelectorAll('button');
-	            if (buttons.length > 0) {
-	                buttons[0].classList.add(this.firstButtonClass);
-	                buttons[buttons.length - 1].classList.add(this.lastButtonClass);
-	            }
-
-	            return ul;
-	        }
-	    }, {
-	        key: 'checkState',
-	        value: function checkState() {
-	            var _this3 = this;
-
-	            var activeElements = void 0;
-
-	            if (this.base.preventSelectionUpdates) {
-	                return;
-	            }
-
-	            // Wait for elements to be selected
-	            setTimeout(function () {
-	                activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
-
-	                // Hide toolbar when no elements are selected
-	                if (activeElements.length === 0) {
-	                    return _this3.hideToolbar();
-	                }
-
-	                // Now we know there's a focused editable with a selection
-	                _this3.showAndUpdateToolbar();
-	            }, 10);
-	        }
-	    }, {
-	        key: 'setToolbarPosition',
-	        value: function setToolbarPosition() {
-	            var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
-	            var anchorPreview = void 0;
-
-	            // If there isn't a valid selection, bail
-	            if (!container) {
-	                return this;
-	            }
-
-	            this.showToolbar();
-	            this.positionStaticToolbar(container);
-
-	            anchorPreview = this.base.getExtensionByName('anchor-preview');
-
-	            if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
-	                anchorPreview.hidePreview();
-	            }
-	        }
-	    }]);
-
-	    return Toolbar;
-	}(MediumEditorToolbar);
-
-	exports.default = Toolbar;
-	module.exports = exports['default'];
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -640,7 +640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -650,14 +650,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(2);
+
+	var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Embeds = function () {
 	  function Embeds(plugin, options) {
 	    _classCallCheck(this, Embeds);
-
-	    this._plugin = plugin;
-	    this._editor = this._plugin.base;
 
 	    this.options = {
 	      label: '<span class="fa fa-youtube-play"></span>',
@@ -699,15 +706,97 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    Object.assign(this.options, options);
 
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
+
+	    this.activeClassName = 'medium-editor-insert-embeds-active';
+	    this.placeholderClassName = 'medium-editor-insert-embeds-placeholder';
+	    this.elementClassName = 'medium-editor-insert-embeds';
+	    this.loadingClassName = 'medium-editor-insert-embeds-loading';
+	    this.activeClassName = 'medium-editor-insert-embed-active';
+	    this.descriptionContainerClassName = 'medium-editor-embed-embed-description-container';
+	    this.descriptionClassName = 'medium-editor-embed-embed-description';
+	    this.overlayClassName = 'medium-editor-insert-embeds-overlay';
+
 	    this.label = this.options.label;
+	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+
+	    this.initToolbar();
+	    this.events();
 	  }
 
 	  _createClass(Embeds, [{
+	    key: 'events',
+	    value: function events() {
+	      var _this = this;
+
+	      this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
+	      this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+	      this._plugin.getEditorElements().forEach(function (editor) {
+	        _this._plugin.on(editor, 'click', _this.selectEmbed.bind(_this));
+	      });
+	    }
+	  }, {
+	    key: 'selectEmbed',
+	    value: function selectEmbed(e) {
+	      var el = e.target;
+
+	      if (el.classList.contains(this.overlayClassName)) {
+	        var selectedEl = _utils2.default.getClosestWithClassName(el, this.elementClassName);
+	        if (!selectedEl.classList.contains(this.loadingClassName)) {
+	          selectedEl.classList.add(this.activeClassName);
+	          this._editor.selectElement(selectedEl);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'unselectEmbed',
+	    value: function unselectEmbed(e) {
+	      var _this2 = this;
+
+	      var el = e.target;
+	      var clickedEmbed = void 0,
+	          embeds = void 0;
+
+	      if (el.classList.contains(this.descriptionClassName)) return false;
+
+	      // Unselect all selected images. If an image is clicked, unselect all except this one.
+	      if (el.classList.contains(this.overlayClassName)) {
+	        clickedEmbed = _utils2.default.getClosestWithClassName(el, this.elementClassName);
+	      }
+
+	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+	      Array.prototype.forEach.call(embeds, function (embed) {
+	        if (embed !== clickedEmbed) {
+	          embed.classList.remove(_this2.activeClassName);
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'handleKey',
+	    value: function handleKey(e) {
+	      var target = e.target;
+	      var isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
+
+	      // Enter key in description
+	      if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+	        if (isDescriptionElement) {
+	          e.preventDefault();
+	        }
+	      }
+
+	      // Backspace, delete
+	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
+	        this.removeImage(e);
+	      }
+	    }
+	  }, {
 	    key: 'handleClick',
 	    value: function handleClick() {
 	      this.el = this._plugin.getCore().selectedElement;
-	      this.el.classList.add('medium-editor-insert-embeds-active');
-	      this.el.classList.add('medium-editor-insert-embeds-placeholder');
+	      this.el.classList.add(this.loadingClassName);
+	      this.el.classList.add(this.placeholderClassName);
 	      this.el.setAttribute('data-placeholder', this.options.placeholder);
 
 	      this.instanceHandlePaste = this.handlePaste.bind(this);
@@ -752,16 +841,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Init Toolbar for tuning embed position
+	     *
+	     * @param {string} url
+	     * @param {pasted} boolean
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'initToolbar',
+	    value: function initToolbar() {
+	      this.toolbar = new _Toolbar2.default({
+	        plugin: this._plugin,
+	        type: 'embeds',
+	        activeClassName: this.activeClassName,
+	        buttons: [{
+	          name: 'align-left',
+	          action: 'left',
+	          label: 'Left',
+	          onClick: function () {
+	            this.changeAlign('align-left');
+	          }.bind(this)
+	        }, {
+	          name: 'align-center',
+	          action: 'center',
+	          label: 'Center',
+	          onClick: function () {
+	            this.changeAlign('align-center');
+	          }.bind(this)
+	        }, {
+	          name: 'align-right',
+	          action: 'right',
+	          label: 'Right',
+	          onClick: function () {
+	            this.changeAlign('align-right');
+	          }.bind(this)
+	        }, {
+	          name: 'align-center-full',
+	          action: 'center-full',
+	          label: 'Center Full',
+	          onClick: function () {
+	            this.changeAlign('align-center-full');
+	          }.bind(this)
+	        }]
+	      });
+
+	      this._editor.extensions.push(this.toolbar);
+	    }
+
+	    /**
 	     * Get HTML via oEmbed proxy
 	     *
 	     * @param {string} url
+	     * @param {pasted} boolean
 	     * @return {void}
 	     */
 
 	  }, {
 	    key: 'oembed',
 	    value: function oembed(url, pasted) {
-	      var _this = this;
+	      var _this3 = this;
 
 	      var urlOut = this.options.oembedProxy + '&url=' + url;
 	      var xhr = new XMLHttpRequest();
@@ -771,7 +910,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      xhr.onreadystatechange = function () {
 	        if (xhr.readyState === 4 && xhr.status === 200) {
 	          var data = JSON.parse(xhr.responseText);
-	          _this.embed(data.html, url);
+	          _this3.embed(data.html, url);
 	        }
 	      };
 
@@ -826,7 +965,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function embed(html, pastedUrl) {
 	      var el = void 0,
 	          figure = void 0,
-	          figureCaption = void 0,
+	          descriptionContainer = void 0,
+	          description = void 0,
 	          metacontainer = void 0,
 	          container = void 0,
 	          overlay = void 0;
@@ -839,30 +979,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	      el = this._plugin.getCore().selectedElement;
 	      figure = document.createElement('figure');
 	      figure.classList.add('medium-editor-insert-embeds-item');
-	      figureCaption = document.createElement('figcaption');
-	      figureCaption.classList.add('medium-editor-insert-embeds-caption');
-	      figureCaption.setAttribute('contenteditable', true);
-	      figureCaption.setAttribute('data-placeholder', 'Type caption for embed (optional)');
+
+	      descriptionContainer = document.createElement('div');
+	      descriptionContainer.classList.add(this.descriptionContainerClassName);
+
+	      description = document.createElement('figcaption');
+	      description.classList.add(this.descriptionClassName);
+	      description.setAttribute('contenteditable', true);
+	      description.setAttribute('data-placeholder', 'Type caption for embed (optional)');
 
 	      metacontainer = document.createElement('div');
-	      metacontainer.classList.add('medium-editor-insert-embeds');
+	      metacontainer.classList.add(this.elementClassName);
+	      // metacontainer.classList.add(this.activeClassName);
+
 	      metacontainer.setAttribute('contenteditable', false);
 
 	      container = document.createElement('div');
 	      container.classList.add('medium-editor-insert-embeds-item-container');
 
 	      overlay = document.createElement('div');
-	      overlay.classList.add('medium-editor-insert-embeds-overlay');
+	      overlay.classList.add(this.overlayClassName);
 
 	      metacontainer.appendChild(figure);
 	      figure.appendChild(container);
 	      figure.appendChild(overlay);
 
+	      descriptionContainer.classList.add(this.descriptionContainerClassName);
+	      description.contentEditable = true;
+	      description.classList.add(this.descriptionClassName);
+	      description.dataset.placeholder = this.descriptionPlaceholder;
+
 	      el.replaceWith(metacontainer);
 
 	      container.innerHTML = html;
 
-	      console.log(html);
+	      // this._editor.selectElement(metacontainer);
+
+	      // console.log(html);
 	      // this.core.triggerInput();
 
 	      if (html.indexOf('facebook') !== -1) {
@@ -878,7 +1031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'handleBlur',
 	    value: function handleBlur() {
-	      console.log('blur');
+	      // console.log('blur');
 	      // this.cancelEmbed();
 	    }
 	  }, {
@@ -925,7 +1078,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Toolbar = __webpack_require__(3);
+	var _Toolbar = __webpack_require__(2);
 
 	var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
