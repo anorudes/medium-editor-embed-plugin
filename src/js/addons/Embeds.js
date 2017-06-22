@@ -368,6 +368,8 @@ export default class Embeds {
             }, 2000);
         }
     }
+    
+    this.options.onInsert && this.options.onInsert(html);
 
     return true;
 	}
