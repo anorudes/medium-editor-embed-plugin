@@ -1043,6 +1043,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
+	      this.options.onInsert && this.options.onInsert(html);
+
 	      return true;
 	    }
 	  }, {
