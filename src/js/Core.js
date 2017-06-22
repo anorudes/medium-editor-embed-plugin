@@ -190,10 +190,10 @@ export default class Core {
 
     handleAddonClick(e) {
         const name = e.currentTarget.getAttribute('data-addon');
-
         e.preventDefault();
 
         this._plugin.getAddon(name).handleClick(e);
+        this.hideButtons();
     }
 
 }

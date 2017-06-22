@@ -149,12 +149,6 @@ export default class Embeds {
     this._editor.elements[0].focus();
     this.el.focus();
 
-    const buttonsDOM = document.querySelector('.medium-editor-insert-buttons');
-    if (buttonsDOM) {
-      buttonsDOM.classList.remove('medium-editor-insert-buttons-active');
-      buttonsDOM.classList.remove('medium-editor-insert-addons-active');
-    }
-
     // this._editor.selectElement(this.el);
     // console.log( this._editor.selection );
   }
