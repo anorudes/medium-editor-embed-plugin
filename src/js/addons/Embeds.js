@@ -126,7 +126,7 @@ export default class Embeds {
 
     // Backspace, delete
     if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
-      this.removeImage(e);
+      this.removeEmbed(e);
     }
   }
 
@@ -144,6 +144,8 @@ export default class Embeds {
 
     // FIXME: it doesn't work yet.  :(
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
+
+		// this._plugin.getCore().hideButtons();
 
     // return focus to element, allow user to cancel embed by start writing
     this._editor.elements[0].focus();
@@ -178,6 +180,10 @@ export default class Embeds {
     this.cancelEmbed();
 	}
 
+
+  removeEmbed(e) {
+    // TODO remove Embed (overlay with cross-icon... maybe)
+  }
 
   /**
    * Init Toolbar for tuning embed position
@@ -249,7 +255,7 @@ export default class Embeds {
     const urlOut = this.options.oembedProxy + '&url=' + url;
     const xhr = new XMLHttpRequest();
 
-    console.log(urlOut);
+    // console.log(urlOut);
     xhr.open("GET", urlOut, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
@@ -309,7 +315,7 @@ export default class Embeds {
    */
 
   embed(html, pastedUrl) {
-    let el, figure, descriptionContainer, description, metacontainer, container, overlay;
+    let el, figure, descriptionContainer, description, metacontainer, container, overlay, lastEl;
 
     if (!html) {
       console.error('Incorrect URL format specified: ', pastedUrl);
@@ -353,10 +359,22 @@ export default class Embeds {
 
     el.replaceWith(metacontainer);
 
+    // check if embed is last element, then add one more p after it
+    lastEl = metacontainer.parentNode.lastChild;
+
+    while(lastEl && lastEl.nodeType !== 1) {
+      lastEl = lastEl.previousSibling;
+    }
+
+    if (lastEl === metacontainer){
+      const lastP = document.createElement('p');
+      lastP.appendChild(document.createElement('br'));
+      metacontainer.parentNode.appendChild( lastP );
+    }
 
     container.innerHTML = html;
 
-    // this._editor.selectElement(metacontainer);
+    this._editor.selectElement(metacontainer);
 
     // console.log(html);
     // this.core.triggerInput();

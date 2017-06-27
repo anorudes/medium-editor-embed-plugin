@@ -798,7 +798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Backspace, delete
 	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
-	        this.removeImage(e);
+	        this.removeEmbed(e);
 	      }
 	    }
 	  }, {
@@ -817,6 +817,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // FIXME: it doesn't work yet.  :(
 	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
+
+	      // this._plugin.getCore().hideButtons();
 
 	      // return focus to element, allow user to cancel embed by start writing
 	      this._editor.elements[0].focus();
@@ -849,6 +851,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.cancelEmbed();
 	    }
+	  }, {
+	    key: 'removeEmbed',
+	    value: function removeEmbed(e) {}
+	    // TODO remove Embed (overlay with cross-icon... maybe)
+
 
 	    /**
 	     * Init Toolbar for tuning embed position
@@ -922,7 +929,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var urlOut = this.options.oembedProxy + '&url=' + url;
 	      var xhr = new XMLHttpRequest();
 
-	      console.log(urlOut);
+	      // console.log(urlOut);
 	      xhr.open("GET", urlOut, true);
 	      xhr.onreadystatechange = function () {
 	        if (xhr.readyState === 4 && xhr.status === 200) {
@@ -986,7 +993,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          description = void 0,
 	          metacontainer = void 0,
 	          container = void 0,
-	          overlay = void 0;
+	          overlay = void 0,
+	          lastEl = void 0;
 
 	      if (!html) {
 	        console.error('Incorrect URL format specified: ', pastedUrl);
@@ -1028,9 +1036,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      el.replaceWith(metacontainer);
 
+	      // check if embed is last element, then add one more p after it
+	      lastEl = metacontainer.parentNode.lastChild;
+
+	      while (lastEl && lastEl.nodeType !== 1) {
+	        lastEl = lastEl.previousSibling;
+	      }
+
+	      if (lastEl === metacontainer) {
+	        var lastP = document.createElement('p');
+	        lastP.appendChild(document.createElement('br'));
+	        metacontainer.parentNode.appendChild(lastP);
+	      }
+
 	      container.innerHTML = html;
 
-	      // this._editor.selectElement(metacontainer);
+	      this._editor.selectElement(metacontainer);
 
 	      // console.log(html);
 	      // this.core.triggerInput();
