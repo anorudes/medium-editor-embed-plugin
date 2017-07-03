@@ -7,7 +7,7 @@ export default class Embeds {
 		this.options = {
 			label: '<span class="fa fa-youtube-play"></span>',
 			placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
-      oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
+      oembedProxy: 'http://medium.iframe.ly/api/oembed?omit_script=1&iframe=1',
       captions: true,
       captionPlaceholder: 'Type caption (optional)',
       storeMeta: false,
@@ -260,7 +260,7 @@ export default class Embeds {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        this.embed(data.html, url);
+        this.embed(data.html, url, data);
       }
     };
 
@@ -314,11 +314,16 @@ export default class Embeds {
    * @return {void}
    */
 
-  embed(html, pastedUrl) {
+  embed(html, pastedUrl, info) {
     let el, figure, descriptionContainer, description, metacontainer, container, overlay, lastEl;
 
     if (!html) {
       console.error('Incorrect URL format specified: ', pastedUrl);
+      return false;
+    }
+
+    if (info && info.type === 'link') {
+      console.error('Just common link — no any embeds to insert: ', pastedUrl);
       return false;
     }
 

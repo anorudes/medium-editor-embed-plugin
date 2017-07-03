@@ -669,7 +669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.options = {
 	      label: '<span class="fa fa-youtube-play"></span>',
 	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
-	      oembedProxy: 'http://medium.iframe.ly/api/oembed?iframe=1',
+	      oembedProxy: 'http://medium.iframe.ly/api/oembed?omit_script=1&iframe=1',
 	      captions: true,
 	      captionPlaceholder: 'Type caption (optional)',
 	      storeMeta: false,
@@ -934,7 +934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      xhr.onreadystatechange = function () {
 	        if (xhr.readyState === 4 && xhr.status === 200) {
 	          var data = JSON.parse(xhr.responseText);
-	          _this3.embed(data.html, url);
+	          _this3.embed(data.html, url, data);
 	        }
 	      };
 
@@ -986,7 +986,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {void}
 	     */
 
-	    value: function embed(html, pastedUrl) {
+	    value: function embed(html, pastedUrl, info) {
 	      var el = void 0,
 	          figure = void 0,
 	          descriptionContainer = void 0,
@@ -998,6 +998,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (!html) {
 	        console.error('Incorrect URL format specified: ', pastedUrl);
+	        return false;
+	      }
+
+	      if (info && info.type === 'link') {
+	        console.error('Just common link — no any embeds to insert: ', pastedUrl);
 	        return false;
 	      }
 
