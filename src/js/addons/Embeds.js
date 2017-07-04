@@ -199,14 +199,6 @@ export default class Embeds {
       activeClassName: this.activeClassName,
       buttons: [
         {
-          name: 'embed-align-center-full',
-          action: 'center-full',
-          label: 'Center Full',
-          onClick: (function() {
-              this.changeAlign('align-center-full');
-          }).bind(this),
-        },
-        {
           name: 'embed-align-left',
           action: 'left',
           label: 'Left',
@@ -220,6 +212,22 @@ export default class Embeds {
           label: 'Center',
           onClick: (function() {
               this.changeAlign('align-center');
+          }).bind(this),
+        },
+        {
+          name: 'embed-align-center-wide',
+          action: 'center-wide',
+          label: 'Wide',
+          onClick: (function() {
+              this.changeAlign('align-center-wide');
+          }).bind(this),
+        },
+        {
+          name: 'embed-align-center-full',
+          action: 'center-full',
+          label: 'Full',
+          onClick: (function() {
+              this.changeAlign('align-center-full');
           }).bind(this),
         },
         {

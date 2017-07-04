@@ -78,19 +78,27 @@ export default class Images {
                     }).bind(this),
                 },
                 {
-                    name: 'image-align-right',
-                    action: 'right',
-                    label: 'Right',
+                    name: 'image-align-center-wide',
+                    action: 'center-wide',
+                    label: 'Wide',
                     onClick: (function() {
-                        this.changeAlign('align-right');
+                        this.changeAlign('align-center-wide');
                     }).bind(this),
                 },
                 {
                     name: 'image-align-center-full',
                     action: 'center-full',
-                    label: 'Center Full',
+                    label: 'Full',
                     onClick: (function() {
                         this.changeAlign('align-center-full');
+                    }).bind(this),
+                },
+                {
+                    name: 'image-align-right',
+                    action: 'right',
+                    label: 'Right',
+                    onClick: (function() {
+                        this.changeAlign('align-right');
                     }).bind(this),
                 },
             ]

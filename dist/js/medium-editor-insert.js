@@ -873,13 +873,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        type: 'embeds',
 	        activeClassName: this.activeClassName,
 	        buttons: [{
-	          name: 'embed-align-center-full',
-	          action: 'center-full',
-	          label: 'Center Full',
-	          onClick: function () {
-	            this.changeAlign('align-center-full');
-	          }.bind(this)
-	        }, {
 	          name: 'embed-align-left',
 	          action: 'left',
 	          label: 'Left',
@@ -892,6 +885,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Center',
 	          onClick: function () {
 	            this.changeAlign('align-center');
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-center-wide',
+	          action: 'center-wide',
+	          label: 'Wide',
+	          onClick: function () {
+	            this.changeAlign('align-center-wide');
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-center-full',
+	          action: 'center-full',
+	          label: 'Full',
+	          onClick: function () {
+	            this.changeAlign('align-center-full');
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-right',
@@ -1215,18 +1222,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        this.changeAlign('align-center');
 	                    }.bind(this)
 	                }, {
+	                    name: 'image-align-center-wide',
+	                    action: 'center-wide',
+	                    label: 'Wide',
+	                    onClick: function () {
+	                        this.changeAlign('align-center-wide');
+	                    }.bind(this)
+	                }, {
+	                    name: 'image-align-center-full',
+	                    action: 'center-full',
+	                    label: 'Full',
+	                    onClick: function () {
+	                        this.changeAlign('align-center-full');
+	                    }.bind(this)
+	                }, {
 	                    name: 'image-align-right',
 	                    action: 'right',
 	                    label: 'Right',
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
-	                    }.bind(this)
-	                }, {
-	                    name: 'image-align-center-full',
-	                    action: 'center-full',
-	                    label: 'Center Full',
-	                    onClick: function () {
-	                        this.changeAlign('align-center-full');
 	                    }.bind(this)
 	                }]
 	            });
