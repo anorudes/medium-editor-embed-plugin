@@ -56,6 +56,12 @@ export default class Embeds {
     this.descriptionClassName = 'medium-editor-embed-embed-description';
     this.overlayClassName = 'medium-editor-insert-embeds-overlay';
 
+    this.alignLeftClassName = 'align-left';
+    this.alignRightClassName = 'align-right';
+    this.alignCenterClassName = 'align-center';
+    this.alignCenterWideClassName = 'align-center-wide';
+    this.alignCenterFullClassName = 'align-center-full';
+
 		this.label = this.options.label;
     this.descriptionPlaceholder = this.options.descriptionPlaceholder;
 
@@ -203,7 +209,7 @@ export default class Embeds {
           action: 'left',
           label: 'Left',
           onClick: (function() {
-              this.changeAlign('align-left');
+              this.changeAlign( this.alignLeftClassName );
           }).bind(this),
         },
         {
@@ -211,7 +217,7 @@ export default class Embeds {
           action: 'center',
           label: 'Center',
           onClick: (function() {
-              this.changeAlign('align-center');
+              this.changeAlign( this.alignCenterClassName );
           }).bind(this),
         },
         {
@@ -219,7 +225,7 @@ export default class Embeds {
           action: 'center-wide',
           label: 'Wide',
           onClick: (function() {
-              this.changeAlign('align-center-wide');
+              this.changeAlign( this.alignCenterWideClassName );
           }).bind(this),
         },
         {
@@ -227,7 +233,7 @@ export default class Embeds {
           action: 'center-full',
           label: 'Full',
           onClick: (function() {
-              this.changeAlign('align-center-full');
+              this.changeAlign( this.alignCenterFullClassName );
           }).bind(this),
         },
         {
@@ -235,7 +241,7 @@ export default class Embeds {
           action: 'right',
           label: 'Right',
           onClick: (function() {
-              this.changeAlign('align-right');
+              this.changeAlign( this.alignRightClassName );
           }).bind(this),
         },
       ]
@@ -246,7 +252,13 @@ export default class Embeds {
 
   changeAlign(className) {
       const el = this.activeEmbedElement;
-      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-everywhere', 'align-center-full');
+      el.classList.remove(
+        this.alignLeftClassName,
+        this.alignRightClassName,
+        this.alignCenterClassName,
+        this.alignCenterWideClassName,
+        this.alignCenterFullClassName
+      );
       el.classList.add(className);
   }
 
@@ -349,6 +361,8 @@ export default class Embeds {
 
     metacontainer = document.createElement('div');
     metacontainer.classList.add(this.elementClassName);
+    metacontainer.classList.add(this.alignCenterClassName);
+
     // metacontainer.classList.add(this.activeClassName);
 
     metacontainer.setAttribute('contenteditable', false);

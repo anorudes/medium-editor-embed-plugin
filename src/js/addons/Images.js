@@ -22,6 +22,14 @@ export default class Images {
         this.activeClassName = 'medium-editor-insert-image-active';
         this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
         this.descriptionClassName = 'medium-editor-embed-image-description';
+
+        this.alignLeftClassName = 'align-left';
+        this.alignRightClassName = 'align-right';
+        this.alignCenterClassName = 'align-center';
+        this.alignCenterWideClassName = 'align-center-wide';
+        this.alignCenterFullClassName = 'align-center-full';
+
+
         this.label = this.options.label;
         this.descriptionPlaceholder = this.options.descriptionPlaceholder;
         this.activeImageElement = null;
@@ -109,7 +117,14 @@ export default class Images {
 
     changeAlign(className) {
         const el = this.activeImageElement;
-        el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-center-full');
+          el.classList.remove(
+            this.alignLeftClassName,
+            this.alignRightClassName,
+            this.alignCenterClassName,
+            this.alignCenterWideClassName,
+            this.alignCenterFullClassName
+          );
+
         el.classList.add(className);
     }
 
@@ -228,8 +243,9 @@ export default class Images {
         }
 
         el.classList.add(this.elementClassName);
+        el.classList.add(this.alignCenterClassName);
+
         el.contentEditable = false;
-        el.classList.add('align-center');
 
 
         // Return domImage so we can test this function easily
