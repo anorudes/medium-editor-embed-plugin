@@ -49,7 +49,7 @@
 		var editor = new MediumEditor('.editable', {
             buttonLabels: 'fontawesome',
             extensions: {
-            	'insert': new MediumEditorInsert({
+              	'insert': new MediumEditorInsert({
                     addons: {
                         images: {
                             descriptionPlaceholder: 'Описание',
@@ -69,6 +69,7 @@
                         },
                         embeds: {
                             oembedProxy: '//iframe.ly/api/oembed?&api_key=' + IFRAMELY_API_KEY
+
                         }
                     }
                 })

@@ -621,6 +621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    init: function init() {
 	        this.button = this.document.createElement('button');
 	        this.button.classList.add('medium-editor-action');
+	        this.button.classList.add(this.className);
 	        this.button.innerHTML = '<b>' + this.label + '</b>';
 
 	        this.on(this.button, 'click', this.handleClick.bind(this));
@@ -881,6 +882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        buttons: [{
 	          name: 'embed-align-left',
 	          action: 'align-left',
+	          className: 'btn-align-left',
 	          label: 'Left',
 	          onClick: function () {
 	            this.changeAlign(this.alignLeftClassName);
@@ -888,6 +890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	          name: 'embed-align-center',
 	          action: 'align-center',
+	          className: 'btn-align-center',
 	          label: 'Center',
 	          onClick: function () {
 	            this.changeAlign(this.alignCenterClassName);
@@ -895,6 +898,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	          name: 'embed-align-center-wide',
 	          action: 'align-center-wide',
+	          className: 'btn-align-center-wide',
 	          label: 'Wide',
 	          onClick: function () {
 	            this.changeAlign(this.alignCenterWideClassName);
@@ -902,6 +906,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	          name: 'embed-align-center-full',
 	          action: 'align-center-full',
+	          className: 'btn-align-center-full',
 	          label: 'Full',
 	          onClick: function () {
 	            this.changeAlign(this.alignCenterFullClassName);
@@ -909,6 +914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	          name: 'embed-align-right',
 	          action: 'align-right',
+	          className: 'btn-align-center-right',
 	          label: 'Right',
 	          onClick: function () {
 	            this.changeAlign(this.alignRightClassName);
@@ -1211,7 +1217,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this._input.type = 'file';
 	                this._input.multiple = true;
 	                this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
-
 	                this._input.click();
 	            }
 	        }
@@ -1225,35 +1230,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	                buttons: [{
 	                    name: 'image-align-left',
 	                    action: 'align-left',
+	                    className: 'fa-align-left',
 	                    label: 'Left',
+	                    title: 'Left',
 	                    onClick: function () {
 	                        this.changeAlign('align-left');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center',
 	                    action: 'align-center',
+	                    className: 'fa-align-center',
 	                    label: 'Center',
+	                    title: 'Center',
 	                    onClick: function () {
 	                        this.changeAlign('align-center');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center-wide',
 	                    action: 'align-center-wide',
+	                    className: 'fa-align-center-wide',
 	                    label: 'Wide',
+	                    title: 'Wide',
 	                    onClick: function () {
 	                        this.changeAlign('align-center-wide');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center-full',
 	                    action: 'align-center-full',
+	                    className: 'fa-align-center-full',
 	                    label: 'Full',
+	                    title: 'Full wide',
 	                    onClick: function () {
 	                        this.changeAlign('align-center-full');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-right',
 	                    action: 'align-right',
+	                    className: 'fa-align-right',
 	                    label: 'Right',
+	                    title: 'Right',
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
 	                    }.bind(this)

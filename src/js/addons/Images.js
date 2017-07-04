@@ -58,7 +58,6 @@ export default class Images {
             this._input.type = 'file';
             this._input.multiple = true;
             this._plugin.on(this._input, 'change', this.uploadFiles.bind(this));
-
             this._input.click();
         }
     }
@@ -72,7 +71,9 @@ export default class Images {
                 {
                     name: 'image-align-left',
                     action: 'align-left',
+                    className: 'fa-align-left',
                     label: 'Left',
+                    title: 'Left',
                     onClick: (function() {
                         this.changeAlign('align-left');
                     }).bind(this),
@@ -80,7 +81,9 @@ export default class Images {
                 {
                     name: 'image-align-center',
                     action: 'align-center',
+                    className: 'fa-align-center',
                     label: 'Center',
+                    title: 'Center',
                     onClick: (function() {
                         this.changeAlign('align-center');
                     }).bind(this),
@@ -88,7 +91,9 @@ export default class Images {
                 {
                     name: 'image-align-center-wide',
                     action: 'align-center-wide',
+                    className: 'fa-align-center-wide',
                     label: 'Wide',
+                    title: 'Wide',
                     onClick: (function() {
                         this.changeAlign('align-center-wide');
                     }).bind(this),
@@ -96,7 +101,9 @@ export default class Images {
                 {
                     name: 'image-align-center-full',
                     action: 'align-center-full',
+                    className: 'fa-align-center-full',
                     label: 'Full',
+                    title: 'Full wide',
                     onClick: (function() {
                         this.changeAlign('align-center-full');
                     }).bind(this),
@@ -104,7 +111,9 @@ export default class Images {
                 {
                     name: 'image-align-right',
                     action: 'align-right',
+                    className: 'fa-align-right',
                     label: 'Right',
+                    title: 'Right',
                     onClick: (function() {
                         this.changeAlign('align-right');
                     }).bind(this),
