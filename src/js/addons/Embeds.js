@@ -246,7 +246,7 @@ export default class Embeds {
 
   changeAlign(className) {
       const el = this.activeEmbedElement;
-      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-full');
+      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-center-full');
       el.classList.add(className);
   }
 
