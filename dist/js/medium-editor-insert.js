@@ -916,7 +916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'changeAlign',
 	    value: function changeAlign(className) {
 	      var el = this.activeEmbedElement;
-	      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-center-full');
+	      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-everywhere', 'align-center-full');
 	      el.classList.add(className);
 	    }
 
