@@ -71,7 +71,7 @@ export default class Images {
             buttons: [
                 {
                     name: 'image-align-left',
-                    action: 'left',
+                    action: 'align-left',
                     label: 'Left',
                     onClick: (function() {
                         this.changeAlign('align-left');
@@ -79,7 +79,7 @@ export default class Images {
                 },
                 {
                     name: 'image-align-center',
-                    action: 'center',
+                    action: 'align-center',
                     label: 'Center',
                     onClick: (function() {
                         this.changeAlign('align-center');
@@ -87,7 +87,7 @@ export default class Images {
                 },
                 {
                     name: 'image-align-center-wide',
-                    action: 'center-wide',
+                    action: 'align-center-wide',
                     label: 'Wide',
                     onClick: (function() {
                         this.changeAlign('align-center-wide');
@@ -95,7 +95,7 @@ export default class Images {
                 },
                 {
                     name: 'image-align-center-full',
-                    action: 'center-full',
+                    action: 'align-center-full',
                     label: 'Full',
                     onClick: (function() {
                         this.changeAlign('align-center-full');
@@ -103,7 +103,7 @@ export default class Images {
                 },
                 {
                     name: 'image-align-right',
-                    action: 'right',
+                    action: 'align-right',
                     label: 'Right',
                     onClick: (function() {
                         this.changeAlign('align-right');

@@ -206,7 +206,7 @@ export default class Embeds {
       buttons: [
         {
           name: 'embed-align-left',
-          action: 'left',
+          action: 'align-left',
           label: 'Left',
           onClick: (function() {
               this.changeAlign( this.alignLeftClassName );
@@ -214,7 +214,7 @@ export default class Embeds {
         },
         {
           name: 'embed-align-center',
-          action: 'center',
+          action: 'align-center',
           label: 'Center',
           onClick: (function() {
               this.changeAlign( this.alignCenterClassName );
@@ -222,7 +222,7 @@ export default class Embeds {
         },
         {
           name: 'embed-align-center-wide',
-          action: 'center-wide',
+          action: 'align-center-wide',
           label: 'Wide',
           onClick: (function() {
               this.changeAlign( this.alignCenterWideClassName );
@@ -230,7 +230,7 @@ export default class Embeds {
         },
         {
           name: 'embed-align-center-full',
-          action: 'center-full',
+          action: 'align-center-full',
           label: 'Full',
           onClick: (function() {
               this.changeAlign( this.alignCenterFullClassName );
@@ -238,7 +238,7 @@ export default class Embeds {
         },
         {
           name: 'embed-align-right',
-          action: 'right',
+          action: 'align-right',
           label: 'Right',
           onClick: (function() {
               this.changeAlign( this.alignRightClassName );

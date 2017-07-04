@@ -718,6 +718,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.descriptionClassName = 'medium-editor-embed-embed-description';
 	    this.overlayClassName = 'medium-editor-insert-embeds-overlay';
 
+	    this.alignLeftClassName = 'align-left';
+	    this.alignRightClassName = 'align-right';
+	    this.alignCenterClassName = 'align-center';
+	    this.alignCenterWideClassName = 'align-center-wide';
+	    this.alignCenterFullClassName = 'align-center-full';
+
 	    this.label = this.options.label;
 	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
 
@@ -874,38 +880,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	        activeClassName: this.activeClassName,
 	        buttons: [{
 	          name: 'embed-align-left',
-	          action: 'left',
+	          action: 'align-left',
 	          label: 'Left',
 	          onClick: function () {
-	            this.changeAlign('align-left');
+	            this.changeAlign(this.alignLeftClassName);
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center',
-	          action: 'center',
+	          action: 'align-center',
 	          label: 'Center',
 	          onClick: function () {
-	            this.changeAlign('align-center');
+	            this.changeAlign(this.alignCenterClassName);
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center-wide',
-	          action: 'center-wide',
+	          action: 'align-center-wide',
 	          label: 'Wide',
 	          onClick: function () {
-	            this.changeAlign('align-center-wide');
+	            this.changeAlign(this.alignCenterWideClassName);
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center-full',
-	          action: 'center-full',
+	          action: 'align-center-full',
 	          label: 'Full',
 	          onClick: function () {
-	            this.changeAlign('align-center-full');
+	            this.changeAlign(this.alignCenterFullClassName);
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-right',
-	          action: 'right',
+	          action: 'align-right',
 	          label: 'Right',
 	          onClick: function () {
-	            this.changeAlign('align-right');
+	            this.changeAlign(this.alignRightClassName);
 	          }.bind(this)
 	        }]
 	      });
@@ -916,7 +922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'changeAlign',
 	    value: function changeAlign(className) {
 	      var el = this.activeEmbedElement;
-	      el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-everywhere', 'align-center-full');
+	      el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
 	      el.classList.add(className);
 	    }
 
@@ -1027,6 +1033,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      metacontainer = document.createElement('div');
 	      metacontainer.classList.add(this.elementClassName);
+	      metacontainer.classList.add(this.alignCenterClassName);
+
 	      // metacontainer.classList.add(this.activeClassName);
 
 	      metacontainer.setAttribute('contenteditable', false);
@@ -1160,6 +1168,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.activeClassName = 'medium-editor-insert-image-active';
 	        this.descriptionContainerClassName = 'medium-editor-embed-image-description-container';
 	        this.descriptionClassName = 'medium-editor-embed-image-description';
+
+	        this.alignLeftClassName = 'align-left';
+	        this.alignRightClassName = 'align-right';
+	        this.alignCenterClassName = 'align-center';
+	        this.alignCenterWideClassName = 'align-center-wide';
+	        this.alignCenterFullClassName = 'align-center-full';
+
 	        this.label = this.options.label;
 	        this.descriptionPlaceholder = this.options.descriptionPlaceholder;
 	        this.activeImageElement = null;
@@ -1209,35 +1224,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	                activeClassName: this.activeClassName,
 	                buttons: [{
 	                    name: 'image-align-left',
-	                    action: 'left',
+	                    action: 'align-left',
 	                    label: 'Left',
 	                    onClick: function () {
 	                        this.changeAlign('align-left');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center',
-	                    action: 'center',
+	                    action: 'align-center',
 	                    label: 'Center',
 	                    onClick: function () {
 	                        this.changeAlign('align-center');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center-wide',
-	                    action: 'center-wide',
+	                    action: 'align-center-wide',
 	                    label: 'Wide',
 	                    onClick: function () {
 	                        this.changeAlign('align-center-wide');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-center-full',
-	                    action: 'center-full',
+	                    action: 'align-center-full',
 	                    label: 'Full',
 	                    onClick: function () {
 	                        this.changeAlign('align-center-full');
 	                    }.bind(this)
 	                }, {
 	                    name: 'image-align-right',
-	                    action: 'right',
+	                    action: 'align-right',
 	                    label: 'Right',
 	                    onClick: function () {
 	                        this.changeAlign('align-right');
@@ -1251,7 +1266,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'changeAlign',
 	        value: function changeAlign(className) {
 	            var el = this.activeImageElement;
-	            el.classList.remove('align-left', 'align-center', 'align-right', 'align-center-wide', 'align-center-full');
+	            el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
+
 	            el.classList.add(className);
 	        }
 	    }, {
@@ -1381,8 +1397,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            el.classList.add(this.elementClassName);
+	            el.classList.add(this.alignCenterClassName);
+
 	            el.contentEditable = false;
-	            el.classList.add('align-center');
 
 	            // Return domImage so we can test this function easily
 	            return domImage;
