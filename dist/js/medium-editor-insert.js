@@ -914,7 +914,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	          name: 'embed-align-right',
 	          action: 'align-right',
-	          className: 'btn-align-center-right',
+	          className: 'btn-align-right',
 	          label: 'Right',
 	          onClick: function () {
 	            this.changeAlign(this.alignRightClassName);
