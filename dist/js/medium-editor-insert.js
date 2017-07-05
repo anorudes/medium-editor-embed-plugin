@@ -1059,7 +1059,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          metacontainer = void 0,
 	          container = void 0,
 	          overlay = void 0,
-	          lastEl = void 0;
+	          lastEl = void 0,
+	          paragraph = void 0;
 
 	      if (!html) {
 	        console.error('Incorrect URL format specified: ', pastedUrl);
@@ -1086,6 +1087,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      metacontainer = document.createElement('div');
 	      metacontainer.classList.add(this.elementClassName);
 	      metacontainer.classList.add(this.alignCenterClassName);
+	      paragraph = document.createElement('p');
+	      paragraph.innerHTML = '<br>';
 
 	      // metacontainer.classList.add(this.activeClassName);
 
