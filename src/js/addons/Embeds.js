@@ -119,6 +119,23 @@ export default class Embeds {
     }
   }
 
+  getSiblingParagraph(el) {
+      if (!el) return false;
+
+      let nextSiblingDOM = el.nextSibling;
+      let nextSiblingParagraphDOM;
+
+      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+          if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+              nextSiblingParagraphDOM = nextSiblingDOM;
+          } else {
+              nextSiblingDOM = nextSiblingDOM.nextSibling;
+          }
+      }
+
+      return nextSiblingParagraphDOM;
+  }
+
   handleKey(e) {
     const target = e.target;
     const isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
@@ -133,6 +150,34 @@ export default class Embeds {
     // Backspace, delete
     if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
       this.removeEmbed(e);
+    }
+
+    // Down, enter
+    if (e.which === 40 || e.which === 13) {
+        // Detect selected image
+        const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
+        const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
+        if (selectedImageParentDOM) {
+            let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+            if (!nextSiblingParagraphDOM) {
+                // Insert paragraph and focus
+                const paragraph = document.createElement('p');
+                paragraph.innerHTML = '<br>';
+                selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+            }
+
+            // Focus next paragraph
+            nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+            if (nextSiblingParagraphDOM) {
+
+                window.getSelection().removeAllRanges();
+                this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+                MediumEditor.selection.clearSelection(document, true);
+                e.preventDefault();
+            }
+        }
     }
   }
 
@@ -418,11 +463,11 @@ export default class Embeds {
             }, 2000);
         }
     }
-    
+
     this.options.onInsert && this.options.onInsert(html);
 
     return true;
-	}
+  }
 
   handleBlur() {
     console.log('blur');

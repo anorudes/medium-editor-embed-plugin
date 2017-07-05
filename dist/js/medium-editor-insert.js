@@ -791,6 +791,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'getSiblingParagraph',
+	    value: function getSiblingParagraph(el) {
+	      if (!el) return false;
+
+	      var nextSiblingDOM = el.nextSibling;
+	      var nextSiblingParagraphDOM = void 0;
+
+	      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+	        if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+	          nextSiblingParagraphDOM = nextSiblingDOM;
+	        } else {
+	          nextSiblingDOM = nextSiblingDOM.nextSibling;
+	        }
+	      }
+
+	      return nextSiblingParagraphDOM;
+	    }
+	  }, {
 	    key: 'handleKey',
 	    value: function handleKey(e) {
 	      var target = e.target;
@@ -806,6 +824,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Backspace, delete
 	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
 	        this.removeEmbed(e);
+	      }
+
+	      // Down, enter
+	      if (e.which === 40 || e.which === 13) {
+	        // Detect selected image
+	        var selectedImageDOM = document.querySelector('.' + this.activeClassName);
+	        var selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
+	        if (selectedImageParentDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+	          if (!nextSiblingParagraphDOM) {
+	            // Insert paragraph and focus
+	            var paragraph = document.createElement('p');
+	            paragraph.innerHTML = '<br>';
+	            selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+	          }
+
+	          // Focus next paragraph
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+	          if (nextSiblingParagraphDOM) {
+
+	            window.getSelection().removeAllRanges();
+	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	            MediumEditor.selection.clearSelection(document, true);
+	            e.preventDefault();
+	          }
+	        }
 	      }
 	    }
 	  }, {
@@ -1481,6 +1527,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	        }
 	    }, {
+	        key: 'getSiblingParagraph',
+	        value: function getSiblingParagraph(el) {
+	            if (!el) return false;
+
+	            var nextSiblingDOM = el.nextSibling;
+	            var nextSiblingParagraphDOM = void 0;
+
+	            while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+	                if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+	                    nextSiblingParagraphDOM = nextSiblingDOM;
+	                } else {
+	                    nextSiblingDOM = nextSiblingDOM.nextSibling;
+	                }
+	            }
+
+	            return nextSiblingParagraphDOM;
+	        }
+	    }, {
 	        key: 'handleKey',
 	        value: function handleKey(e) {
 	            var target = e.target;
@@ -1489,13 +1553,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // Enter key in description
 	            if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
 	                if (isDescriptionElement) {
-	                    e.preventDefault();
+	                    return e.preventDefault();
 	                }
 	            }
 
 	            // Backspace, delete
 	            if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
 	                this.removeImage(e);
+	            }
+
+	            // Down, enter
+	            if (e.which === 40 || e.which === 13) {
+	                // Detect selected image
+	                var selectedImageDOM = document.querySelector('.' + this.activeClassName);
+	                var selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
+	                if (selectedImageParentDOM) {
+	                    var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+	                    if (!nextSiblingParagraphDOM) {
+	                        // Insert paragraph and focus
+	                        var paragraph = document.createElement('p');
+	                        paragraph.innerHTML = '<br>';
+	                        selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+	                    }
+
+	                    // Focus next paragraph
+	                    nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+	                    if (nextSiblingParagraphDOM) {
+	                        window.getSelection().removeAllRanges();
+	                        this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	                        MediumEditor.selection.clearSelection(document, true);
+	                        e.preventDefault();
+	                    }
+	                }
 	            }
 	        }
 	    }, {
