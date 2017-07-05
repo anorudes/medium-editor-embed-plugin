@@ -71,7 +71,7 @@ export default class Images {
                 {
                     name: 'image-align-left',
                     action: 'align-left',
-                    className: 'fa-align-left',
+                    className: 'btn-align-left',
                     label: 'Left',
                     title: 'Left',
                     onClick: (function() {
@@ -81,7 +81,7 @@ export default class Images {
                 {
                     name: 'image-align-center',
                     action: 'align-center',
-                    className: 'fa-align-center',
+                    className: 'btn-align-center',
                     label: 'Center',
                     title: 'Center',
                     onClick: (function() {
@@ -91,7 +91,7 @@ export default class Images {
                 {
                     name: 'image-align-center-wide',
                     action: 'align-center-wide',
-                    className: 'fa-align-center-wide',
+                    className: 'btn-align-center-wide',
                     label: 'Wide',
                     title: 'Wide',
                     onClick: (function() {
@@ -101,7 +101,7 @@ export default class Images {
                 {
                     name: 'image-align-center-full',
                     action: 'align-center-full',
-                    className: 'fa-align-center-full',
+                    className: 'btn-align-center-full',
                     label: 'Full',
                     title: 'Full wide',
                     onClick: (function() {
@@ -111,7 +111,7 @@ export default class Images {
                 {
                     name: 'image-align-right',
                     action: 'align-right',
-                    className: 'fa-align-right',
+                    className: 'btn-align-right',
                     label: 'Right',
                     title: 'Right',
                     onClick: (function() {
