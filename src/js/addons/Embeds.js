@@ -155,25 +155,27 @@ export default class Embeds {
     // Down, enter
     if (e.which === 40 || e.which === 13) {
       // Detect selected image
-      const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
+      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
 
-      if (selectedImageDOM) {
-        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
+      if (selectedEmbedDOM) {
+        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
         if (!nextSiblingParagraphDOM) {
           // Insert paragraph and focus
           const paragraph = document.createElement('p');
           paragraph.innerHTML = '<br>';
-          selectedImageDOM.insertAdjacentElement('afterend', paragraph);
+            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
         }
 
         // Focus next paragraph
-        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
+        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
         if (nextSiblingParagraphDOM) {
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+            selectedEmbedDOM.classList.remove(this.activeClassName);
           MediumEditor.selection.clearSelection(document, true);
+            selectedEmbedDOM.classList.remove(this.activeClassName);
           e.preventDefault();
         }
       }

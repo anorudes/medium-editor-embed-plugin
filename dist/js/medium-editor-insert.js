@@ -829,25 +829,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Down, enter
 	      if (e.which === 40 || e.which === 13) {
 	        // Detect selected image
-	        var selectedImageDOM = document.querySelector('.' + this.activeClassName);
+	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
 
-	        if (selectedImageDOM) {
-	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
+	        if (selectedEmbedDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
 	          if (!nextSiblingParagraphDOM) {
 	            // Insert paragraph and focus
 	            var paragraph = document.createElement('p');
 	            paragraph.innerHTML = '<br>';
-	            selectedImageDOM.insertAdjacentElement('afterend', paragraph);
+	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
 	          }
 
 	          // Focus next paragraph
-	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
 	          if (nextSiblingParagraphDOM) {
 	            window.getSelection().removeAllRanges();
 	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
 	            MediumEditor.selection.clearSelection(document, true);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
 	            e.preventDefault();
 	          }
 	        }
@@ -1590,6 +1592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            window.getSelection().removeAllRanges();
 	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
 	            MediumEditor.selection.clearSelection(document, true);
+	            selectedImageDOM.classList.remove(this.activeClassName);
 	            e.preventDefault();
 	          }
 	        }

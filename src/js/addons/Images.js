@@ -366,6 +366,7 @@ export default class Images {
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
           MediumEditor.selection.clearSelection(document, true);
+          selectedImageDOM.classList.remove(this.activeClassName);
           e.preventDefault();
         }
       }
