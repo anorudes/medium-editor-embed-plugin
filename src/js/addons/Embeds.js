@@ -156,22 +156,21 @@ export default class Embeds {
     if (e.which === 40 || e.which === 13) {
       // Detect selected image
       const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
-      const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
-      if (selectedImageParentDOM) {
-        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+      if (selectedImageDOM) {
+        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
 
         if (!nextSiblingParagraphDOM) {
           // Insert paragraph and focus
           const paragraph = document.createElement('p');
           paragraph.innerHTML = '<br>';
-          selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+          selectedImageDOM.insertAdjacentElement('afterend', paragraph);
         }
 
         // Focus next paragraph
-        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
 
         if (nextSiblingParagraphDOM) {
-
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
           MediumEditor.selection.clearSelection(document, true);
@@ -427,9 +426,11 @@ export default class Embeds {
     description.classList.add(this.descriptionClassName);
     description.dataset.placeholder = this.descriptionPlaceholder;
 
-
-
     el.replaceWith(metacontainer);
+    // Insert a empty paragraph
+    if (!el.nextSibling) {
+      el.insertAdjacentElement('afterend', paragraph);
+    }
 
     // check if embed is last element, then add one more p after it
     lastEl = metacontainer.parentNode.lastChild;

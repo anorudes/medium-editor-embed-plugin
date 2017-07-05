@@ -235,7 +235,7 @@ export default class Images {
         paragraph.innerHTML = '<br>';
 
         if (!el.nextSibling || !el.nextSibling.nextSibling) {
-          el.parentNode.insertBefore(paragraph, el.nextSibling);
+          el.insertAdjacentElement('afterend', paragraph);
         }
       };
 

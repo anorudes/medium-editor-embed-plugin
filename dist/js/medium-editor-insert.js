@@ -830,22 +830,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (e.which === 40 || e.which === 13) {
 	        // Detect selected image
 	        var selectedImageDOM = document.querySelector('.' + this.activeClassName);
-	        var selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
-	        if (selectedImageParentDOM) {
-	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+
+	        if (selectedImageDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
 
 	          if (!nextSiblingParagraphDOM) {
 	            // Insert paragraph and focus
 	            var paragraph = document.createElement('p');
 	            paragraph.innerHTML = '<br>';
-	            selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+	            selectedImageDOM.insertAdjacentElement('afterend', paragraph);
 	          }
 
 	          // Focus next paragraph
-	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageDOM);
 
 	          if (nextSiblingParagraphDOM) {
-
 	            window.getSelection().removeAllRanges();
 	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
 	            MediumEditor.selection.clearSelection(document, true);
@@ -1110,6 +1109,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      description.dataset.placeholder = this.descriptionPlaceholder;
 
 	      el.replaceWith(metacontainer);
+	      // Insert a empty paragraph
+	      if (!el.nextSibling) {
+	        el.insertAdjacentElement('afterend', paragraph);
+	      }
 
 	      // check if embed is last element, then add one more p after it
 	      lastEl = metacontainer.parentNode.lastChild;
@@ -1450,7 +1453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          paragraph.innerHTML = '<br>';
 
 	          if (!el.nextSibling || !el.nextSibling.nextSibling) {
-	            el.parentNode.insertBefore(paragraph, el.nextSibling);
+	            el.insertAdjacentElement('afterend', paragraph);
 	          }
 	        };
 
