@@ -1409,12 +1409,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var image = this._plugin.getCore().selectedElement.querySelector('[data-uid="' + uid + '"]');
 
 	      if (image) {
-	        this.replaceImage(image, imageUrl, isLoader);
+	        this.replaceImage(image, imageUrl);
 	      } else {
 	        this.addImage(imageUrl, uid, isLoader);
 	      }
 
 	      this._plugin.getCore().hideButtons();
+	    }
+	  }, {
+	    key: 'addParagraph',
+	    value: function addParagraph(el) {
+	      var paragraph = document.createElement('p');
+	      paragraph.innerHTML = '<br>';
+	      el.insertAdjacentElement('afterend', paragraph);
 	    }
 	  }, {
 	    key: 'addImage',
@@ -1425,9 +1432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          figure = document.createElement('figure'),
 	          img = document.createElement('img'),
 	          descriptionContainer = document.createElement('div'),
-	          description = document.createElement('figcaption'),
-	          paragraph = document.createElement('p');
-
+	          description = document.createElement('figcaption');
 	      var domImage = void 0;
 
 	      img.alt = '';
@@ -1458,10 +1463,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          descriptionContainer.appendChild(description);
 	          figure.appendChild(descriptionContainer);
 	          el.appendChild(figure);
-	          paragraph.innerHTML = '<br>';
 
-	          if (!el.nextSibling || !el.nextSibling.nextSibling) {
-	            el.insertAdjacentElement('afterend', paragraph);
+	          if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
+	            _this5.addParagraph(el);
 	          }
 	        };
 
@@ -1481,13 +1485,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'replaceImage',
-	    value: function replaceImage(image, url, isLoader) {
+	    value: function replaceImage(image, url) {
 	      var domImage = new Image();
 	      var el = this._plugin.getCore().selectedElement;
 
-	      if (!isLoader) {
-	        el.classList.remove(this.loadingClassName);
-	        el.querySelector('img').classList.add(this.activeClassName);
+	      el.querySelector('img').classList.add(this.activeClassName);
+	      el.classList.remove(this.loadingClassName);
+	      if (!el.nextSibling || !el.nextSibling.nextSibling) {
+	        this.addParagraph(el);
 	      }
 
 	      domImage.onload = function () {
@@ -1586,9 +1591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (!nextSiblingParagraphDOM) {
 	            // Insert paragraph and focus
-	            var paragraph = document.createElement('p');
-	            paragraph.innerHTML = '<br>';
-	            selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+	            this.addParagraph(selectedImageParentDOM);
 	          }
 
 	          // Focus next paragraph

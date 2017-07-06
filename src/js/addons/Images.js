@@ -186,7 +186,7 @@ export default class Images {
     const image = this._plugin.getCore().selectedElement.querySelector(`[data-uid="${uid}"]`);
 
     if (image) {
-      this.replaceImage(image, imageUrl, isLoader);
+      this.replaceImage(image, imageUrl);
     } else {
       this.addImage(imageUrl, uid, isLoader);
     }
@@ -194,14 +194,18 @@ export default class Images {
     this._plugin.getCore().hideButtons();
   }
 
+  addParagraph(el) {
+      const paragraph = document.createElement('p');
+      paragraph.innerHTML = '<br>';
+      el.insertAdjacentElement('afterend', paragraph);
+  }
+
   addImage(url, uid, isLoader) {
     const el = this._plugin.getCore().selectedElement,
       figure = document.createElement('figure'),
       img = document.createElement('img'),
       descriptionContainer = document.createElement('div'),
-      description = document.createElement('figcaption'),
-      paragraph = document.createElement('p');
-
+      description = document.createElement('figcaption');
     let domImage;
 
     img.alt = '';
@@ -232,10 +236,9 @@ export default class Images {
         descriptionContainer.appendChild(description);
         figure.appendChild(descriptionContainer);
         el.appendChild(figure);
-        paragraph.innerHTML = '<br>';
 
-        if (!el.nextSibling || !el.nextSibling.nextSibling) {
-          el.insertAdjacentElement('afterend', paragraph);
+        if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
+            this.addParagraph(el);
         }
       };
 
@@ -255,15 +258,15 @@ export default class Images {
     return domImage;
   }
 
-  replaceImage(image, url, isLoader) {
+  replaceImage(image, url) {
     const domImage = new Image();
     const el = this._plugin.getCore().selectedElement;
 
-    if (!isLoader) {
-      el.classList.remove(this.loadingClassName);
-      el.querySelector('img').classList.add(this.activeClassName);
+    el.querySelector('img').classList.add(this.activeClassName);
+    el.classList.remove(this.loadingClassName);
+    if (!el.nextSibling || !el.nextSibling.nextSibling) {
+        this.addParagraph(el);
     }
-
 
     domImage.onload = () => {
       image.src = domImage.src;
@@ -354,9 +357,7 @@ export default class Images {
 
         if (!nextSiblingParagraphDOM) {
           // Insert paragraph and focus
-          const paragraph = document.createElement('p');
-          paragraph.innerHTML = '<br>';
-          selectedImageParentDOM.insertAdjacentElement('afterend', paragraph);
+          this.addParagraph(selectedImageParentDOM);
         }
 
         // Focus next paragraph
