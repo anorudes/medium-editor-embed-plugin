@@ -910,9 +910,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'removeEmbed',
-	    value: function removeEmbed(e) {}
-	    // TODO remove Embed (overlay with cross-icon... maybe)
-
+	    value: function removeEmbed(e) {
+	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+	      if (selectedEmbedDOM) {
+	        selectedEmbedDOM.remove();
+	      }
+	    }
 
 	    /**
 	     * Init Toolbar for tuning embed position

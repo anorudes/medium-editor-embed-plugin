@@ -236,7 +236,10 @@ export default class Embeds {
 
 
   removeEmbed(e) {
-    // TODO remove Embed (overlay with cross-icon... maybe)
+      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
+      if (selectedEmbedDOM) {
+          selectedEmbedDOM.remove();
+      }
   }
 
   /**
