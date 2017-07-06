@@ -845,6 +845,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
 	          if (nextSiblingParagraphDOM) {
+	            if (!nextSiblingParagraphDOM.innerHTML) {
+	              nextSiblingParagraphDOM.innerHTML = '<br>';
+	            }
 	            window.getSelection().removeAllRanges();
 	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
 	            selectedEmbedDOM.classList.remove(this.activeClassName);
@@ -1589,6 +1592,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedImageParentDOM);
 
 	          if (nextSiblingParagraphDOM) {
+	            if (!nextSiblingParagraphDOM.innerHTML) {
+	              nextSiblingParagraphDOM.innerHTML = '<br>';
+	            }
 	            window.getSelection().removeAllRanges();
 	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
 	            MediumEditor.selection.clearSelection(document, true);

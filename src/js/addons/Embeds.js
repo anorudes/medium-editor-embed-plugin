@@ -171,6 +171,9 @@ export default class Embeds {
         nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
 
         if (nextSiblingParagraphDOM) {
+          if (!nextSiblingParagraphDOM.innerHTML) {
+              nextSiblingParagraphDOM.innerHTML = '<br>';
+          }
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
             selectedEmbedDOM.classList.remove(this.activeClassName);
