@@ -76,8 +76,8 @@ export default class Images {
         className: 'btn-align-left',
         label: 'Left',
         title: 'Left',
-        onClick: (function() {
-          this.changeAlign('align-left', 'image-align-left');
+        onClick: (function(evt) {
+          this.changeAlign('align-left', 'image-align-left', evt);
         }).bind(this),
       }, {
         name: 'image-align-center',
@@ -85,8 +85,8 @@ export default class Images {
         className: 'btn-align-center',
         label: 'Center',
         title: 'Center',
-        onClick: (function() {
-          this.changeAlign('align-center', 'image-align-center');
+        onClick: (function(evt) {
+          this.changeAlign('align-center', 'image-align-center', evt);
         }).bind(this),
       }, {
         name: 'image-align-center-wide',
@@ -94,8 +94,8 @@ export default class Images {
         className: 'btn-align-center-wide',
         label: 'Wide',
         title: 'Wide',
-        onClick: (function() {
-          this.changeAlign('align-center-wide', 'image-align-center-wide');
+        onClick: (function(evt) {
+          this.changeAlign('align-center-wide', 'image-align-center-wide', evt);
         }).bind(this),
       }, {
         name: 'image-align-center-full',
@@ -103,8 +103,8 @@ export default class Images {
         className: 'btn-align-center-full',
         label: 'Full',
         title: 'Full wide',
-        onClick: (function() {
-          this.changeAlign('align-center-full', 'image-align-center-full');
+        onClick: (function(evt) {
+          this.changeAlign('align-center-full', 'image-align-center-full', evt);
         }).bind(this),
       }, {
         name: 'image-align-right',
@@ -112,8 +112,8 @@ export default class Images {
         className: 'btn-align-right',
         label: 'Right',
         title: 'Right',
-        onClick: (function() {
-          this.changeAlign('align-right', 'image-align-right');          
+        onClick: (function(evt) {
+          this.changeAlign('align-right', 'image-align-right', evt);          
         }).bind(this),
       }, ]
     });
@@ -121,7 +121,11 @@ export default class Images {
     this._editor.extensions.push(this.toolbar);
   }
 
-  changeAlign(className, action) {
+  changeAlign(className, action, evt) {
+    if (evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
     const el = this.activeImageElement;
     el.classList.remove(
       this.alignLeftClassName,
@@ -132,12 +136,8 @@ export default class Images {
     );
 
     el.classList.add(className);
-
     this.toolbar.setToolbarPosition();
-    setTimeout( () => {
-      this.selectImageCore( el.querySelector('img') );      
-    }, 0);
-
+  
     if (this.options.onChange) {
       this.options.onChange(action);
     }

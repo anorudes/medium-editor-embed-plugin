@@ -101,6 +101,10 @@ export default class Embeds {
 
   unselectEmbed(e) {
     const el = e.target;
+    this.unselectEmbedCore(el);
+  }
+
+  unselectEmbedCore(el) {
     let clickedEmbed, clickedEmbedPlaceholder, embeds, embedsPlaceholders;
 
     if (el.classList.contains(this.descriptionClassName)) return false;
@@ -191,6 +195,12 @@ export default class Embeds {
     }
   }
 
+  setFocusOnElement( el ) {
+    // return focus to element, allow user to cancel embed by start writing
+    this._editor.elements[0].focus();
+    el.focus();
+  }
+
   handleClick() {
     this.el = this._plugin.getCore().selectedElement;
     this.el.classList.add(this.loadingClassName);
@@ -206,15 +216,16 @@ export default class Embeds {
     // FIXME: it doesn't work yet.  :(
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
+    this.setFocusOnElement(this.el);
+
     // this._plugin.getCore().hideButtons();
 
-    // return focus to element, allow user to cancel embed by start writing
-    this._editor.elements[0].focus();
-    this.el.focus();
-
+    
     // this._editor.selectElement(this.el);
     // console.log( this._editor.selection );
   }
+
+
 
   handleKeyDown(evt) {
     if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
@@ -265,40 +276,40 @@ export default class Embeds {
         action: 'align-left',
         className: 'btn-align-left',
         label: 'Left',
-        onClick: (function() {
-          this.changeAlign(this.alignLeftClassName, 'embed-align-left');
+        onClick: (function(evt) {
+          this.changeAlign(this.alignLeftClassName, 'embed-align-left', evt);
         }).bind(this),
       }, {
         name: 'embed-align-center',
         action: 'align-center',
         className: 'btn-align-center',
         label: 'Center',
-        onClick: (function() {
-          this.changeAlign(this.alignCenterClassName, 'embed-align-center');
+        onClick: (function(evt) {
+          this.changeAlign(this.alignCenterClassName, 'embed-align-center', evt);
         }).bind(this),
       }, {
         name: 'embed-align-center-wide',
         action: 'align-center-wide',
         className: 'btn-align-center-wide',
         label: 'Wide',
-        onClick: (function() {
-          this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide');
+        onClick: (function(evt) {
+          this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide', evt);
         }).bind(this),
       }, {
         name: 'embed-align-center-full',
         action: 'align-center-full',
         className: 'btn-align-center-full',
         label: 'Full',
-        onClick: (function() {
-          this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full');
+        onClick: (function(evt) {
+          this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full', evt);
         }).bind(this),
       }, {
         name: 'embed-align-right',
         action: 'align-right',
         className: 'btn-align-right',
         label: 'Right',
-        onClick: (function() {
-          this.changeAlign(this.alignRightClassName, 'embed-align-right');
+        onClick: (function(evt) {
+          this.changeAlign(this.alignRightClassName, 'embed-align-right', evt);
         }).bind(this),
       }, ]
     });
@@ -306,7 +317,11 @@ export default class Embeds {
     this._editor.extensions.push(this.toolbar);
   }
 
-  changeAlign(className, action) {
+  changeAlign(className, action, evt) {
+    if (evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
     const el = this.activeEmbedElement;
     el.classList.remove(
       this.alignLeftClassName,
@@ -318,9 +333,6 @@ export default class Embeds {
     el.classList.add(className);
 
     this.toolbar.setToolbarPosition();
-    setTimeout( () => {
-      this.selectEmbedCore( el.querySelector(`.${this.overlayClassName}`) );
-    }, 0);
 
     if (this.options.onChange) {
       this.options.onChange(action);
