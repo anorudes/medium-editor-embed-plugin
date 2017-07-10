@@ -39,7 +39,10 @@ export default class Embeds {
           }
         }
       },
-      parseOnPaste: false
+      parseOnPaste: false,
+      onChange: (action) => {
+        console.log('Embed change: ', action);
+      },
     };
 
     Object.assign(this.options, options);
@@ -82,7 +85,10 @@ export default class Embeds {
 
   selectEmbed(e) {
     const el = e.target;
+    this.selectEmbedCore(el);
+  }
 
+  selectEmbedCore(el) {
     if (el.classList.contains(this.overlayClassName)) {
       const selectedEl = utils.getClosestWithClassName(el, this.elementClassName);
       if (!selectedEl.classList.contains(this.loadingClassName)) {
@@ -260,7 +266,7 @@ export default class Embeds {
         className: 'btn-align-left',
         label: 'Left',
         onClick: (function() {
-          this.changeAlign(this.alignLeftClassName);
+          this.changeAlign(this.alignLeftClassName, 'embed-align-left');
         }).bind(this),
       }, {
         name: 'embed-align-center',
@@ -268,7 +274,7 @@ export default class Embeds {
         className: 'btn-align-center',
         label: 'Center',
         onClick: (function() {
-          this.changeAlign(this.alignCenterClassName);
+          this.changeAlign(this.alignCenterClassName, 'embed-align-center');
         }).bind(this),
       }, {
         name: 'embed-align-center-wide',
@@ -276,7 +282,7 @@ export default class Embeds {
         className: 'btn-align-center-wide',
         label: 'Wide',
         onClick: (function() {
-          this.changeAlign(this.alignCenterWideClassName);
+          this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide');
         }).bind(this),
       }, {
         name: 'embed-align-center-full',
@@ -284,7 +290,7 @@ export default class Embeds {
         className: 'btn-align-center-full',
         label: 'Full',
         onClick: (function() {
-          this.changeAlign(this.alignCenterFullClassName);
+          this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full');
         }).bind(this),
       }, {
         name: 'embed-align-right',
@@ -292,7 +298,7 @@ export default class Embeds {
         className: 'btn-align-right',
         label: 'Right',
         onClick: (function() {
-          this.changeAlign(this.alignRightClassName);
+          this.changeAlign(this.alignRightClassName, 'embed-align-right');
         }).bind(this),
       }, ]
     });
@@ -300,7 +306,7 @@ export default class Embeds {
     this._editor.extensions.push(this.toolbar);
   }
 
-  changeAlign(className) {
+  changeAlign(className, action) {
     const el = this.activeEmbedElement;
     el.classList.remove(
       this.alignLeftClassName,
@@ -310,6 +316,16 @@ export default class Embeds {
       this.alignCenterFullClassName
     );
     el.classList.add(className);
+
+    this.toolbar.setToolbarPosition();
+    setTimeout( () => {
+      this.selectEmbedCore( el.querySelector(`.${this.overlayClassName}`) );
+    }, 0);
+
+    if (this.options.onChange) {
+      this.options.onChange(action);
+    }
+
   }
 
   /**

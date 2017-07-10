@@ -10,10 +10,13 @@ export default class Images {
       uploadUrl: 'upload.php',
       deleteUrl: 'delete.php',
       deleteMethod: 'DELETE',
-      deleteData: {}
+      deleteData: {},
+      onChange: (action) => {
+        console.log('Image change: ', action);
+      },
     };
 
-    Object.assign(this.options, options);
+    Object.assign(this.options, options); 
 
     this._plugin = plugin;
     this._editor = this._plugin.base;
@@ -74,7 +77,7 @@ export default class Images {
         label: 'Left',
         title: 'Left',
         onClick: (function() {
-          this.changeAlign('align-left');
+          this.changeAlign('align-left', 'image-align-left');
         }).bind(this),
       }, {
         name: 'image-align-center',
@@ -83,7 +86,7 @@ export default class Images {
         label: 'Center',
         title: 'Center',
         onClick: (function() {
-          this.changeAlign('align-center');
+          this.changeAlign('align-center', 'image-align-center');
         }).bind(this),
       }, {
         name: 'image-align-center-wide',
@@ -92,7 +95,7 @@ export default class Images {
         label: 'Wide',
         title: 'Wide',
         onClick: (function() {
-          this.changeAlign('align-center-wide');
+          this.changeAlign('align-center-wide', 'image-align-center-wide');
         }).bind(this),
       }, {
         name: 'image-align-center-full',
@@ -101,7 +104,7 @@ export default class Images {
         label: 'Full',
         title: 'Full wide',
         onClick: (function() {
-          this.changeAlign('align-center-full');
+          this.changeAlign('align-center-full', 'image-align-center-full');
         }).bind(this),
       }, {
         name: 'image-align-right',
@@ -110,7 +113,7 @@ export default class Images {
         label: 'Right',
         title: 'Right',
         onClick: (function() {
-          this.changeAlign('align-right');
+          this.changeAlign('align-right', 'image-align-right');          
         }).bind(this),
       }, ]
     });
@@ -118,7 +121,7 @@ export default class Images {
     this._editor.extensions.push(this.toolbar);
   }
 
-  changeAlign(className) {
+  changeAlign(className, action) {
     const el = this.activeImageElement;
     el.classList.remove(
       this.alignLeftClassName,
@@ -129,6 +132,15 @@ export default class Images {
     );
 
     el.classList.add(className);
+
+    this.toolbar.setToolbarPosition();
+    setTimeout( () => {
+      this.selectImageCore( el.querySelector('img') );      
+    }, 0);
+
+    if (this.options.onChange) {
+      this.options.onChange(action);
+    }
   }
 
   uploadFiles() {
@@ -281,19 +293,23 @@ export default class Images {
 
   selectImage(e) {
     const el = e.target;
-
+    this.selectImageCore(el);
+  }
+  
+  selectImageCore(el){
     if (el.nodeName.toLowerCase() === 'img' && utils.getClosestWithClassName(el, this.elementClassName)) {
       const parentNode = el.parentNode.parentNode;
 
       if (!parentNode.classList.contains(this.loadingClassName)) {
         el.classList.add(this.activeClassName);
-        parentNode.classList.add(this.activeClassName);
+        // parentNode.classList.add(this.activeClassName);
         // TODO: The value is correct, but the medium sometimes change
         this._editor.selectElement(parentNode);
         this.activeImageElement = parentNode;
       }
     }
   }
+
 
   unselectImage(e) {
     const el = e.target;
@@ -312,6 +328,7 @@ export default class Images {
         image.classList.remove(this.activeClassName);
       }
     });
+    this.activeImage = null;
   }
 
   getSiblingParagraph(el) {

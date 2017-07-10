@@ -702,7 +702,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	      },
-	      parseOnPaste: false
+	      parseOnPaste: false,
+	      onChange: function onChange(action) {
+	        console.log('Embed change: ', action);
+	      }
 	    };
 
 	    Object.assign(this.options, options);
@@ -748,7 +751,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'selectEmbed',
 	    value: function selectEmbed(e) {
 	      var el = e.target;
-
+	      this.selectEmbedCore(el);
+	    }
+	  }, {
+	    key: 'selectEmbedCore',
+	    value: function selectEmbedCore(el) {
 	      if (el.classList.contains(this.overlayClassName)) {
 	        var selectedEl = _utils2.default.getClosestWithClassName(el, this.elementClassName);
 	        if (!selectedEl.classList.contains(this.loadingClassName)) {
@@ -938,7 +945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          className: 'btn-align-left',
 	          label: 'Left',
 	          onClick: function () {
-	            this.changeAlign(this.alignLeftClassName);
+	            this.changeAlign(this.alignLeftClassName, 'embed-align-left');
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center',
@@ -946,7 +953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          className: 'btn-align-center',
 	          label: 'Center',
 	          onClick: function () {
-	            this.changeAlign(this.alignCenterClassName);
+	            this.changeAlign(this.alignCenterClassName, 'embed-align-center');
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center-wide',
@@ -954,7 +961,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          className: 'btn-align-center-wide',
 	          label: 'Wide',
 	          onClick: function () {
-	            this.changeAlign(this.alignCenterWideClassName);
+	            this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide');
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-center-full',
@@ -962,7 +969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          className: 'btn-align-center-full',
 	          label: 'Full',
 	          onClick: function () {
-	            this.changeAlign(this.alignCenterFullClassName);
+	            this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full');
 	          }.bind(this)
 	        }, {
 	          name: 'embed-align-right',
@@ -970,7 +977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          className: 'btn-align-right',
 	          label: 'Right',
 	          onClick: function () {
-	            this.changeAlign(this.alignRightClassName);
+	            this.changeAlign(this.alignRightClassName, 'embed-align-right');
 	          }.bind(this)
 	        }]
 	      });
@@ -979,10 +986,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'changeAlign',
-	    value: function changeAlign(className) {
+	    value: function changeAlign(className, action) {
+	      var _this3 = this;
+
 	      var el = this.activeEmbedElement;
 	      el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
 	      el.classList.add(className);
+
+	      this.toolbar.setToolbarPosition();
+	      setTimeout(function () {
+	        _this3.selectEmbedCore(el.querySelector('.' + _this3.overlayClassName));
+	      }, 0);
+
+	      if (this.options.onChange) {
+	        this.options.onChange(action);
+	      }
 	    }
 
 	    /**
@@ -996,7 +1014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'oembed',
 	    value: function oembed(url, pasted) {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      var urlOut = this.options.oembedProxy + '&url=' + url;
 	      var xhr = new XMLHttpRequest();
@@ -1006,7 +1024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      xhr.onreadystatechange = function () {
 	        if (xhr.readyState === 4 && xhr.status === 200) {
 	          var data = JSON.parse(xhr.responseText);
-	          _this3.embed(data.html, url, data);
+	          _this4.embed(data.html, url, data);
 	        }
 	      };
 
@@ -1222,7 +1240,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      uploadUrl: 'upload.php',
 	      deleteUrl: 'delete.php',
 	      deleteMethod: 'DELETE',
-	      deleteData: {}
+	      deleteData: {},
+	      onChange: function onChange(action) {
+	        console.log('Image change: ', action);
+	      }
 	    };
 
 	    Object.assign(this.options, options);
@@ -1294,7 +1315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Left',
 	          title: 'Left',
 	          onClick: function () {
-	            this.changeAlign('align-left');
+	            this.changeAlign('align-left', 'image-align-left');
 	          }.bind(this)
 	        }, {
 	          name: 'image-align-center',
@@ -1303,7 +1324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Center',
 	          title: 'Center',
 	          onClick: function () {
-	            this.changeAlign('align-center');
+	            this.changeAlign('align-center', 'image-align-center');
 	          }.bind(this)
 	        }, {
 	          name: 'image-align-center-wide',
@@ -1312,7 +1333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Wide',
 	          title: 'Wide',
 	          onClick: function () {
-	            this.changeAlign('align-center-wide');
+	            this.changeAlign('align-center-wide', 'image-align-center-wide');
 	          }.bind(this)
 	        }, {
 	          name: 'image-align-center-full',
@@ -1321,7 +1342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Full',
 	          title: 'Full wide',
 	          onClick: function () {
-	            this.changeAlign('align-center-full');
+	            this.changeAlign('align-center-full', 'image-align-center-full');
 	          }.bind(this)
 	        }, {
 	          name: 'image-align-right',
@@ -1330,7 +1351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          label: 'Right',
 	          title: 'Right',
 	          onClick: function () {
-	            this.changeAlign('align-right');
+	            this.changeAlign('align-right', 'image-align-right');
 	          }.bind(this)
 	        }]
 	      });
@@ -1339,38 +1360,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'changeAlign',
-	    value: function changeAlign(className) {
+	    value: function changeAlign(className, action) {
+	      var _this3 = this;
+
 	      var el = this.activeImageElement;
 	      el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
 
 	      el.classList.add(className);
+
+	      this.toolbar.setToolbarPosition();
+	      setTimeout(function () {
+	        _this3.selectImageCore(el.querySelector('img'));
+	      }, 0);
+
+	      if (this.options.onChange) {
+	        this.options.onChange(action);
+	      }
 	    }
 	  }, {
 	    key: 'uploadFiles',
 	    value: function uploadFiles() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      Array.prototype.forEach.call(this._input.files, function (file) {
 	        // Generate uid for this image, so we can identify it later
 	        // and we can replace preview image with uploaded one
 	        var uid = _utils2.default.generateRandomString();
 
-	        if (_this3.options.preview) {
-	          _this3.preview(file, uid);
+	        if (_this4.options.preview) {
+	          _this4.preview(file, uid);
 	        }
 
-	        _this3.upload(file, uid);
+	        _this4.upload(file, uid);
 	      });
 	    }
 	  }, {
 	    key: 'preview',
 	    value: function preview(file, uid) {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      var reader = new FileReader();
 
 	      reader.onload = function (e) {
-	        _this4.insertImage(e.target.result, uid);
+	        _this5.insertImage(e.target.result, uid);
 	      };
 
 	      reader.readAsDataURL(file);
@@ -1426,7 +1458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'addImage',
 	    value: function addImage(url, uid, isLoader) {
-	      var _this5 = this;
+	      var _this6 = this;
 
 	      var el = this._plugin.getCore().selectedElement,
 	          figure = document.createElement('figure'),
@@ -1457,7 +1489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        domImage.onload = function () {
 	          img.src = domImage.src;
 	          if (!isLoader) {
-	            img.classList.add(_this5.activeClassName);
+	            img.classList.add(_this6.activeClassName);
 	          }
 	          figure.appendChild(img);
 	          descriptionContainer.appendChild(description);
@@ -1465,7 +1497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          el.appendChild(figure);
 
 	          if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
-	            _this5.addParagraph(el);
+	            _this6.addParagraph(el);
 	          }
 	        };
 
@@ -1509,13 +1541,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'selectImage',
 	    value: function selectImage(e) {
 	      var el = e.target;
-
+	      this.selectImageCore(el);
+	    }
+	  }, {
+	    key: 'selectImageCore',
+	    value: function selectImageCore(el) {
 	      if (el.nodeName.toLowerCase() === 'img' && _utils2.default.getClosestWithClassName(el, this.elementClassName)) {
 	        var parentNode = el.parentNode.parentNode;
 
 	        if (!parentNode.classList.contains(this.loadingClassName)) {
 	          el.classList.add(this.activeClassName);
-	          parentNode.classList.add(this.activeClassName);
+	          // parentNode.classList.add(this.activeClassName);
 	          // TODO: The value is correct, but the medium sometimes change
 	          this._editor.selectElement(parentNode);
 	          this.activeImageElement = parentNode;
@@ -1525,7 +1561,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'unselectImage',
 	    value: function unselectImage(e) {
-	      var _this6 = this;
+	      var _this7 = this;
 
 	      var el = e.target;
 	      var clickedImage = void 0,
@@ -1541,9 +1577,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName);
 	      Array.prototype.forEach.call(images, function (image) {
 	        if (image !== clickedImage) {
-	          image.classList.remove(_this6.activeClassName);
+	          image.classList.remove(_this7.activeClassName);
 	        }
 	      });
+	      this.activeImage = null;
 	    }
 	  }, {
 	    key: 'getSiblingParagraph',
@@ -1613,7 +1650,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'removeImage',
 	    value: function removeImage(e) {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      var images = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.activeClassName),
 	          selection = window.getSelection();
@@ -1665,7 +1702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        images.forEach(function (image) {
 	          var wrapper = _utils2.default.getClosestWithClassName(image, 'medium-editor-insert-images');
-	          _this7.deleteFile(image.src);
+	          _this8.deleteFile(image.src);
 
 	          image.parentNode.remove();
 
