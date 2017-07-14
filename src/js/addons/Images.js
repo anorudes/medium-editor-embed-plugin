@@ -36,6 +36,7 @@ export default class Images {
     this.label = this.options.label;
     this.descriptionPlaceholder = this.options.descriptionPlaceholder;
     this.activeImageElement = null;
+    this.isLoaderShowing = false;
     this.initToolbar();
     this.events();
   }
@@ -54,7 +55,8 @@ export default class Images {
       const uid = utils.generateRandomString();
       this.options.onInsertButtonClick(
         (imageUrl) => this.insertImage(imageUrl, uid),
-        (imageUrl) => this.insertImage(imageUrl, uid, true)
+        this.el,
+        // (imageUrl) => this.insertImage(imageUrl, uid, true)
       );
     } else {
       this._input = document.createElement('input');
@@ -195,13 +197,10 @@ export default class Images {
       this._plugin.getCore().selectElement(div);
       paragraph.remove();
     }
-    const image = this._plugin.getCore().selectedElement.querySelector(`[data-uid="${uid}"]`);
+    const el = this._plugin.getCore().selectedElement
+    // const image = el.querySelector(`[data-uid="${uid}"]`);
 
-    if (image) {
-      this.replaceImage(image, imageUrl);
-    } else {
-      this.addImage(imageUrl, uid, isLoader);
-    }
+    this.addImage(imageUrl, uid, isLoader);
 
     this._plugin.getCore().hideButtons();
   }
@@ -226,6 +225,11 @@ export default class Images {
       img.setAttribute('data-uid', uid);
     }
 
+    if (this.isLoaderShowing) {
+      el.innerHTML = '';
+      this.isLoaderShowing = false;
+    }
+
     descriptionContainer.classList.add(this.descriptionContainerClassName);
     description.contentEditable = true;
     description.classList.add(this.descriptionClassName);
@@ -247,6 +251,18 @@ export default class Images {
         figure.appendChild(img);
         descriptionContainer.appendChild(description);
         figure.appendChild(descriptionContainer);
+
+        if (this.isLoaderShowing) {
+          el.innerHTML = '';
+          el.classList.remove(this.loadingClassName);
+          this.isLoaderShowing = false;
+        }
+
+      if (isLoader) {
+        this.isLoaderShowing = true;
+        el.classList.add(this.loadingClassName);
+      }
+
         el.appendChild(figure);
 
         if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
@@ -255,9 +271,6 @@ export default class Images {
       };
 
       domImage.src = url;
-      if (isLoader) {
-        el.classList.add(this.loadingClassName);
-      }
     }
 
     el.classList.add(this.elementClassName);
@@ -274,8 +287,6 @@ export default class Images {
     const domImage = new Image();
     const el = this._plugin.getCore().selectedElement;
 
-    el.querySelector('img').classList.add(this.activeClassName);
-    el.classList.remove(this.loadingClassName);
     if (!el.nextSibling || !el.nextSibling.nextSibling) {
         this.addParagraph(el);
     }
