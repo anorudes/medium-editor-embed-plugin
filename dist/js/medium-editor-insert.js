@@ -1300,7 +1300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.onInsertButtonClick) {
 	        var uid = _utils2.default.generateRandomString();
 	        this.options.onInsertButtonClick(function (imageUrl) {
-	          return _this2.insertImage(imageUrl, uid);
+	          return _this2.insertImage(imageUrl, uid, false);
 	        }, function (imageUrl) {
 	          return _this2.insertImage(imageUrl, uid, true);
 	        });
@@ -1447,7 +1447,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._plugin.getCore().selectElement(div);
 	        paragraph.remove();
 	      }
-	      var el = this._plugin.getCore().selectedElement;
+	      // const el = this._plugin.getCore().selectedElement
 	      // const image = el.querySelector(`[data-uid="${uid}"]`);
 
 	      this.addImage(imageUrl, uid, isLoader);
@@ -1479,11 +1479,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        img.setAttribute('data-uid', uid);
 	      }
 
-	      if (this.isLoaderShowing) {
-	        el.innerHTML = '';
-	        this.isLoaderShowing = false;
-	      }
-
 	      descriptionContainer.classList.add(this.descriptionContainerClassName);
 	      description.contentEditable = true;
 	      description.classList.add(this.descriptionClassName);
@@ -1492,6 +1487,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // If we're dealing with a preview image,
 	      // we don't have to preload it before displaying
 	      if (url.match(/^data:/)) {
+	        if (!isLoader) {
+	          el.innerHTML = '';
+	          el.classList.remove(this.loadingClassName);
+	          this.isLoaderShowing = false;
+	        }
+
 	        img.src = url;
 	        figure.appendChild(img);
 	        el.appendChild(figure);
@@ -1506,7 +1507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          descriptionContainer.appendChild(description);
 	          figure.appendChild(descriptionContainer);
 
-	          if (_this5.isLoaderShowing) {
+	          if (!isLoader) {
 	            el.innerHTML = '';
 	            el.classList.remove(_this5.loadingClassName);
 	            _this5.isLoaderShowing = false;

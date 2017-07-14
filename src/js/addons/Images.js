@@ -54,7 +54,7 @@ export default class Images {
     if (this.options.onInsertButtonClick) {
       const uid = utils.generateRandomString();
       this.options.onInsertButtonClick(
-        (imageUrl) => this.insertImage(imageUrl, uid),
+        (imageUrl) => this.insertImage(imageUrl, uid, false),
         (imageUrl) => this.insertImage(imageUrl, uid, true)
       );
     } else {
@@ -196,7 +196,7 @@ export default class Images {
       this._plugin.getCore().selectElement(div);
       paragraph.remove();
     }
-    const el = this._plugin.getCore().selectedElement
+    // const el = this._plugin.getCore().selectedElement
     // const image = el.querySelector(`[data-uid="${uid}"]`);
 
     this.addImage(imageUrl, uid, isLoader);
@@ -224,11 +224,6 @@ export default class Images {
       img.setAttribute('data-uid', uid);
     }
 
-    if (this.isLoaderShowing) {
-      el.innerHTML = '';
-      this.isLoaderShowing = false;
-    }
-
     descriptionContainer.classList.add(this.descriptionContainerClassName);
     description.contentEditable = true;
     description.classList.add(this.descriptionClassName);
@@ -237,9 +232,17 @@ export default class Images {
     // If we're dealing with a preview image,
     // we don't have to preload it before displaying
     if (url.match(/^data:/)) {
+      if (!isLoader) {
+        el.innerHTML = '';
+        el.classList.remove(this.loadingClassName);
+        this.isLoaderShowing = false;
+      }
+
       img.src = url;
       figure.appendChild(img);
       el.appendChild(figure);
+
+
     } else {
       domImage = new Image();
       domImage.onload = () => {
@@ -251,16 +254,17 @@ export default class Images {
         descriptionContainer.appendChild(description);
         figure.appendChild(descriptionContainer);
 
-        if (this.isLoaderShowing) {
+        if (!isLoader) {
           el.innerHTML = '';
           el.classList.remove(this.loadingClassName);
           this.isLoaderShowing = false;
         }
 
-      if (isLoader) {
-        this.isLoaderShowing = true;
-        el.classList.add(this.loadingClassName);
-      }
+
+        if (isLoader) {
+          this.isLoaderShowing = true;
+          el.classList.add(this.loadingClassName);
+        }
 
         el.appendChild(figure);
 
