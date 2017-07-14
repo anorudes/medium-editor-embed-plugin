@@ -272,12 +272,12 @@ export default class Images {
           if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
               this.addParagraph(el);
           }
+
+          // Resolve with domImage so we can test this function easily
+          resolve(domImage);
         };
 
         domImage.src = url;
-
-        // Resolve with domImage so we can test this function easily
-        resolve(domImage);
       }
 
       el.classList.add(this.elementClassName);

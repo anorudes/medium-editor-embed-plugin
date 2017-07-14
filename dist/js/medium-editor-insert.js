@@ -1524,12 +1524,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
 	              _this5.addParagraph(el);
 	            }
+
+	            // Resolve with domImage so we can test this function easily
+	            resolve(domImage);
 	          };
 
 	          domImage.src = url;
-
-	          // Resolve with domImage so we can test this function easily
-	          resolve(domImage);
 	        }
 
 	        el.classList.add(_this5.elementClassName);
