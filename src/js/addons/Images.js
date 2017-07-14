@@ -198,10 +198,10 @@ export default class Images {
     }
     // const el = this._plugin.getCore().selectedElement
     // const image = el.querySelector(`[data-uid="${uid}"]`);
-
-    this.addImage(imageUrl, uid, isLoader);
-
+    
     this._plugin.getCore().hideButtons();
+
+    return this.addImage(imageUrl, uid, isLoader);
   }
 
   addParagraph(el) {
@@ -211,79 +211,81 @@ export default class Images {
   }
 
   addImage(url, uid, isLoader) {
-    const el = this._plugin.getCore().selectedElement,
-      figure = document.createElement('figure'),
-      img = document.createElement('img'),
-      descriptionContainer = document.createElement('div'),
-      description = document.createElement('figcaption');
-    let domImage;
+    return new Promise((resolve, reject) => {
+      const el = this._plugin.getCore().selectedElement,
+        figure = document.createElement('figure'),
+        img = document.createElement('img'),
+        descriptionContainer = document.createElement('div'),
+        description = document.createElement('figcaption');
+      let domImage;
 
-    img.alt = '';
+      img.alt = '';
 
-    if (uid) {
-      img.setAttribute('data-uid', uid);
-    }
-
-    descriptionContainer.classList.add(this.descriptionContainerClassName);
-    description.contentEditable = true;
-    description.classList.add(this.descriptionClassName);
-    description.dataset.placeholder = this.descriptionPlaceholder;
-
-    // If we're dealing with a preview image,
-    // we don't have to preload it before displaying
-    if (url.match(/^data:/)) {
-      if (!isLoader) {
-        el.innerHTML = '';
-        el.classList.remove(this.loadingClassName);
-        this.isLoaderShowing = false;
+      if (uid) {
+        img.setAttribute('data-uid', uid);
       }
 
-      img.src = url;
-      figure.appendChild(img);
-      el.appendChild(figure);
+      descriptionContainer.classList.add(this.descriptionContainerClassName);
+      description.contentEditable = true;
+      description.classList.add(this.descriptionClassName);
+      description.dataset.placeholder = this.descriptionPlaceholder;
 
-
-    } else {
-      domImage = new Image();
-      domImage.onload = () => {
-        img.src = domImage.src;
-        if (!isLoader) {
-          img.classList.add(this.activeClassName);
-        }
-        figure.appendChild(img);
-        descriptionContainer.appendChild(description);
-        figure.appendChild(descriptionContainer);
-
+      // If we're dealing with a preview image,
+      // we don't have to preload it before displaying
+      if (url.match(/^data:/)) {
         if (!isLoader) {
           el.innerHTML = '';
           el.classList.remove(this.loadingClassName);
           this.isLoaderShowing = false;
         }
 
-
-        if (isLoader) {
-          this.isLoaderShowing = true;
-          el.classList.add(this.loadingClassName);
-        }
-
+        img.src = url;
+        figure.appendChild(img);
         el.appendChild(figure);
 
-        if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
-            this.addParagraph(el);
-        }
-      };
 
-      domImage.src = url;
-    }
+      } else {
+        domImage = new Image();
+        domImage.onload = () => {
+          img.src = domImage.src;
+          if (!isLoader) {
+            img.classList.add(this.activeClassName);
+          }
+          figure.appendChild(img);
+          descriptionContainer.appendChild(description);
+          figure.appendChild(descriptionContainer);
 
-    el.classList.add(this.elementClassName);
-    el.classList.add(this.alignCenterClassName);
+          if (!isLoader) {
+            el.innerHTML = '';
+            el.classList.remove(this.loadingClassName);
+            this.isLoaderShowing = false;
+          }
 
-    el.contentEditable = false;
 
+          if (isLoader) {
+            this.isLoaderShowing = true;
+            el.classList.add(this.loadingClassName);
+          }
 
-    // Return domImage so we can test this function easily
-    return domImage;
+          el.appendChild(figure);
+
+          if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
+              this.addParagraph(el);
+          }
+        };
+
+        domImage.src = url;
+
+        // Resolve with domImage so we can test this function easily
+        resolve(domImage);
+      }
+
+      el.classList.add(this.elementClassName);
+      el.classList.add(this.alignCenterClassName);
+
+      el.contentEditable = false;
+
+    }); 
   }
 
   replaceImage(image, url) {
