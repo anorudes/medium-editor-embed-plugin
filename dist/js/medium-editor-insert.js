@@ -1301,7 +1301,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var uid = _utils2.default.generateRandomString();
 	        this.options.onInsertButtonClick(function (imageUrl) {
 	          return _this2.insertImage(imageUrl, uid);
-	        }, this.el);
+	        }, function (imageUrl) {
+	          return _this2.insertImage(imageUrl, uid, true);
+	        });
 	      } else {
 	        this._input = document.createElement('input');
 	        this._input.type = 'file';

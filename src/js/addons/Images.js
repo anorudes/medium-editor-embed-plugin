@@ -55,8 +55,7 @@ export default class Images {
       const uid = utils.generateRandomString();
       this.options.onInsertButtonClick(
         (imageUrl) => this.insertImage(imageUrl, uid),
-        this.el,
-        // (imageUrl) => this.insertImage(imageUrl, uid, true)
+        (imageUrl) => this.insertImage(imageUrl, uid, true)
       );
     } else {
       this._input = document.createElement('input');
