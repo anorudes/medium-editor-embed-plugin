@@ -1450,9 +1450,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // const el = this._plugin.getCore().selectedElement
 	      // const image = el.querySelector(`[data-uid="${uid}"]`);
 
-	      this.addImage(imageUrl, uid, isLoader);
-
 	      this._plugin.getCore().hideButtons();
+
+	      return this.addImage(imageUrl, uid, isLoader);
 	    }
 	  }, {
 	    key: 'addParagraph',
@@ -1466,75 +1466,77 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function addImage(url, uid, isLoader) {
 	      var _this5 = this;
 
-	      var el = this._plugin.getCore().selectedElement,
-	          figure = document.createElement('figure'),
-	          img = document.createElement('img'),
-	          descriptionContainer = document.createElement('div'),
-	          description = document.createElement('figcaption');
-	      var domImage = void 0;
+	      return new Promise(function (resolve, reject) {
+	        var el = _this5._plugin.getCore().selectedElement,
+	            figure = document.createElement('figure'),
+	            img = document.createElement('img'),
+	            descriptionContainer = document.createElement('div'),
+	            description = document.createElement('figcaption');
+	        var domImage = void 0;
 
-	      img.alt = '';
+	        img.alt = '';
 
-	      if (uid) {
-	        img.setAttribute('data-uid', uid);
-	      }
-
-	      descriptionContainer.classList.add(this.descriptionContainerClassName);
-	      description.contentEditable = true;
-	      description.classList.add(this.descriptionClassName);
-	      description.dataset.placeholder = this.descriptionPlaceholder;
-
-	      // If we're dealing with a preview image,
-	      // we don't have to preload it before displaying
-	      if (url.match(/^data:/)) {
-	        if (!isLoader) {
-	          el.innerHTML = '';
-	          el.classList.remove(this.loadingClassName);
-	          this.isLoaderShowing = false;
+	        if (uid) {
+	          img.setAttribute('data-uid', uid);
 	        }
 
-	        img.src = url;
-	        figure.appendChild(img);
-	        el.appendChild(figure);
-	      } else {
-	        domImage = new Image();
-	        domImage.onload = function () {
-	          img.src = domImage.src;
-	          if (!isLoader) {
-	            img.classList.add(_this5.activeClassName);
-	          }
-	          figure.appendChild(img);
-	          descriptionContainer.appendChild(description);
-	          figure.appendChild(descriptionContainer);
+	        descriptionContainer.classList.add(_this5.descriptionContainerClassName);
+	        description.contentEditable = true;
+	        description.classList.add(_this5.descriptionClassName);
+	        description.dataset.placeholder = _this5.descriptionPlaceholder;
 
+	        // If we're dealing with a preview image,
+	        // we don't have to preload it before displaying
+	        if (url.match(/^data:/)) {
 	          if (!isLoader) {
 	            el.innerHTML = '';
 	            el.classList.remove(_this5.loadingClassName);
 	            _this5.isLoaderShowing = false;
 	          }
 
-	          if (isLoader) {
-	            _this5.isLoaderShowing = true;
-	            el.classList.add(_this5.loadingClassName);
-	          }
-
+	          img.src = url;
+	          figure.appendChild(img);
 	          el.appendChild(figure);
+	        } else {
+	          domImage = new Image();
+	          domImage.onload = function () {
+	            img.src = domImage.src;
+	            if (!isLoader) {
+	              img.classList.add(_this5.activeClassName);
+	            }
+	            figure.appendChild(img);
+	            descriptionContainer.appendChild(description);
+	            figure.appendChild(descriptionContainer);
 
-	          if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
-	            _this5.addParagraph(el);
-	          }
-	        };
+	            if (!isLoader) {
+	              el.innerHTML = '';
+	              el.classList.remove(_this5.loadingClassName);
+	              _this5.isLoaderShowing = false;
+	            }
 
-	        domImage.src = url;
-	      }
+	            if (isLoader) {
+	              _this5.isLoaderShowing = true;
+	              el.classList.add(_this5.loadingClassName);
+	            }
 
-	      el.classList.add(this.elementClassName);
-	      el.classList.add(this.alignCenterClassName);
+	            el.appendChild(figure);
 
-	      el.contentEditable = false;
+	            if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
+	              _this5.addParagraph(el);
+	            }
+	          };
 
-	      // Return domImage so we can test this function easily
-	      return domImage;
+	          domImage.src = url;
+
+	          // Resolve with domImage so we can test this function easily
+	          resolve(domImage);
+	        }
+
+	        el.classList.add(_this5.elementClassName);
+	        el.classList.add(_this5.alignCenterClassName);
+
+	        el.contentEditable = false;
+	      });
 	    }
 	  }, {
 	    key: 'replaceImage',
