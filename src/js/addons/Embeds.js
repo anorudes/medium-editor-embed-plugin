@@ -200,9 +200,11 @@ export default class Embeds {
     range.setStart(el, 0);
 
     // this._editor.elements[0].focus();
-    const currentSelection = window.getSelection();
-    currentSelection.removeAllRanges();
-    currentSelection.addRange(range);
+    setTimeout(() => {
+      const currentSelection = window.getSelection();
+      currentSelection.removeAllRanges();
+      currentSelection.addRange(range);
+    }, 100);
   }
 
   handleClick() {

@@ -887,9 +887,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      range.setStart(el, 0);
 
 	      // this._editor.elements[0].focus();
-	      var currentSelection = window.getSelection();
-	      currentSelection.removeAllRanges();
-	      currentSelection.addRange(range);
+	      setTimeout(function () {
+	        var currentSelection = window.getSelection();
+	        currentSelection.removeAllRanges();
+	        currentSelection.addRange(range);
+	      }, 100);
 	    }
 	  }, {
 	    key: 'handleClick',
