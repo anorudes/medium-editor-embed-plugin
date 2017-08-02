@@ -883,15 +883,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setFocusOnElement',
 	    value: function setFocusOnElement(el) {
-	      var range = document.createRange();
-	      range.setStart(el, 0);
-
 	      // this._editor.elements[0].focus();
 	      setTimeout(function () {
 	        var currentSelection = window.getSelection();
+	        var range = document.createRange();
+	        range.setStart(el, 0);
 	        currentSelection.removeAllRanges();
 	        currentSelection.addRange(range);
-	      }, 100);
+	      }, 300);
 	    }
 	  }, {
 	    key: 'handleClick',

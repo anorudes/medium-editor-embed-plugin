@@ -196,15 +196,14 @@ export default class Embeds {
   }
 
   setFocusOnElement( el ) {
-    const range = document.createRange();
-    range.setStart(el, 0);
-
     // this._editor.elements[0].focus();
     setTimeout(() => {
       const currentSelection = window.getSelection();
+      const range = document.createRange();
+      range.setStart(el, 0);
       currentSelection.removeAllRanges();
       currentSelection.addRange(range);
-    }, 100);
+    }, 300);
   }
 
   handleClick() {
