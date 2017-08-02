@@ -413,6 +413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // https://github.com/yabwe/medium-editor/pull/1046
 	            addonActions = this.buttons.getElementsByClassName('medium-editor-insert-action');
 	            Array.prototype.forEach.call(addonActions, function (action) {
+	                // this._plugin.on(action, 'mousedown', this.handleAddonMouseDown.bind(this));
 	                _this._plugin.on(action, 'click', _this.handleAddonClick.bind(_this));
 	            });
 
@@ -591,6 +592,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function toggleAddons() {
 	            this.buttons.classList.toggle('medium-editor-insert-addons-active');
 	        }
+
+	        // handleAddonMouseDown(e) {
+	        //     const name = e.currentTarget.getAttribute('data-addon');
+	        //     e.preventDefault();
+
+	        //     console.log(this._plugin.getAddon(name));
+	        //     this._plugin.getAddon(name).handleMouseDown(e);
+	        // }
+
 	    }, {
 	        key: 'handleAddonClick',
 	        value: function handleAddonClick(e) {
@@ -873,9 +883,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setFocusOnElement',
 	    value: function setFocusOnElement(el) {
-	      // return focus to element, allow user to cancel embed by start writing
-	      this._editor.elements[0].focus();
-	      el.focus();
+	      var range = document.createRange();
+	      range.setStart(el, 0);
+
+	      // this._editor.elements[0].focus();
+	      var currentSelection = window.getSelection();
+	      currentSelection.removeAllRanges();
+	      currentSelection.addRange(range);
 	    }
 	  }, {
 	    key: 'handleClick',
@@ -895,12 +909,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
 	      this.setFocusOnElement(this.el);
-
-	      // this._plugin.getCore().hideButtons();
-
-
-	      // this._editor.selectElement(this.el);
-	      // console.log( this._editor.selection );
 	    }
 	  }, {
 	    key: 'handleKeyDown',
@@ -1180,6 +1188,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.options.onInsert && this.options.onInsert(html);
 
+	      setTimeout(function () {
+	        overlay.click();
+	      }, 100);
+
 	      return true;
 	    }
 	  }, {
@@ -1198,7 +1210,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'cancelEmbed',
 	    value: function cancelEmbed() {
 	      this.hidePlaceholder();
-	      this.el.classList.remove('medium-editor-insert-embeds-active');
+	      this.el.classList.remove(this.activeClassName);
+	      this.el.classList.remove(this.loadingClassName);
 
 	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
 	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);

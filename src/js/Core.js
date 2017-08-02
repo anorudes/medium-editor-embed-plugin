@@ -26,6 +26,7 @@ export default class Core {
         // https://github.com/yabwe/medium-editor/pull/1046
         addonActions = this.buttons.getElementsByClassName('medium-editor-insert-action');
         Array.prototype.forEach.call(addonActions, (action) => {
+            // this._plugin.on(action, 'mousedown', this.handleAddonMouseDown.bind(this));
             this._plugin.on(action, 'click', this.handleAddonClick.bind(this));
         });
 
@@ -187,6 +188,14 @@ export default class Core {
     toggleAddons() {
         this.buttons.classList.toggle('medium-editor-insert-addons-active');
     }
+
+    // handleAddonMouseDown(e) {
+    //     const name = e.currentTarget.getAttribute('data-addon');
+    //     e.preventDefault();
+
+    //     console.log(this._plugin.getAddon(name));
+    //     this._plugin.getAddon(name).handleMouseDown(e);
+    // }
 
     handleAddonClick(e) {
         const name = e.currentTarget.getAttribute('data-addon');

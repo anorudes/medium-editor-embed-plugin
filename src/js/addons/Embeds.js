@@ -196,9 +196,13 @@ export default class Embeds {
   }
 
   setFocusOnElement( el ) {
-    // return focus to element, allow user to cancel embed by start writing
-    this._editor.elements[0].focus();
-    el.focus();
+    const range = document.createRange();
+    range.setStart(el, 0);
+
+    // this._editor.elements[0].focus();
+    const currentSelection = window.getSelection();
+    currentSelection.removeAllRanges();
+    currentSelection.addRange(range);
   }
 
   handleClick() {
@@ -217,15 +221,7 @@ export default class Embeds {
     this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
 
     this.setFocusOnElement(this.el);
-
-    // this._plugin.getCore().hideButtons();
-
-    
-    // this._editor.selectElement(this.el);
-    // console.log( this._editor.selection );
   }
-
-
 
   handleKeyDown(evt) {
     if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
@@ -498,6 +494,10 @@ export default class Embeds {
 
     this.options.onInsert && this.options.onInsert(html);
 
+    setTimeout(() => {
+      overlay.click();
+    }, 100);
+
     return true;
   }
 
@@ -513,7 +513,8 @@ export default class Embeds {
 
   cancelEmbed() {
     this.hidePlaceholder();
-    this.el.classList.remove('medium-editor-insert-embeds-active');
+    this.el.classList.remove(this.activeClassName);
+    this.el.classList.remove(this.loadingClassName);
 
     this._plugin.off(document, 'paste', this.instanceHandlePaste);
     this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
