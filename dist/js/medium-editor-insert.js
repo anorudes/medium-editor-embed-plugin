@@ -762,8 +762,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function selectEmbedCore(el) {
 	      var element = this.getClosestElementByClassName(el, this.elementClassName);
 	      element.classList.add(this.activeClassName);
-	      // this._editor.selectElement(element);
-	      this.activeChapterElement = element;
 	      var currentSelection = window.getSelection();
 	    }
 	  }, {
@@ -794,8 +792,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        });
 	      }
-
-	      this.activeChapterElement = null;
 	    }
 	  }, {
 	    key: 'getSiblingParagraph',
@@ -854,7 +850,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Backspace, delete
 	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
 	        this.removeEmbed(e);
-	      } else if (this.activeChapterElement) {
+	      } else if (document.querySelector('.' + this.activeClassName)) {
+	        // Block all keys
 	        e.preventDefault();
 	      }
 	    }
@@ -883,7 +880,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
 	      if (selectedEmbedDOM) {
 	        selectedEmbedDOM.remove();
-	        this.activeChapterElement = null;
 	        e.preventDefault();
 	        e.stopPropagation();
 	      }
@@ -932,7 +928,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        evt.preventDefault();
 	        evt.stopPropagation();
 	      }
-	      var el = this.activeChapterElement;
+
+	      var el = document.querySelector('.' + this.activeClassName);
 	      el.classList.remove(this.alignLeftClassName, this.alignCenterClassName);
 	      el.classList.add(className);
 
