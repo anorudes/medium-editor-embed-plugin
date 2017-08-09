@@ -206,11 +206,11 @@
   .medium-editor-insert-embeds.align-center-full img {
     width: 100%; }
 
-.medium-editor-insert-embed-chapters-active:not(.vertical) {
+.medium-editor-insert-embed-chapters-active:not(.align-left) {
   outline: 2px solid #000; }
 
-.medium-editor-insert-embed-chapters-active.vertical > div {
+.medium-editor-insert-embed-chapters-active.align-left > div {
   outline: 2px solid #000; }
 
-.medium-editor-insert-embed-chapters.vertical {
+.medium-editor-insert-embed-chapters.align-left {
   float: left; }

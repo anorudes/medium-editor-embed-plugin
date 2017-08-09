@@ -717,8 +717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.activeClassName = 'medium-editor-insert-embed-chapters-active';
 	    this.elementClassName = 'medium-editor-insert-embed-chapters';
 
-	    this.alignLeftClassName = 'vertical';
-	    this.alignCenterClassName = 'center';
+	    this.alignLeftClassName = 'align-left';
+	    this.alignCenterClassName = 'align-center-wide';
 
 	    this.label = this.options.label;
 	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
@@ -913,9 +913,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.changeAlign(this.alignLeftClassName, 'chapters-align-left', evt);
 	          }.bind(this)
 	        }, {
-	          name: 'chapters-align-center',
-	          action: 'align-center',
-	          className: 'btn-align-center',
+	          name: 'chapters-align-center-wide',
+	          action: 'align-center-wide',
+	          className: 'btn-align-center-wide',
 	          label: 'Center',
 	          onClick: function (evt) {
 	            this.changeAlign(this.alignCenterClassName, 'chapters-align-center', evt);
