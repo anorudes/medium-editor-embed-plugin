@@ -907,7 +907,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var chapter = document.createElement('div');
 	      chapter.classList.add(this.elementClassName);
 	      if (this.options.contentHTML) {
-	        chapter.innerHTML = this.options.contentHTML;
+	        if (typeof this.options.contentHTML === 'function') {
+	          chapter.innerHTML = this.options.contentHTML();
+	        } else {
+	          chapter.innerHTML = this.options.contentHTML;
+	        }
 	      }
 	      el.replaceWith(chapter);
 
