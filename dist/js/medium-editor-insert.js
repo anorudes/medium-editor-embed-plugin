@@ -743,7 +743,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'selectEmbed',
 	    value: function selectEmbed(e) {
 	      var el = e.target;
-	      this.selectEmbedCore(el, event);
+	      if (this.getClosestElementByClassName(el, this.elementClassName)) {
+	        this.selectEmbedCore(el, event);
+	        e && e.stopPropagation();
+	        e && e.preventDefault();
+	      }
 	    }
 	  }, {
 	    key: 'getClosestElementByClassName',
@@ -755,14 +759,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'selectEmbedCore',
-	    value: function selectEmbedCore(el, event) {
-	      if (this.getClosestElementByClassName(el, this.elementClassName)) {
-	        var element = this.getClosestElementByClassName(el, this.elementClassName);
-	        element.classList.add(this.activeClassName);
-	        this._editor.selectElement(element);
-	        this.activeChapterElement = element;
-	        event && event.stopPropagation();
-	      }
+	    value: function selectEmbedCore(el) {
+	      var element = this.getClosestElementByClassName(el, this.elementClassName);
+	      element.classList.add(this.activeClassName);
+	      // this._editor.selectElement(element);
+	      this.activeChapterElement = element;
+	      var currentSelection = window.getSelection();
 	    }
 	  }, {
 	    key: 'unselectEmbed',
@@ -781,7 +783,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          embedsPlaceholders = void 0;
 
 	      chapters = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-
 	      if (!chapters || !chapters.length) {
 	        return false;
 	      }
@@ -797,10 +798,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.activeChapterElement = null;
 	    }
 	  }, {
+	    key: 'getSiblingParagraph',
+	    value: function getSiblingParagraph(el) {
+	      if (!el) return false;
+
+	      var nextSiblingDOM = el.nextSibling;
+	      var nextSiblingParagraphDOM = void 0;
+
+	      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+	        if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+	          nextSiblingParagraphDOM = nextSiblingDOM;
+	        } else {
+	          nextSiblingDOM = nextSiblingDOM.nextSibling;
+	        }
+	      }
+
+	      return nextSiblingParagraphDOM;
+	    }
+	  }, {
 	    key: 'handleKey',
 	    value: function handleKey(e) {
 	      var target = e.target;
 
+	      // Enter key
+	      if (e.which === 40 || e.which === 13) {
+	        // Detect selected chapters
+	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+
+	        if (selectedEmbedDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (!nextSiblingParagraphDOM) {
+	            // Insert paragraph and focus
+	            var paragraph = document.createElement('p');
+	            paragraph.innerHTML = '<br>';
+	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+	          }
+
+	          // Focus next paragraph
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (nextSiblingParagraphDOM) {
+	            if (!nextSiblingParagraphDOM.innerHTML) {
+	              nextSiblingParagraphDOM.innerHTML = '<br>';
+	            }
+	            window.getSelection().removeAllRanges();
+	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
+	            MediumEditor.selection.clearSelection(document, true);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
+	            e.preventDefault();
+	          }
+	        }
+	      }
 	      // Backspace, delete
 	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
 	        this.removeEmbed(e);

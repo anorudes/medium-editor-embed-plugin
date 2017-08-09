@@ -59,8 +59,12 @@ export default class Chapters {
   }
 
   selectEmbed(e) {
-    const el = e.target;
-    this.selectEmbedCore(el, event);
+      const el = e.target;
+      if (this.getClosestElementByClassName(el, this.elementClassName)) {
+          this.selectEmbedCore(el, event);
+          e && e.stopPropagation();
+          e && e.preventDefault();
+      }
   }
 
   getClosestElementByClassName(el, className) {
@@ -71,14 +75,12 @@ export default class Chapters {
   }
 
 
-  selectEmbedCore(el, event) {
-    if (this.getClosestElementByClassName(el, this.elementClassName)) {
-      const element = this.getClosestElementByClassName(el, this.elementClassName);
-      element.classList.add(this.activeClassName);
-      this._editor.selectElement(element);
-      this.activeChapterElement = element;
-      event && event.stopPropagation();
-    }
+  selectEmbedCore(el) {
+    const element = this.getClosestElementByClassName(el, this.elementClassName);
+    element.classList.add(this.activeClassName);
+    // this._editor.selectElement(element);
+    this.activeChapterElement = element;
+    const currentSelection = window.getSelection();
   }
 
   unselectEmbed(e) {
@@ -90,7 +92,6 @@ export default class Chapters {
     let clickedEmbed, clickedEmbedPlaceholder, chapters, embedsPlaceholders;
 
     chapters = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-
     if (!chapters || !chapters.length) {
       return false;
     }
@@ -106,10 +107,58 @@ export default class Chapters {
     this.activeChapterElement = null;
   }
 
+  getSiblingParagraph(el) {
+    if (!el) return false;
+
+    let nextSiblingDOM = el.nextSibling;
+    let nextSiblingParagraphDOM;
+
+    while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+      if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+        nextSiblingParagraphDOM = nextSiblingDOM;
+      } else {
+        nextSiblingDOM = nextSiblingDOM.nextSibling;
+      }
+    }
+
+    return nextSiblingParagraphDOM;
+  }
 
   handleKey(e) {
     const target = e.target;
 
+
+    // Enter key
+    if (e.which === 40 || e.which === 13) {
+      // Detect selected chapters
+      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
+
+      if (selectedEmbedDOM) {
+        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+        if (!nextSiblingParagraphDOM) {
+          // Insert paragraph and focus
+          const paragraph = document.createElement('p');
+          paragraph.innerHTML = '<br>';
+          selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+        }
+
+        // Focus next paragraph
+        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+        if (nextSiblingParagraphDOM) {
+          if (!nextSiblingParagraphDOM.innerHTML) {
+              nextSiblingParagraphDOM.innerHTML = '<br>';
+          }
+          window.getSelection().removeAllRanges();
+          this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+            selectedEmbedDOM.classList.remove(this.activeClassName);
+          MediumEditor.selection.clearSelection(document, true);
+            selectedEmbedDOM.classList.remove(this.activeClassName);
+          e.preventDefault();
+        }
+      }
+    }
     // Backspace, delete
     if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
       this.removeEmbed(e);
