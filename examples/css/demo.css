@@ -114,3 +114,17 @@ blockquote {
     margin: 10px 1%;
 }
 
+.medium-editor-insert-embed-chapters {
+    margin: 64px 0;
+}
+
+.medium-editor-insert-embed-chapters.vertical {
+    margin-left: 190px;
+    padding-right: 80px;
+}
+
+.medium-editor-insert-embed-chapters > div {
+    background: rgba(0, 0, 0, .2);
+    min-width: 200px;
+    height: 100px;
+}

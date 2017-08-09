@@ -71,7 +71,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    addons: {
 	        images: true,
-	        embeds: true
+	        embeds: true,
+	        chapters: true
 	    },
 
 	    _initializedAddons: {},
@@ -372,13 +373,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Images = __webpack_require__(6);
+	var _Images = __webpack_require__(7);
 
 	var _Images2 = _interopRequireDefault(_Images);
 
-	var _Embeds = __webpack_require__(5);
+	var _Embeds = __webpack_require__(6);
 
 	var _Embeds2 = _interopRequireDefault(_Embeds);
+
+	var _Chapters = __webpack_require__(5);
+
+	var _Chapters2 = _interopRequireDefault(_Chapters);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -427,7 +432,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // Initialize all default addons, we'll delete ones we don't need later
 	            this._plugin._initializedAddons = {
 	                images: new _Images2.default(this._plugin, this._plugin.addons.images),
-	                embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds)
+	                embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds),
+	                chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters)
 	            };
 
 	            Object.keys(this._plugin.addons).forEach(function (name) {
@@ -651,6 +657,279 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(2);
+
+	var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Chapters = function () {
+	  function Chapters(plugin, options) {
+	    _classCallCheck(this, Chapters);
+
+	    this.options = {
+	      label: '<span class="fa fa-bars"></span>',
+	      captions: true,
+	      storeMeta: false,
+	      styles: {
+	        left: {
+	          label: '<span class="fa fa-align-left"></span>'
+	        },
+	        wide: {
+	          label: '<span class="fa fa-align-justify"></span>'
+	        }
+	      },
+	      actions: {
+	        remove: {
+	          label: '<span class="fa fa-times"></span>',
+	          clicked: function clicked() {
+	            // var $event = $.Event('keydown');
+
+	            // $event.which = 8;
+	            // $(document).trigger($event);
+	          }
+	        }
+	      },
+	      parseOnPaste: false
+	    };
+
+	    Object.assign(this.options, options);
+
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
+
+	    this.activeClassName = 'medium-editor-insert-embed-chapters-active';
+	    this.elementClassName = 'medium-editor-insert-embed-chapters';
+
+	    this.alignLeftClassName = 'vertical';
+	    this.alignCenterClassName = 'center';
+
+	    this.label = this.options.label;
+	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+
+	    this.initToolbar();
+	    this.events();
+	  }
+
+	  _createClass(Chapters, [{
+	    key: 'events',
+	    value: function events() {
+	      var _this = this;
+
+	      this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
+	      this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+	      this._plugin.getEditorElements().forEach(function (editor) {
+	        _this._plugin.on(editor, 'click', _this.selectEmbed.bind(_this));
+	      });
+	    }
+	  }, {
+	    key: 'selectEmbed',
+	    value: function selectEmbed(e) {
+	      var el = e.target;
+	      this.selectEmbedCore(el, event);
+	    }
+	  }, {
+	    key: 'getClosestElementByClassName',
+	    value: function getClosestElementByClassName(el, className) {
+	      while (el) {
+	        if (el.classList && el.classList.contains(className)) return el;
+	        el = el.parentNode;
+	      }
+	    }
+	  }, {
+	    key: 'selectEmbedCore',
+	    value: function selectEmbedCore(el, event) {
+	      if (this.getClosestElementByClassName(el, this.elementClassName)) {
+	        var element = this.getClosestElementByClassName(el, this.elementClassName);
+	        element.classList.add(this.activeClassName);
+	        this._editor.selectElement(element);
+	        this.activeChapterElement = element;
+	        event && event.stopPropagation();
+	      }
+	    }
+	  }, {
+	    key: 'unselectEmbed',
+	    value: function unselectEmbed(e) {
+	      var el = e.target;
+	      this.unselectEmbedCore(el);
+	    }
+	  }, {
+	    key: 'unselectEmbedCore',
+	    value: function unselectEmbedCore(el) {
+	      var _this2 = this;
+
+	      var clickedEmbed = void 0,
+	          clickedEmbedPlaceholder = void 0,
+	          chapters = void 0,
+	          embedsPlaceholders = void 0;
+
+	      chapters = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+
+	      if (!chapters || !chapters.length) {
+	        return false;
+	      }
+
+	      if (chapters) {
+	        Array.prototype.forEach.call(chapters, function (chapters) {
+	          if (chapters !== clickedEmbed) {
+	            chapters.classList.remove(_this2.activeClassName);
+	          }
+	        });
+	      }
+
+	      this.activeChapterElement = null;
+	    }
+	  }, {
+	    key: 'handleKey',
+	    value: function handleKey(e) {
+	      var target = e.target;
+
+	      // Backspace, delete
+	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
+	        this.removeEmbed(e);
+	      } else if (this.activeChapterElement) {
+	        e.preventDefault();
+	      }
+	    }
+	  }, {
+	    key: 'setFocusOnElement',
+	    value: function setFocusOnElement(el) {
+	      // this._editor.elements[0].focus();
+	      setTimeout(function () {
+	        var currentSelection = window.getSelection();
+	        var range = document.createRange();
+	        range.setStart(el, 0);
+	        currentSelection.removeAllRanges();
+	        currentSelection.addRange(range);
+	      }, 300);
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      this.el = this._plugin.getCore().selectedElement;
+	      this.setFocusOnElement(this.el);
+	      this.embedChapter(this.el);
+	    }
+	  }, {
+	    key: 'removeEmbed',
+	    value: function removeEmbed(e) {
+	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+	      if (selectedEmbedDOM) {
+	        selectedEmbedDOM.remove();
+	        this.activeChapterElement = null;
+	        e.preventDefault();
+	        e.stopPropagation();
+	      }
+	    }
+
+	    /**
+	     * Init Toolbar for tuning chapters position
+	     *
+	     * @param {string} url
+	     * @param {pasted} boolean
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'initToolbar',
+	    value: function initToolbar() {
+	      this.toolbar = new _Toolbar2.default({
+	        plugin: this._plugin,
+	        type: 'chapters',
+	        activeClassName: this.activeClassName,
+	        buttons: [{
+	          name: 'chapters-align-left',
+	          action: 'align-left',
+	          className: 'btn-align-left',
+	          label: 'Left',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignLeftClassName, 'chapters-align-left', evt);
+	          }.bind(this)
+	        }, {
+	          name: 'chapters-align-center',
+	          action: 'align-center',
+	          className: 'btn-align-center',
+	          label: 'Center',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignCenterClassName, 'chapters-align-center', evt);
+	          }.bind(this)
+	        }]
+	      });
+
+	      this._editor.extensions.push(this.toolbar);
+	    }
+	  }, {
+	    key: 'changeAlign',
+	    value: function changeAlign(className, action, evt) {
+	      if (evt) {
+	        evt.preventDefault();
+	        evt.stopPropagation();
+	      }
+	      var el = this.activeChapterElement;
+	      el.classList.remove(this.alignLeftClassName, this.alignCenterClassName);
+	      el.classList.add(className);
+
+	      this.toolbar.setToolbarPosition();
+
+	      if (this.options.onChange) {
+	        this.options.onChange(action);
+	      }
+	    }
+
+	    /**
+	     * Add html to page
+	     *
+	     * @param {string} html
+	     * @param {string} pastedUrl
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'embedChapter',
+	    value: function embedChapter(el) {
+	      var chapter = document.createElement('div');
+	      chapter.classList.add(this.elementClassName);
+	      if (this.options.contentHTML) {
+	        chapter.innerHTML = this.options.contentHTML;
+	      }
+	      el.replaceWith(chapter);
+
+	      this.options.onInsert && this.options.onInsert();
+
+	      return true;
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.cancelEmbed();
+	    }
+	  }]);
+
+	  return Chapters;
+	}();
+
+	exports.default = Chapters;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1231,7 +1510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

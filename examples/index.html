@@ -16,7 +16,7 @@
       IFRAMELY_API_KEY = 'a4920851894431b9654fc5';
     </script>
 </head>
-<body>
+<body >
 	<div id="container">
 		<h1>Medium Editor + insert extension</h1>
 		<div class="editable">
@@ -69,7 +69,11 @@
                         },
                         embeds: {
                             oembedProxy: '//iframe.ly/api/oembed?&api_key=' + IFRAMELY_API_KEY
-
+                        },
+                        chapters: {
+                          contentHTML: `
+                            <div></div>
+                          `,
                         }
                     }
                 })

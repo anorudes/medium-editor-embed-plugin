@@ -5,7 +5,8 @@ const MediumEditorInsert = MediumEditor.Extension.extend({
 
     addons: {
         images: true,
-        embeds: true
+        embeds: true,
+        chapters: true
     },
 
     _initializedAddons: {},

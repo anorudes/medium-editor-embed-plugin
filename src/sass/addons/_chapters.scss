@@ -1,0 +1,15 @@
+.medium-editor-insert-embed-chapters-active {
+    &:not(.vertical) {
+        outline: 2px solid #000;
+    }
+
+    &.vertical > div {
+        outline: 2px solid #000;
+    }
+}
+
+.medium-editor-insert-embed-chapters {
+  &.vertical {
+    float: left;
+  }
+}

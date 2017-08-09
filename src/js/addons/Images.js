@@ -16,7 +16,7 @@ export default class Images {
       },
     };
 
-    Object.assign(this.options, options); 
+    Object.assign(this.options, options);
 
     this._plugin = plugin;
     this._editor = this._plugin.base;
@@ -114,7 +114,7 @@ export default class Images {
         label: 'Right',
         title: 'Right',
         onClick: (function(evt) {
-          this.changeAlign('align-right', 'image-align-right', evt);          
+          this.changeAlign('align-right', 'image-align-right', evt);
         }).bind(this),
       }, ]
     });
@@ -138,7 +138,7 @@ export default class Images {
 
     el.classList.add(className);
     this.toolbar.setToolbarPosition();
-  
+
     if (this.options.onChange) {
       this.options.onChange(action);
     }
@@ -198,7 +198,7 @@ export default class Images {
     }
     // const el = this._plugin.getCore().selectedElement
     // const image = el.querySelector(`[data-uid="${uid}"]`);
-    
+
     this._plugin.getCore().hideButtons();
 
     return this.addImage(imageUrl, uid, isLoader);
@@ -285,7 +285,7 @@ export default class Images {
 
       el.contentEditable = false;
 
-    }); 
+    });
   }
 
   replaceImage(image, url) {
@@ -311,7 +311,7 @@ export default class Images {
     const el = e.target;
     this.selectImageCore(el);
   }
-  
+
   selectImageCore(el){
     if (el.nodeName.toLowerCase() === 'img' && utils.getClosestWithClassName(el, this.elementClassName)) {
       const parentNode = el.parentNode.parentNode;
