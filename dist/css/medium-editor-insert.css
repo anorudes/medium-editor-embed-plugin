@@ -90,6 +90,8 @@
     content: "";
     display: table;
     clear: both; }
+  .medium-editor-insert-images figure {
+    display: inline-block; }
   .medium-editor-insert-images img {
     max-width: 100%; }
 
@@ -164,9 +166,51 @@
 .medium-editor-insert-embeds-toolbar {
   display: none; }
 
-.medium-editor-insert-embeds .medium-insert-embeds-overlay {
+.medium-editor-insert-embeds-item {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0; }
+
+.medium-editor-insert-embeds-overlay {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0; }
+
+.medium-editor-insert-embed-active {
+  outline: 2px solid #000; }
+
+.medium-editor-insert-embeds.align-center {
+  display: block;
+  text-align: center; }
+
+.medium-editor-insert-embeds.align-left {
+  float: left;
+  width: 50%;
+  margin-right: 24px;
+  margin-bottom: 16px; }
+
+.medium-editor-insert-embeds.align-right {
+  float: right;
+  width: 50%;
+  margin-left: 24px;
+  margin-bottom: 16px; }
+
+.medium-editor-insert-embeds.align-center-full {
+  display: block;
+  margin-left: -25%;
+  margin-right: -25%; }
+  .medium-editor-insert-embeds.align-center-full img {
+    width: 100%; }
+
+.medium-editor-insert-embed-chapters-active:not(.align-left) {
+  outline: 2px solid #000; }
+
+.medium-editor-insert-embed-chapters-active.align-left > div {
+  outline: 2px solid #000; }
+
+.medium-editor-insert-embed-chapters.align-left {
+  float: left; }

@@ -13,9 +13,10 @@
     <script src="https://ucarecdn.com/libs/widget/2.10.3/uploadcare.full.min.js" charset="utf-8"></script>
     <script>
       UPLOADCARE_PUBLIC_KEY = '737e97f64c1930ddf4fc';
+      IFRAMELY_API_KEY = 'a4920851894431b9654fc5';
     </script>
 </head>
-<body>
+<body >
 	<div id="container">
 		<h1>Medium Editor + insert extension</h1>
 		<div class="editable">
@@ -48,7 +49,7 @@
 		var editor = new MediumEditor('.editable', {
             buttonLabels: 'fontawesome',
             extensions: {
-            	'insert': new MediumEditorInsert({
+              	'insert': new MediumEditorInsert({
                     addons: {
                         images: {
                             descriptionPlaceholder: 'Описание',
@@ -64,9 +65,17 @@
                                     });
                                   }
                               });
-                            },
+                            }
+                        },
+                        embeds: {
+                            oembedProxy: '//iframe.ly/api/oembed?&api_key=' + IFRAMELY_API_KEY
+                        },
+                        chapters: {
+                          contentHTML: `
+                            <div>Test content for widget</div>
+                          `,
                         }
-                    },
+                    }
                 })
             }
         });

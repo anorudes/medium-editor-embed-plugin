@@ -26,12 +26,56 @@
     display: none;
 }
 
-.medium-editor-insert-embeds {
-    .medium-insert-embeds-overlay {
-        position: absolute;
+.medium-editor-insert-embeds-item {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.medium-editor-insert-embeds-item-container {
+
+}
+
+.medium-editor-insert-embeds-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.medium-editor-insert-embed-active {
+    outline: 2px solid #000;
+}
+
+
+.medium-editor-insert-embeds.align-center {
+    display: block;
+    text-align: center;
+}
+
+.medium-editor-insert-embeds.align-left {
+    float: left;
+    width: 50%;
+    margin-right: 24px;
+    margin-bottom: 16px;
+}
+
+.medium-editor-insert-embeds.align-right {
+    float: right;
+    width: 50%;
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+.medium-editor-insert-embeds.align-center-full {
+    display: block;
+    margin-left: -25%;
+    margin-right: -25%;
+
+    img {
         width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
     }
 }
