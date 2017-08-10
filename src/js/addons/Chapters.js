@@ -258,16 +258,22 @@ export default class Chapters {
   embedChapter(el) {
     const chapter = document.createElement('div');
     chapter.classList.add(this.elementClassName);
+
+    let contentHTML;
     if (this.options.contentHTML) {
       if (typeof this.options.contentHTML === 'function') {
-        chapter.innerHTML = this.options.contentHTML();
+        contentHTML = this.options.contentHTML();
       } else {
-        chapter.innerHTML = this.options.contentHTML;
+        contentHTML = this.options.contentHTML;
       }
     }
-    el.replaceWith(chapter);
 
-    this.options.onInsert && this.options.onInsert();
+    if (contentHTML) {
+      chapter.innerHTML = contentHTML;
+      el.replaceWith(chapter);
+
+      this.options.onInsert && this.options.onInsert();
+    }
 
     return true;
   }
