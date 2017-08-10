@@ -57,7 +57,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _Core = __webpack_require__(3);
@@ -67,37 +67,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var MediumEditorInsert = MediumEditor.Extension.extend({
-	    name: 'insert',
+	  name: 'insert',
 
-	    addons: {
-	        images: true,
-	        embeds: true,
-	        chapters: true
-	    },
+	  addons: {
+	    images: true,
+	    embeds: true,
+	    chapters: true
+	  },
 
-	    _initializedAddons: {},
+	  _initializedAddons: {},
 
-	    init: function init() {
-	        MediumEditor.Extension.prototype.init.apply(this, arguments);
+	  init: function init() {
+	    MediumEditor.Extension.prototype.init.apply(this, arguments);
 
-	        this.core = new _Core2.default(this);
-	    },
+	    this.core = new _Core2.default(this);
+	  },
 
-	    destroy: function destroy() {
-	        this.core.removeButtons();
-	    },
+	  destroy: function destroy() {
+	    this.core.removeButtons();
+	  },
 
-	    getCore: function getCore() {
-	        return this.core;
-	    },
+	  getCore: function getCore() {
+	    return this.core;
+	  },
 
-	    getAddons: function getAddons() {
-	        return this._initializedAddons;
-	    },
+	  getAddons: function getAddons() {
+	    return this._initializedAddons;
+	  },
 
-	    getAddon: function getAddon(name) {
-	        return this._initializedAddons[name];
-	    }
+	  getAddon: function getAddon(name) {
+	    return this._initializedAddons[name];
+	  }
 	});
 
 	exports.default = MediumEditorInsert;
@@ -110,58 +110,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	var utils = {
-	    ucfirst: function ucfirst(str) {
-	        return str.charAt(0).toUpperCase() + str.slice(1);
-	    },
+	  ucfirst: function ucfirst(str) {
+	    return str.charAt(0).toUpperCase() + str.slice(1);
+	  },
 
-	    generateRandomString: function generateRandomString() {
-	        var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+	  generateRandomString: function generateRandomString() {
+	    var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
 
-	        return Math.random().toString(36).substr(2, length);
-	    },
+	    return Math.random().toString(36).substr(2, length);
+	  },
 
-	    getClosestWithClassName: function getClosestWithClassName(el, className) {
-	        return MediumEditor.util.traverseUp(el, function (element) {
-	            return element.classList.contains(className);
-	        });
-	    },
+	  getClosestWithClassName: function getClosestWithClassName(el, className) {
+	    return MediumEditor.util.traverseUp(el, function (element) {
+	      return element.classList.contains(className);
+	    });
+	  },
 
-	    isChildOf: function isChildOf(el, parent) {
-	        return MediumEditor.util.traverseUp(el, function (element) {
-	            return element === parent;
-	        }) ? true : false;
-	    },
+	  isChildOf: function isChildOf(el, parent) {
+	    return MediumEditor.util.traverseUp(el, function (element) {
+	      return element === parent;
+	    }) ? true : false;
+	  },
 
-	    getElementsByClassName: function getElementsByClassName(parents, className) {
-	        var results = [];
+	  getElementsByClassName: function getElementsByClassName(parents, className) {
+	    var results = [];
 
-	        Array.prototype.forEach.call(parents, function (editor) {
-	            var elements = editor.getElementsByClassName(className);
+	    Array.prototype.forEach.call(parents, function (editor) {
+	      var elements = editor.getElementsByClassName(className);
 
-	            Array.prototype.forEach.call(elements, function (element) {
-	                results.push(element);
-	            });
-	        });
+	      Array.prototype.forEach.call(elements, function (element) {
+	        results.push(element);
+	      });
+	    });
 
-	        return results;
-	    },
+	    return results;
+	  },
 
-	    getElementsByTagName: function getElementsByTagName(parents, tagName) {
-	        var results = [];
+	  getElementsByTagName: function getElementsByTagName(parents, tagName) {
+	    var results = [];
 
-	        Array.prototype.forEach.call(parents, function (editor) {
-	            var elements = editor.getElementsByTagName(tagName);
+	    Array.prototype.forEach.call(parents, function (editor) {
+	      var elements = editor.getElementsByTagName(tagName);
 
-	            Array.prototype.forEach.call(elements, function (element) {
-	                results.push(element);
-	            });
-	        });
+	      Array.prototype.forEach.call(elements, function (element) {
+	        results.push(element);
+	      });
+	    });
 
-	        return results;
-	    }
+	    return results;
+	  }
 	};
 
 	exports.default = utils;
@@ -174,7 +174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -198,160 +198,160 @@ return /******/ (function(modules) { // webpackBootstrap
 	var MediumEditorToolbar = MediumEditor.extensions.toolbar;
 
 	var Toolbar = function (_MediumEditorToolbar) {
-	    _inherits(Toolbar, _MediumEditorToolbar);
+	  _inherits(Toolbar, _MediumEditorToolbar);
 
-	    function Toolbar(options) {
-	        _classCallCheck(this, Toolbar);
+	  function Toolbar(options) {
+	    _classCallCheck(this, Toolbar);
 
-	        var _this = _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, options));
+	    var _this = _possibleConstructorReturn(this, (Toolbar.__proto__ || Object.getPrototypeOf(Toolbar)).call(this, options));
 
-	        _this.name = options.type + 'Toolbar';
+	    _this.name = options.type + 'Toolbar';
 
-	        options.buttons.forEach(function (buttonOptions) {
-	            var button = new _ToolbarButton2.default(Object.assign({}, {
-	                window: _this.plugin.window,
-	                document: _this.plugin.document,
-	                base: _this.plugin.base
-	            }, buttonOptions));
+	    options.buttons.forEach(function (buttonOptions) {
+	      var button = new _ToolbarButton2.default(Object.assign({}, {
+	        window: _this.plugin.window,
+	        document: _this.plugin.document,
+	        base: _this.plugin.base
+	      }, buttonOptions));
 
-	            button.init();
-	            _this.plugin.base.extensions.push(button);
-	        });
+	      button.init();
+	      _this.plugin.base.extensions.push(button);
+	    });
 
-	        _this.window = options.plugin.window;
-	        _this.document = options.plugin.document;
-	        _this.base = options.plugin.base;
+	    _this.window = options.plugin.window;
+	    _this.document = options.plugin.document;
+	    _this.base = options.plugin.base;
 
-	        _this.init();
-	        return _this;
+	    _this.init();
+	    return _this;
+	  }
+
+	  _createClass(Toolbar, [{
+	    key: 'createToolbar',
+	    value: function createToolbar() {
+	      var toolbar = this.document.createElement('div');
+
+	      toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
+	      toolbar.className = 'medium-editor-toolbar';
+
+	      if (this.static) {
+	        toolbar.className += ' static-toolbar';
+	      } else if (this.relativeContainer) {
+	        toolbar.className += ' medium-editor-relative-toolbar';
+	      } else {
+	        toolbar.className += ' medium-editor-stalker-toolbar';
+	      }
+
+	      toolbar.appendChild(this.createToolbarButtons());
+
+	      // Add any forms that extensions may have
+	      this.forEachExtension(function (extension) {
+	        if (extension.hasForm) {
+	          toolbar.appendChild(extension.getForm());
+	        }
+	      });
+
+	      this.attachEventHandlers();
+
+	      return toolbar;
 	    }
+	  }, {
+	    key: 'createToolbarButtons',
+	    value: function createToolbarButtons() {
+	      var _this2 = this;
 
-	    _createClass(Toolbar, [{
-	        key: 'createToolbar',
-	        value: function createToolbar() {
-	            var toolbar = this.document.createElement('div');
+	      var ul = this.document.createElement('ul');
+	      var li = void 0,
+	          btn = void 0,
+	          buttons = void 0,
+	          extension = void 0,
+	          buttonName = void 0,
+	          buttonOpts = void 0;
 
-	            toolbar.id = 'medium-editor-insert-' + this.type + '-toolbar-' + this.getEditorId();
-	            toolbar.className = 'medium-editor-toolbar';
+	      ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
+	      ul.className = 'medium-editor-toolbar-actions';
+	      ul.style.display = 'block';
 
-	            if (this.static) {
-	                toolbar.className += ' static-toolbar';
-	            } else if (this.relativeContainer) {
-	                toolbar.className += ' medium-editor-relative-toolbar';
-	            } else {
-	                toolbar.className += ' medium-editor-stalker-toolbar';
-	            }
-
-	            toolbar.appendChild(this.createToolbarButtons());
-
-	            // Add any forms that extensions may have
-	            this.forEachExtension(function (extension) {
-	                if (extension.hasForm) {
-	                    toolbar.appendChild(extension.getForm());
-	                }
-	            });
-
-	            this.attachEventHandlers();
-
-	            return toolbar;
+	      this.buttons.forEach(function (button) {
+	        if (typeof button === 'string') {
+	          buttonName = button;
+	          buttonOpts = null;
+	        } else {
+	          buttonName = button.name;
+	          buttonOpts = button;
 	        }
-	    }, {
-	        key: 'createToolbarButtons',
-	        value: function createToolbarButtons() {
-	            var _this2 = this;
 
-	            var ul = this.document.createElement('ul');
-	            var li = void 0,
-	                btn = void 0,
-	                buttons = void 0,
-	                extension = void 0,
-	                buttonName = void 0,
-	                buttonOpts = void 0;
+	        // If the button already exists as an extension, it'll be returned
+	        // othwerise it'll create the default built-in button
+	        extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
 
-	            ul.id = 'medium-editor-insert-' + this.type + '-toolbar-actions' + this.getEditorId();
-	            ul.className = 'medium-editor-toolbar-actions';
-	            ul.style.display = 'block';
-
-	            this.buttons.forEach(function (button) {
-	                if (typeof button === 'string') {
-	                    buttonName = button;
-	                    buttonOpts = null;
-	                } else {
-	                    buttonName = button.name;
-	                    buttonOpts = button;
-	                }
-
-	                // If the button already exists as an extension, it'll be returned
-	                // othwerise it'll create the default built-in button
-	                extension = _this2.base.addBuiltInExtension(buttonName, buttonOpts);
-
-	                if (extension && typeof extension.getButton === 'function') {
-	                    btn = extension.getButton(_this2.base);
-	                    li = _this2.document.createElement('li');
-	                    if (MediumEditor.util.isElement(btn)) {
-	                        li.appendChild(btn);
-	                    } else {
-	                        li.innerHTML = btn;
-	                    }
-	                    ul.appendChild(li);
-	                }
-	            }, this);
-
-	            buttons = ul.querySelectorAll('button');
-	            if (buttons.length > 0) {
-	                buttons[0].classList.add(this.firstButtonClass);
-	                buttons[buttons.length - 1].classList.add(this.lastButtonClass);
-	            }
-
-	            return ul;
+	        if (extension && typeof extension.getButton === 'function') {
+	          btn = extension.getButton(_this2.base);
+	          li = _this2.document.createElement('li');
+	          if (MediumEditor.util.isElement(btn)) {
+	            li.appendChild(btn);
+	          } else {
+	            li.innerHTML = btn;
+	          }
+	          ul.appendChild(li);
 	        }
-	    }, {
-	        key: 'checkState',
-	        value: function checkState() {
-	            var _this3 = this;
+	      }, this);
 
-	            var activeElements = void 0;
+	      buttons = ul.querySelectorAll('button');
+	      if (buttons.length > 0) {
+	        buttons[0].classList.add(this.firstButtonClass);
+	        buttons[buttons.length - 1].classList.add(this.lastButtonClass);
+	      }
 
-	            if (this.base.preventSelectionUpdates) {
-	                return;
-	            }
+	      return ul;
+	    }
+	  }, {
+	    key: 'checkState',
+	    value: function checkState() {
+	      var _this3 = this;
 
-	            // Wait for elements to be selected
-	            setTimeout(function () {
-	                activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
+	      var activeElements = void 0;
 
-	                // Hide toolbar when no elements are selected
-	                if (activeElements.length === 0) {
-	                    return _this3.hideToolbar();
-	                }
+	      if (this.base.preventSelectionUpdates) {
+	        return;
+	      }
 
-	                // Now we know there's a focused editable with a selection
-	                _this3.showAndUpdateToolbar();
-	            }, 10);
+	      // Wait for elements to be selected
+	      setTimeout(function () {
+	        activeElements = _utils2.default.getElementsByClassName(_this3.getEditorElements(), _this3.activeClassName);
+
+	        // Hide toolbar when no elements are selected
+	        if (activeElements.length === 0) {
+	          return _this3.hideToolbar();
 	        }
-	    }, {
-	        key: 'setToolbarPosition',
-	        value: function setToolbarPosition() {
-	            var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
-	            var anchorPreview = void 0;
 
-	            // If there isn't a valid selection, bail
-	            if (!container) {
-	                return this;
-	            }
+	        // Now we know there's a focused editable with a selection
+	        _this3.showAndUpdateToolbar();
+	      }, 10);
+	    }
+	  }, {
+	    key: 'setToolbarPosition',
+	    value: function setToolbarPosition() {
+	      var container = _utils2.default.getElementsByClassName(this.getEditorElements(), this.activeClassName)[0];
+	      var anchorPreview = void 0;
 
-	            this.showToolbar();
-	            this.positionStaticToolbar(container);
+	      // If there isn't a valid selection, bail
+	      if (!container) {
+	        return this;
+	      }
 
-	            anchorPreview = this.base.getExtensionByName('anchor-preview');
+	      this.showToolbar();
+	      this.positionStaticToolbar(container);
 
-	            if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
-	                anchorPreview.hidePreview();
-	            }
-	        }
-	    }]);
+	      anchorPreview = this.base.getExtensionByName('anchor-preview');
 
-	    return Toolbar;
+	      if (anchorPreview && typeof anchorPreview.hidePreview === 'function') {
+	        anchorPreview.hidePreview();
+	      }
+	    }
+	  }]);
+
+	  return Toolbar;
 	}(MediumEditorToolbar);
 
 	exports.default = Toolbar;
@@ -364,7 +364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -390,235 +390,235 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Core = function () {
-	    function Core(plugin) {
-	        _classCallCheck(this, Core);
+	  function Core(plugin) {
+	    _classCallCheck(this, Core);
 
-	        this._plugin = plugin;
-	        this._editor = this._plugin.base;
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
 
-	        this.initAddons();
-	        this.addButtons();
-	        this.events();
+	    this.initAddons();
+	    this.addButtons();
+	    this.events();
+	  }
+
+	  _createClass(Core, [{
+	    key: 'events',
+	    value: function events() {
+	      var _this = this;
+
+	      var addonActions = void 0;
+
+	      // This could be chained when medium-editor 5.15.2 is released
+	      // https://github.com/yabwe/medium-editor/pull/1046
+	      this._plugin.on(document, 'click', this.toggleButtons.bind(this));
+	      this._plugin.on(document, 'keyup', this.toggleButtons.bind(this));
+	      this._plugin.on(this.buttons.getElementsByClassName('medium-editor-insert-buttons-show')[0], 'click', this.toggleAddons.bind(this));
+
+	      // This could be written in one statement when medium-editor 5.15.2 is released
+	      // https://github.com/yabwe/medium-editor/pull/1046
+	      addonActions = this.buttons.getElementsByClassName('medium-editor-insert-action');
+	      Array.prototype.forEach.call(addonActions, function (action) {
+	        // this._plugin.on(action, 'mousedown', this.handleAddonMouseDown.bind(this));
+	        _this._plugin.on(action, 'click', _this.handleAddonClick.bind(_this));
+	      });
+
+	      this._plugin.on(window, 'resize', this.positionButtons.bind(this));
+	    }
+	  }, {
+	    key: 'initAddons',
+	    value: function initAddons() {
+	      var _this2 = this;
+
+	      // Initialize all default addons, we'll delete ones we don't need later
+	      this._plugin._initializedAddons = {
+	        images: new _Images2.default(this._plugin, this._plugin.addons.images),
+	        embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds),
+	        chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters)
+	      };
+
+	      Object.keys(this._plugin.addons).forEach(function (name) {
+	        var addonOptions = _this2._plugin.addons[name];
+
+	        // If the addon is custom one
+	        if (!_this2._plugin._initializedAddons[name]) {
+	          if (typeof addonOptions === 'function') {
+	            _this2._plugin._initializedAddons[name] = new addonOptions(_this2._plugin);
+	          } else {
+	            window.console.error('I don\'t know how to initialize custom "' + name + '" addon!');
+	          }
+	        }
+
+	        // Delete disabled addon
+	        if (!addonOptions) {
+	          delete _this2._plugin._initializedAddons[name];
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'addButtons',
+	    value: function addButtons() {
+	      var addons = this._plugin.getAddons();
+	      var html = void 0;
+
+	      this.buttons = document.createElement('div');
+	      this.buttons.id = 'medium-editor-insert-' + this._plugin.getEditorId();
+	      this.buttons.classList.add('medium-editor-insert-buttons');
+	      this.buttons.setAttribute('contentediable', false);
+
+	      html = '<a class="medium-editor-insert-buttons-show">+</a>\n            <ul class="medium-editor-insert-buttons-addons">';
+
+	      Object.keys(addons).forEach(function (name) {
+	        var addon = addons[name];
+
+	        html += '<li><a class="medium-editor-insert-action" data-addon="' + name + '">' + addon.label + '</a></li>';
+	      });
+
+	      html += '</ul>';
+
+	      this.buttons.innerHTML = html;
+
+	      document.body.appendChild(this.buttons);
+	    }
+	  }, {
+	    key: 'removeButtons',
+	    value: function removeButtons() {
+	      this.buttons.remove();
+	    }
+	  }, {
+	    key: 'positionButtons',
+	    value: function positionButtons() {
+	      var el = void 0,
+	          elPosition = void 0,
+	          addons = void 0,
+	          addonButton = void 0,
+	          addonsStyle = void 0,
+	          addonButtonStyle = void 0,
+	          position = void 0;
+
+	      // Don't position buttons if they aren't active
+	      if (this.buttons.classList.contains('medium-editor-insert-buttons-active') === false) {
+	        return;
+	      }
+
+	      el = this._editor.getSelectedParentElement();
+	      elPosition = el.getBoundingClientRect();
+	      addons = this.buttons.getElementsByClassName('medium-editor-insert-buttons-addons')[0];
+	      addonButton = this.buttons.getElementsByClassName('medium-editor-insert-action')[0];
+	      addonsStyle = window.getComputedStyle(addons);
+	      addonButtonStyle = window.getComputedStyle(addonButton);
+
+	      // Calculate position
+	      position = {
+	        top: window.scrollY + elPosition.top,
+	        left: window.scrollX + elPosition.left - parseInt(addonsStyle.left, 10) - parseInt(addonButtonStyle.marginLeft, 10)
+	      };
+
+	      // If left position is lower than 0, the buttons would be out of the viewport.
+	      // In that case, align buttons with the editor
+	      position.left = position.left < 0 ? elPosition.left : position.left;
+
+	      this.buttons.style.left = position.left + 'px';
+	      this.buttons.style.top = position.top + 'px';
+	    }
+	  }, {
+	    key: 'toggleButtons',
+	    value: function toggleButtons() {
+	      var el = this._editor.getSelectedParentElement();
+
+	      if (this.shouldDisplayButtonsOnElement(el)) {
+	        this.selectElement(el);
+	        this.showButtons();
+	      } else {
+	        this.hideButtons();
+	      }
+	    }
+	  }, {
+	    key: 'shouldDisplayButtonsOnElement',
+	    value: function shouldDisplayButtonsOnElement(el) {
+	      var addons = this._plugin.getAddons(),
+	          addonClassNames = [];
+	      var isAddon = false,
+	          belongsToEditor = false;
+
+	      // Don't show buttons when the element has text
+	      if (el.innerText.trim() !== '') {
+	        return false;
+	      }
+
+	      // Don't show buttons when the editor doesn't belong to editor
+	      this._plugin.getEditorElements().forEach(function (editor) {
+	        if (_utils2.default.isChildOf(el, editor)) {
+	          belongsToEditor = true;
+	          return;
+	        }
+	      });
+
+	      if (!belongsToEditor) {
+	        return false;
+	      }
+
+	      // Get class names used by addons
+	      Object.keys(addons).forEach(function (addonName) {
+	        var addon = addons[addonName];
+	        if (addon.elementClassName) {
+	          addonClassNames.push(addon.elementClassName);
+	        }
+	      });
+
+	      // Don't show buttons if the element is an addon element
+	      // - when the element has an addon class, or some of its parents have it
+	      addonClassNames.forEach(function (className) {
+	        if (el.classList.contains(className) || _utils2.default.getClosestWithClassName(el, className)) {
+	          isAddon = true;
+	          return;
+	        }
+	      });
+
+	      return !isAddon;
+	    }
+	  }, {
+	    key: 'selectElement',
+	    value: function selectElement(el) {
+	      this.selectedElement = el;
+	    }
+	  }, {
+	    key: 'showButtons',
+	    value: function showButtons() {
+	      this.buttons.classList.add('medium-editor-insert-buttons-active');
+	      this.positionButtons();
+	    }
+	  }, {
+	    key: 'hideButtons',
+	    value: function hideButtons() {
+	      this.buttons.classList.remove('medium-editor-insert-buttons-active');
+	      this.buttons.classList.remove('medium-editor-insert-addons-active');
+	    }
+	  }, {
+	    key: 'toggleAddons',
+	    value: function toggleAddons() {
+	      this.buttons.classList.toggle('medium-editor-insert-addons-active');
 	    }
 
-	    _createClass(Core, [{
-	        key: 'events',
-	        value: function events() {
-	            var _this = this;
+	    // handleAddonMouseDown(e) {
+	    //     const name = e.currentTarget.getAttribute('data-addon');
+	    //     e.preventDefault();
 
-	            var addonActions = void 0;
+	    //     console.log(this._plugin.getAddon(name));
+	    //     this._plugin.getAddon(name).handleMouseDown(e);
+	    // }
 
-	            // This could be chained when medium-editor 5.15.2 is released
-	            // https://github.com/yabwe/medium-editor/pull/1046
-	            this._plugin.on(document, 'click', this.toggleButtons.bind(this));
-	            this._plugin.on(document, 'keyup', this.toggleButtons.bind(this));
-	            this._plugin.on(this.buttons.getElementsByClassName('medium-editor-insert-buttons-show')[0], 'click', this.toggleAddons.bind(this));
+	  }, {
+	    key: 'handleAddonClick',
+	    value: function handleAddonClick(e) {
+	      var name = e.currentTarget.getAttribute('data-addon');
+	      e.preventDefault();
 
-	            // This could be written in one statement when medium-editor 5.15.2 is released
-	            // https://github.com/yabwe/medium-editor/pull/1046
-	            addonActions = this.buttons.getElementsByClassName('medium-editor-insert-action');
-	            Array.prototype.forEach.call(addonActions, function (action) {
-	                // this._plugin.on(action, 'mousedown', this.handleAddonMouseDown.bind(this));
-	                _this._plugin.on(action, 'click', _this.handleAddonClick.bind(_this));
-	            });
+	      this._plugin.getAddon(name).handleClick(e);
+	      this.hideButtons();
+	    }
+	  }]);
 
-	            this._plugin.on(window, 'resize', this.positionButtons.bind(this));
-	        }
-	    }, {
-	        key: 'initAddons',
-	        value: function initAddons() {
-	            var _this2 = this;
-
-	            // Initialize all default addons, we'll delete ones we don't need later
-	            this._plugin._initializedAddons = {
-	                images: new _Images2.default(this._plugin, this._plugin.addons.images),
-	                embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds),
-	                chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters)
-	            };
-
-	            Object.keys(this._plugin.addons).forEach(function (name) {
-	                var addonOptions = _this2._plugin.addons[name];
-
-	                // If the addon is custom one
-	                if (!_this2._plugin._initializedAddons[name]) {
-	                    if (typeof addonOptions === 'function') {
-	                        _this2._plugin._initializedAddons[name] = new addonOptions(_this2._plugin);
-	                    } else {
-	                        window.console.error('I don\'t know how to initialize custom "' + name + '" addon!');
-	                    }
-	                }
-
-	                // Delete disabled addon
-	                if (!addonOptions) {
-	                    delete _this2._plugin._initializedAddons[name];
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'addButtons',
-	        value: function addButtons() {
-	            var addons = this._plugin.getAddons();
-	            var html = void 0;
-
-	            this.buttons = document.createElement('div');
-	            this.buttons.id = 'medium-editor-insert-' + this._plugin.getEditorId();
-	            this.buttons.classList.add('medium-editor-insert-buttons');
-	            this.buttons.setAttribute('contentediable', false);
-
-	            html = '<a class="medium-editor-insert-buttons-show">+</a>\n            <ul class="medium-editor-insert-buttons-addons">';
-
-	            Object.keys(addons).forEach(function (name) {
-	                var addon = addons[name];
-
-	                html += '<li><a class="medium-editor-insert-action" data-addon="' + name + '">' + addon.label + '</a></li>';
-	            });
-
-	            html += '</ul>';
-
-	            this.buttons.innerHTML = html;
-
-	            document.body.appendChild(this.buttons);
-	        }
-	    }, {
-	        key: 'removeButtons',
-	        value: function removeButtons() {
-	            this.buttons.remove();
-	        }
-	    }, {
-	        key: 'positionButtons',
-	        value: function positionButtons() {
-	            var el = void 0,
-	                elPosition = void 0,
-	                addons = void 0,
-	                addonButton = void 0,
-	                addonsStyle = void 0,
-	                addonButtonStyle = void 0,
-	                position = void 0;
-
-	            // Don't position buttons if they aren't active
-	            if (this.buttons.classList.contains('medium-editor-insert-buttons-active') === false) {
-	                return;
-	            }
-
-	            el = this._editor.getSelectedParentElement();
-	            elPosition = el.getBoundingClientRect();
-	            addons = this.buttons.getElementsByClassName('medium-editor-insert-buttons-addons')[0];
-	            addonButton = this.buttons.getElementsByClassName('medium-editor-insert-action')[0];
-	            addonsStyle = window.getComputedStyle(addons);
-	            addonButtonStyle = window.getComputedStyle(addonButton);
-
-	            // Calculate position
-	            position = {
-	                top: window.scrollY + elPosition.top,
-	                left: window.scrollX + elPosition.left - parseInt(addonsStyle.left, 10) - parseInt(addonButtonStyle.marginLeft, 10)
-	            };
-
-	            // If left position is lower than 0, the buttons would be out of the viewport.
-	            // In that case, align buttons with the editor
-	            position.left = position.left < 0 ? elPosition.left : position.left;
-
-	            this.buttons.style.left = position.left + 'px';
-	            this.buttons.style.top = position.top + 'px';
-	        }
-	    }, {
-	        key: 'toggleButtons',
-	        value: function toggleButtons() {
-	            var el = this._editor.getSelectedParentElement();
-
-	            if (this.shouldDisplayButtonsOnElement(el)) {
-	                this.selectElement(el);
-	                this.showButtons();
-	            } else {
-	                this.hideButtons();
-	            }
-	        }
-	    }, {
-	        key: 'shouldDisplayButtonsOnElement',
-	        value: function shouldDisplayButtonsOnElement(el) {
-	            var addons = this._plugin.getAddons(),
-	                addonClassNames = [];
-	            var isAddon = false,
-	                belongsToEditor = false;
-
-	            // Don't show buttons when the element has text
-	            if (el.innerText.trim() !== '') {
-	                return false;
-	            }
-
-	            // Don't show buttons when the editor doesn't belong to editor
-	            this._plugin.getEditorElements().forEach(function (editor) {
-	                if (_utils2.default.isChildOf(el, editor)) {
-	                    belongsToEditor = true;
-	                    return;
-	                }
-	            });
-
-	            if (!belongsToEditor) {
-	                return false;
-	            }
-
-	            // Get class names used by addons
-	            Object.keys(addons).forEach(function (addonName) {
-	                var addon = addons[addonName];
-	                if (addon.elementClassName) {
-	                    addonClassNames.push(addon.elementClassName);
-	                }
-	            });
-
-	            // Don't show buttons if the element is an addon element
-	            // - when the element has an addon class, or some of its parents have it
-	            addonClassNames.forEach(function (className) {
-	                if (el.classList.contains(className) || _utils2.default.getClosestWithClassName(el, className)) {
-	                    isAddon = true;
-	                    return;
-	                }
-	            });
-
-	            return !isAddon;
-	        }
-	    }, {
-	        key: 'selectElement',
-	        value: function selectElement(el) {
-	            this.selectedElement = el;
-	        }
-	    }, {
-	        key: 'showButtons',
-	        value: function showButtons() {
-	            this.buttons.classList.add('medium-editor-insert-buttons-active');
-	            this.positionButtons();
-	        }
-	    }, {
-	        key: 'hideButtons',
-	        value: function hideButtons() {
-	            this.buttons.classList.remove('medium-editor-insert-buttons-active');
-	            this.buttons.classList.remove('medium-editor-insert-addons-active');
-	        }
-	    }, {
-	        key: 'toggleAddons',
-	        value: function toggleAddons() {
-	            this.buttons.classList.toggle('medium-editor-insert-addons-active');
-	        }
-
-	        // handleAddonMouseDown(e) {
-	        //     const name = e.currentTarget.getAttribute('data-addon');
-	        //     e.preventDefault();
-
-	        //     console.log(this._plugin.getAddon(name));
-	        //     this._plugin.getAddon(name).handleMouseDown(e);
-	        // }
-
-	    }, {
-	        key: 'handleAddonClick',
-	        value: function handleAddonClick(e) {
-	            var name = e.currentTarget.getAttribute('data-addon');
-	            e.preventDefault();
-
-	            this._plugin.getAddon(name).handleClick(e);
-	            this.hideButtons();
-	        }
-	    }]);
-
-	    return Core;
+	  return Core;
 	}();
 
 	exports.default = Core;
@@ -631,25 +631,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	var ToolbarButton = MediumEditor.extensions.button.extend({
-	    init: function init() {
-	        this.button = this.document.createElement('button');
-	        this.button.classList.add('medium-editor-action');
-	        this.button.classList.add(this.className);
-	        this.button.innerHTML = '<b>' + this.label + '</b>';
+	  init: function init() {
+	    this.button = this.document.createElement('button');
+	    this.button.classList.add('medium-editor-action');
+	    this.button.classList.add(this.className);
+	    this.button.innerHTML = '<b>' + this.label + '</b>';
 
-	        this.on(this.button, 'click', this.handleClick.bind(this));
-	    },
+	    this.on(this.button, 'click', this.handleClick.bind(this));
+	  },
 
-	    getButton: function getButton() {
-	        return this.button;
-	    },
+	  getButton: function getButton() {
+	    return this.button;
+	  },
 
-	    handleClick: function handleClick(evt) {
-	        this.onClick(evt);
-	    }
+	  handleClick: function handleClick(evt) {
+	    this.onClick(evt);
+	  }
 	});
 
 	exports.default = ToolbarButton;
@@ -953,16 +953,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function embedChapter(el) {
 	      var chapter = document.createElement('div');
 	      chapter.classList.add(this.elementClassName);
+
+	      var contentHTML = void 0;
 	      if (this.options.contentHTML) {
 	        if (typeof this.options.contentHTML === 'function') {
-	          chapter.innerHTML = this.options.contentHTML();
+	          contentHTML = this.options.contentHTML();
 	        } else {
-	          chapter.innerHTML = this.options.contentHTML;
+	          contentHTML = this.options.contentHTML;
 	        }
 	      }
-	      el.replaceWith(chapter);
 
-	      this.options.onInsert && this.options.onInsert();
+	      if (contentHTML) {
+	        chapter.innerHTML = contentHTML;
+	        el.replaceWith(chapter);
+
+	        this.options.onInsert && this.options.onInsert();
+	      }
 
 	      return true;
 	    }
