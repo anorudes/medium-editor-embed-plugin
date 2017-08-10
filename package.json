@@ -1,16 +1,19 @@
 {
   "name": "medium-editor-insert-plugin",
-  "version": "3.2.2",
+  "version": "4.0.0",
   "description": "Insert extension for MediumEditor",
   "main": "dist/medium-editor-insert.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/orthes/medium-editor-insert"
   },
-  "author": {
-    "name": "Pavel Linkesch",
-    "url": "http://linkesch.com"
-  },
+
+  "authors": [
+    "Pavel Linkesch (http://linkesch.com)",
+    "Max Anoru (https://github.com/anorudes)",
+    "Pavel Motorin (https://github.com/Motorin)"
+  ],
+
   "license": "MIT",
   "scripts": {
     "build": "npm run clean && npm run build:dev && npm run build:prod",

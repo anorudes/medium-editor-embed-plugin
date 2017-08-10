@@ -1,10 +1,12 @@
-# Insert extension for MediumEditor
+# Insert extension for MediumEditor +
 
 Vanilla ES2015 (transpiled with Babel) extension for MediumEditor. Extend your favorite editor with images and embeded videos and social media.
 
 No dependencies! Jiiihaaa :tada:
 
-## Usage
+Based on [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
+
+## Default usage
 
 ```html
 <link href="dist/css/medium-editor-insert.css" rel="stylesheet">
@@ -18,6 +20,44 @@ No dependencies! Jiiihaaa :tada:
         }
     });
 </script>
+```
+## New features  
+in comparison with [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
+ 
+- onInsertButtonClick for call other upload widget (if you need)
+- add description for image 
+- show loading while image uploading
+- align image (left, center, right)
+- auto focus inserted image
+
+Example with [uploadcare](https://uploadcare.com/documentation/widget/):
+ 
+```js
+	var editor = new MediumEditor('.editable', {
+            buttonLabels: 'fontawesome',
+            extensions: {
+            	'insert': new MediumEditorInsert({
+                    addons: {
+                        images: {
+                            descriptionPlaceholder: 'Описание', // placeholder for description field
+                            onInsertButtonClick: function(insertImage, insertLoader) {                                                           
+                              uploadcare.openDialog(null, {
+                                publicKey: 'your_uploadcare_pub_key',
+                                imagesOnly: true,
+                              }).done(function (file) {
+                                  if (file) {
+                                    insertLoader('./loader.gif'); // insert loader 
+                                    file.done(function(fileInfo) {
+                                      insertImage(fileInfo.cdnUrl); // replace loader with uploaded image in uploadcare (you can use other service)
+                                    });
+                                  }
+                              });
+                            },
+                        }
+                    },
+                })
+            }
+        });
 ```
 
 ## Development
