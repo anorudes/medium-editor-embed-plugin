@@ -205,9 +205,9 @@ export default class Images {
   }
 
   addParagraph(el) {
-      const paragraph = document.createElement('p');
-      paragraph.innerHTML = '<br>';
-      el.insertAdjacentElement('afterend', paragraph);
+    const paragraph = document.createElement('p');
+    paragraph.innerHTML = '<br>';
+    el.insertAdjacentElement('afterend', paragraph);
   }
 
   addImage(url, uid, isLoader) {
@@ -270,7 +270,7 @@ export default class Images {
           el.appendChild(figure);
 
           if ((!el.nextSibling || !el.nextSibling.nextSibling) && !isLoader) {
-              this.addParagraph(el);
+            this.addParagraph(el);
           }
 
           // Resolve with domImage so we can test this function easily
@@ -293,7 +293,7 @@ export default class Images {
     const el = this._plugin.getCore().selectedElement;
 
     if (!el.nextSibling || !el.nextSibling.nextSibling) {
-        this.addParagraph(el);
+      this.addParagraph(el);
     }
 
     domImage.onload = () => {
@@ -312,7 +312,7 @@ export default class Images {
     this.selectImageCore(el);
   }
 
-  selectImageCore(el){
+  selectImageCore(el) {
     if (el.nodeName.toLowerCase() === 'img' && utils.getClosestWithClassName(el, this.elementClassName)) {
       const parentNode = el.parentNode.parentNode;
 
@@ -398,7 +398,7 @@ export default class Images {
 
         if (nextSiblingParagraphDOM) {
           if (!nextSiblingParagraphDOM.innerHTML) {
-              nextSiblingParagraphDOM.innerHTML = '<br>';
+            nextSiblingParagraphDOM.innerHTML = '<br>';
           }
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);

@@ -174,7 +174,7 @@ export default class Embeds {
           // Insert paragraph and focus
           const paragraph = document.createElement('p');
           paragraph.innerHTML = '<br>';
-            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+          selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
         }
 
         // Focus next paragraph
@@ -182,20 +182,20 @@ export default class Embeds {
 
         if (nextSiblingParagraphDOM) {
           if (!nextSiblingParagraphDOM.innerHTML) {
-              nextSiblingParagraphDOM.innerHTML = '<br>';
+            nextSiblingParagraphDOM.innerHTML = '<br>';
           }
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-            selectedEmbedDOM.classList.remove(this.activeClassName);
+          selectedEmbedDOM.classList.remove(this.activeClassName);
           MediumEditor.selection.clearSelection(document, true);
-            selectedEmbedDOM.classList.remove(this.activeClassName);
+          selectedEmbedDOM.classList.remove(this.activeClassName);
           e.preventDefault();
         }
       }
     }
   }
 
-  setFocusOnElement( el ) {
+  setFocusOnElement(el) {
     // this._editor.elements[0].focus();
     setTimeout(() => {
       const currentSelection = window.getSelection();
@@ -250,10 +250,10 @@ export default class Embeds {
 
 
   removeEmbed(e) {
-      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
-      if (selectedEmbedDOM) {
-          selectedEmbedDOM.remove();
-      }
+    const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
+    if (selectedEmbedDOM) {
+      selectedEmbedDOM.remove();
+    }
   }
 
   /**

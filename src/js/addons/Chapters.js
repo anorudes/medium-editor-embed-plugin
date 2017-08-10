@@ -59,12 +59,12 @@ export default class Chapters {
   }
 
   selectEmbed(e) {
-      const el = e.target;
-      if (this.getClosestElementByClassName(el, this.elementClassName)) {
-          this.selectEmbedCore(el, event);
-          e && e.stopPropagation();
-          e && e.preventDefault();
-      }
+    const el = e.target;
+    if (this.getClosestElementByClassName(el, this.elementClassName)) {
+      this.selectEmbedCore(el, event);
+      e && e.stopPropagation();
+      e && e.preventDefault();
+    }
   }
 
   getClosestElementByClassName(el, className) {
@@ -144,13 +144,13 @@ export default class Chapters {
 
         if (nextSiblingParagraphDOM) {
           if (!nextSiblingParagraphDOM.innerHTML) {
-              nextSiblingParagraphDOM.innerHTML = '<br>';
+            nextSiblingParagraphDOM.innerHTML = '<br>';
           }
           window.getSelection().removeAllRanges();
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-            selectedEmbedDOM.classList.remove(this.activeClassName);
+          selectedEmbedDOM.classList.remove(this.activeClassName);
           MediumEditor.selection.clearSelection(document, true);
-            selectedEmbedDOM.classList.remove(this.activeClassName);
+          selectedEmbedDOM.classList.remove(this.activeClassName);
           e.preventDefault();
         }
       }

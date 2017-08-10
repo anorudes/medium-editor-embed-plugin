@@ -1,37 +1,37 @@
 import Core from './Core';
 
 const MediumEditorInsert = MediumEditor.Extension.extend({
-    name: 'insert',
+  name: 'insert',
 
-    addons: {
-        images: true,
-        embeds: true,
-        chapters: true
-    },
+  addons: {
+    images: true,
+    embeds: true,
+    chapters: true
+  },
 
-    _initializedAddons: {},
+  _initializedAddons: {},
 
-    init: function() {
-        MediumEditor.Extension.prototype.init.apply(this, arguments);
+  init: function() {
+    MediumEditor.Extension.prototype.init.apply(this, arguments);
 
-        this.core = new Core(this);
-    },
+    this.core = new Core(this);
+  },
 
-    destroy: function() {
-        this.core.removeButtons();
-    },
+  destroy: function() {
+    this.core.removeButtons();
+  },
 
-    getCore: function() {
-        return this.core;
-    },
+  getCore: function() {
+    return this.core;
+  },
 
-    getAddons: function () {
-        return this._initializedAddons;
-    },
+  getAddons: function() {
+    return this._initializedAddons;
+  },
 
-    getAddon: function(name) {
-        return this._initializedAddons[name];
-    }
+  getAddon: function(name) {
+    return this._initializedAddons[name];
+  }
 });
 
 export default MediumEditorInsert;
