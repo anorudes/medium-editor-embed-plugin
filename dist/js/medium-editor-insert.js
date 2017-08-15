@@ -2289,37 +2289,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function handleKey(e) {
 	      var target = e.target;
 
-	      // Enter key
-	      if (e.which === 40 || e.which === 13) {
-	        // Detect selected paywall
-	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
-
-	        if (selectedEmbedDOM) {
-	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-	          if (!nextSiblingParagraphDOM) {
-	            // Insert paragraph and focus
-	            var paragraph = document.createElement('p');
-	            paragraph.innerHTML = '<br>';
-	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
-	          }
-
-	          // Focus next paragraph
-	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-	          if (nextSiblingParagraphDOM) {
-	            if (!nextSiblingParagraphDOM.innerHTML) {
-	              nextSiblingParagraphDOM.innerHTML = '<br>';
-	            }
-	            window.getSelection().removeAllRanges();
-	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-	            selectedEmbedDOM.classList.remove(this.activeClassName);
-	            MediumEditor.selection.clearSelection(document, true);
-	            selectedEmbedDOM.classList.remove(this.activeClassName);
-	            e.preventDefault();
-	          }
-	        }
-	      }
 	      // Backspace, delete
 	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
 	        this.removeEmbed(e);
@@ -2408,9 +2377,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Insert new paywall
 	      var paywall = document.createElement('div');
 	      paywall.setAttribute("contenteditable", false);
+	      paywall.innerHTML = '<div></div>';
 	      paywall.classList.add(this.elementClassName);
 
 	      el.replaceWith(paywall);
+
+	      var selectedEmbedDOM = document.querySelector('.' + this.elementClassName);
+
+	      if (selectedEmbedDOM) {
+	        var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	        if (!nextSiblingParagraphDOM) {
+	          // Insert paragraph and focus
+	          var paragraph = document.createElement('p');
+	          paragraph.innerHTML = '<br>';
+	          selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+	        }
+	      }
+
 	      this.options.onInsert && this.options.onInsert();
 
 	      return true;

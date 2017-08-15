@@ -122,38 +122,6 @@ export default class PayWall {
   handleKey(e) {
     const target = e.target;
 
-
-    // Enter key
-    if (e.which === 40 || e.which === 13) {
-      // Detect selected paywall
-      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
-
-      if (selectedEmbedDOM) {
-        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-        if (!nextSiblingParagraphDOM) {
-          // Insert paragraph and focus
-          const paragraph = document.createElement('p');
-          paragraph.innerHTML = '<br>';
-          selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
-        }
-
-        // Focus next paragraph
-        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-        if (nextSiblingParagraphDOM) {
-          if (!nextSiblingParagraphDOM.innerHTML) {
-            nextSiblingParagraphDOM.innerHTML = '<br>';
-          }
-          window.getSelection().removeAllRanges();
-          this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-          selectedEmbedDOM.classList.remove(this.activeClassName);
-          MediumEditor.selection.clearSelection(document, true);
-          selectedEmbedDOM.classList.remove(this.activeClassName);
-          e.preventDefault();
-        }
-      }
-    }
     // Backspace, delete
     if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
       this.removeEmbed(e);
@@ -238,9 +206,24 @@ export default class PayWall {
     // Insert new paywall
     const paywall = document.createElement('div');
     paywall.setAttribute("contenteditable", false);
+    paywall.innerHTML = '<div></div>';
     paywall.classList.add(this.elementClassName);
 
     el.replaceWith(paywall);
+
+    const selectedEmbedDOM = document.querySelector(`.${this.elementClassName}`);
+
+    if (selectedEmbedDOM) {
+      let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+      if (!nextSiblingParagraphDOM) {
+        // Insert paragraph and focus
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = '<br>';
+        selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+      }
+    }
+
     this.options.onInsert && this.options.onInsert();
 
     return true;
