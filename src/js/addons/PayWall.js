@@ -177,7 +177,7 @@ export default class PayWall {
   handleClick() {
     this.el = this._plugin.getCore().selectedElement;
     this.setFocusOnElement(this.el);
-    this.embedChapter(this.el);
+    this.embedPaywall(this.el);
   }
 
   removeEmbed(e) {
@@ -228,11 +228,19 @@ export default class PayWall {
    * @return {void}
    */
 
-  embedChapter(el) {
-    const chapter = document.createElement('div');
-    chapter.classList.add(this.elementClassName);
+  embedPaywall(el) {
+    // Remove old paywall
+    const prevPaywallDOM = document.querySelector(`.${this.elementClassName}`);
+    if (prevPaywallDOM) {
+      prevPaywallDOM.remove();
+    }
 
-    el.replaceWith(chapter);
+    // Insert new paywall
+    const paywall = document.createElement('div');
+    paywall.setAttribute("contenteditable", false);
+    paywall.classList.add(this.elementClassName);
+
+    el.replaceWith(paywall);
     this.options.onInsert && this.options.onInsert();
 
     return true;

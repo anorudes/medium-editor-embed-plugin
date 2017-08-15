@@ -2345,7 +2345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function handleClick() {
 	      this.el = this._plugin.getCore().selectedElement;
 	      this.setFocusOnElement(this.el);
-	      this.embedChapter(this.el);
+	      this.embedPaywall(this.el);
 	    }
 	  }, {
 	    key: 'removeEmbed',
@@ -2397,12 +2397,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	  }, {
-	    key: 'embedChapter',
-	    value: function embedChapter(el) {
-	      var chapter = document.createElement('div');
-	      chapter.classList.add(this.elementClassName);
+	    key: 'embedPaywall',
+	    value: function embedPaywall(el) {
+	      // Remove old paywall
+	      var prevPaywallDOM = document.querySelector('.' + this.elementClassName);
+	      if (prevPaywallDOM) {
+	        prevPaywallDOM.remove();
+	      }
 
-	      el.replaceWith(chapter);
+	      // Insert new paywall
+	      var paywall = document.createElement('div');
+	      paywall.setAttribute("contenteditable", false);
+	      paywall.classList.add(this.elementClassName);
+
+	      el.replaceWith(paywall);
 	      this.options.onInsert && this.options.onInsert();
 
 	      return true;
