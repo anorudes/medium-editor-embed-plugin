@@ -72,7 +72,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  addons: {
 	    images: true,
 	    embeds: true,
-	    chapters: true
+	    chapters: true,
+	    paywall: true
 	  },
 
 	  _initializedAddons: {},
@@ -385,6 +386,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Chapters2 = _interopRequireDefault(_Chapters);
 
+	var _PayWall = __webpack_require__(8);
+
+	var _PayWall2 = _interopRequireDefault(_PayWall);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -433,7 +438,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._plugin._initializedAddons = {
 	        images: new _Images2.default(this._plugin, this._plugin.addons.images),
 	        embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds),
-	        chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters)
+	        chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters),
+	        paywall: new _PayWall2.default(this._plugin, this._plugin.addons.paywall)
 	      };
 
 	      Object.keys(this._plugin.addons).forEach(function (name) {
@@ -2121,6 +2127,297 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	exports.default = Images;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(2);
+
+	var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var PayWall = function () {
+	  function PayWall(plugin, options) {
+	    _classCallCheck(this, PayWall);
+
+	    this.options = {
+	      label: '<span class="fa fa-scissors"></span>',
+	      captions: true,
+	      storeMeta: false,
+	      styles: {
+	        left: {
+	          label: '<span class="fa fa-align-left"></span>'
+	        },
+	        wide: {
+	          label: '<span class="fa fa-align-justify"></span>'
+	        }
+	      },
+	      actions: {
+	        remove: {
+	          label: '<span class="fa fa-times"></span>',
+	          clicked: function clicked() {
+	            // var $event = $.Event('keydown');
+
+	            // $event.which = 8;
+	            // $(document).trigger($event);
+	          }
+	        }
+	      },
+	      parseOnPaste: false
+	    };
+
+	    Object.assign(this.options, options);
+
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
+
+	    this.activeClassName = 'medium-editor-insert-embed-paywall-active';
+	    this.elementClassName = 'medium-editor-insert-embed-paywall';
+
+	    this.alignLeftClassName = 'align-left';
+	    this.alignCenterClassName = 'align-center-wide';
+
+	    this.label = this.options.label;
+	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+
+	    this.events();
+	  }
+
+	  _createClass(PayWall, [{
+	    key: 'events',
+	    value: function events() {
+	      var _this = this;
+
+	      this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
+	      this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+	      this._plugin.getEditorElements().forEach(function (editor) {
+	        _this._plugin.on(editor, 'click', _this.selectEmbed.bind(_this));
+	      });
+	    }
+	  }, {
+	    key: 'selectEmbed',
+	    value: function selectEmbed(e) {
+	      var el = e.target;
+	      if (this.getClosestElementByClassName(el, this.elementClassName)) {
+	        this.selectEmbedCore(el, event);
+	        e && e.stopPropagation();
+	        e && e.preventDefault();
+	      }
+	    }
+	  }, {
+	    key: 'getClosestElementByClassName',
+	    value: function getClosestElementByClassName(el, className) {
+	      while (el) {
+	        if (el.classList && el.classList.contains(className)) return el;
+	        el = el.parentNode;
+	      }
+	    }
+	  }, {
+	    key: 'selectEmbedCore',
+	    value: function selectEmbedCore(el) {
+	      var element = this.getClosestElementByClassName(el, this.elementClassName);
+	      element.classList.add(this.activeClassName);
+	      var currentSelection = window.getSelection();
+	    }
+	  }, {
+	    key: 'unselectEmbed',
+	    value: function unselectEmbed(e) {
+	      var el = e.target;
+	      this.unselectEmbedCore(el);
+	    }
+	  }, {
+	    key: 'unselectEmbedCore',
+	    value: function unselectEmbedCore(el) {
+	      var _this2 = this;
+
+	      var clickedEmbed = void 0,
+	          clickedEmbedPlaceholder = void 0,
+	          paywall = void 0,
+	          embedsPlaceholders = void 0;
+
+	      paywall = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+	      if (!paywall || !paywall.length) {
+	        return false;
+	      }
+
+	      if (paywall) {
+	        Array.prototype.forEach.call(paywall, function (paywall) {
+	          if (paywall !== clickedEmbed) {
+	            paywall.classList.remove(_this2.activeClassName);
+	          }
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'getSiblingParagraph',
+	    value: function getSiblingParagraph(el) {
+	      if (!el) return false;
+
+	      var nextSiblingDOM = el.nextSibling;
+	      var nextSiblingParagraphDOM = void 0;
+
+	      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+	        if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+	          nextSiblingParagraphDOM = nextSiblingDOM;
+	        } else {
+	          nextSiblingDOM = nextSiblingDOM.nextSibling;
+	        }
+	      }
+
+	      return nextSiblingParagraphDOM;
+	    }
+	  }, {
+	    key: 'handleKey',
+	    value: function handleKey(e) {
+	      var target = e.target;
+
+	      // Enter key
+	      if (e.which === 40 || e.which === 13) {
+	        // Detect selected paywall
+	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+
+	        if (selectedEmbedDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (!nextSiblingParagraphDOM) {
+	            // Insert paragraph and focus
+	            var paragraph = document.createElement('p');
+	            paragraph.innerHTML = '<br>';
+	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+	          }
+
+	          // Focus next paragraph
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (nextSiblingParagraphDOM) {
+	            if (!nextSiblingParagraphDOM.innerHTML) {
+	              nextSiblingParagraphDOM.innerHTML = '<br>';
+	            }
+	            window.getSelection().removeAllRanges();
+	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
+	            MediumEditor.selection.clearSelection(document, true);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
+	            e.preventDefault();
+	          }
+	        }
+	      }
+	      // Backspace, delete
+	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
+	        this.removeEmbed(e);
+	      } else if (document.querySelector('.' + this.activeClassName)) {
+	        // Block all keys
+	        e.preventDefault();
+	      }
+	    }
+	  }, {
+	    key: 'setFocusOnElement',
+	    value: function setFocusOnElement(el) {
+	      // this._editor.elements[0].focus();
+	      setTimeout(function () {
+	        var currentSelection = window.getSelection();
+	        var range = document.createRange();
+	        range.setStart(el, 0);
+	        currentSelection.removeAllRanges();
+	        currentSelection.addRange(range);
+	      }, 300);
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      this.el = this._plugin.getCore().selectedElement;
+	      this.setFocusOnElement(this.el);
+	      this.embedChapter(this.el);
+	    }
+	  }, {
+	    key: 'removeEmbed',
+	    value: function removeEmbed(e) {
+	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+	      if (selectedEmbedDOM) {
+	        selectedEmbedDOM.remove();
+	        e.preventDefault();
+	        e.stopPropagation();
+	      }
+	    }
+
+	    /**
+	     * Init Toolbar for tuning paywall position
+	     *
+	     * @param {string} url
+	     * @param {pasted} boolean
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'initToolbar',
+	    value: function initToolbar() {}
+	  }, {
+	    key: 'changeAlign',
+	    value: function changeAlign(className, action, evt) {
+	      if (evt) {
+	        evt.preventDefault();
+	        evt.stopPropagation();
+	      }
+
+	      var el = document.querySelector('.' + this.activeClassName);
+	      el.classList.remove(this.alignLeftClassName, this.alignCenterClassName);
+	      el.classList.add(className);
+
+	      this.toolbar.setToolbarPosition();
+
+	      if (this.options.onChange) {
+	        this.options.onChange(action);
+	      }
+	    }
+
+	    /**
+	     * Add html to page
+	     *
+	     * @param {string} html
+	     * @param {string} pastedUrl
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'embedChapter',
+	    value: function embedChapter(el) {
+	      var chapter = document.createElement('div');
+	      chapter.classList.add(this.elementClassName);
+
+	      el.replaceWith(chapter);
+	      this.options.onInsert && this.options.onInsert();
+
+	      return true;
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.cancelEmbed();
+	    }
+	  }]);
+
+	  return PayWall;
+	}();
+
+	exports.default = PayWall;
 	module.exports = exports['default'];
 
 /***/ })

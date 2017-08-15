@@ -214,3 +214,12 @@
 
 .medium-editor-insert-embed-chapters.align-left {
   float: left; }
+
+.medium-editor-insert-embed-paywall {
+  display: block;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  margin: 50px 0px 60px 0px; }
+
+.medium-editor-insert-embed-paywall ~ p, .medium-editor-insert-embed-paywall ~ div {
+  opacity: .70; }

@@ -2,6 +2,7 @@ import utils from './utils';
 import Images from './addons/Images';
 import Embeds from './addons/Embeds';
 import Chapters from './addons/Chapters';
+import PayWall from './addons/PayWall';
 
 export default class Core {
 
@@ -40,6 +41,7 @@ export default class Core {
       images: new Images(this._plugin, this._plugin.addons.images),
       embeds: new Embeds(this._plugin, this._plugin.addons.embeds),
       chapters: new Chapters(this._plugin, this._plugin.addons.chapters),
+      paywall: new PayWall(this._plugin, this._plugin.addons.paywall),
     };
 
     Object.keys(this._plugin.addons).forEach((name) => {
