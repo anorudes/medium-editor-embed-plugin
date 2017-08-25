@@ -371,7 +371,24 @@ export default class Images {
     // Enter key in description
     if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
       if (isDescriptionElement) {
-        return e.preventDefault();
+        // Enter in description
+       e.preventDefault(); //Prevent default browser behavior
+
+       if (window.getSelection) {
+         const selection = window.getSelection();
+         const range = selection.getRangeAt(0);
+         const br = document.createElement("br");
+         const textNode = document.createTextNode("\u00a0");
+         range.deleteContents();
+         range.insertNode(br);
+         range.collapse(false);
+         range.insertNode(textNode);
+         range.selectNodeContents(textNode);
+
+         selection.removeAllRanges();
+         selection.addRange(range);
+       }
+        return false;
       }
     }
 
@@ -380,7 +397,7 @@ export default class Images {
       this.removeImage(e);
     }
 
-    // Down, enter
+  // Down, enter
     if (e.which === 40 || e.which === 13) {
       // Detect selected image
       const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
