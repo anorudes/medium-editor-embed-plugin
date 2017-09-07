@@ -6,8 +6,20 @@ No dependencies! Jiiihaaa :tada:
 
 Based on [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
 
-## Default usage
+## New features
+in comparison with [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
 
+- Call other upload widget if you need
+- Add video embed
+- Add any html content
+- Correct deletion on delete and backspace key
+- Add description for image
+- Show loading while image uploading
+- Align image, embed, html content (left, center, right)
+- Auto focus inserted image, embed, html content
+- Auto paragraph insertion before image, embed, html content on enter key
+
+## Default usage
 ```html
 <link href="dist/css/medium-editor-insert.css" rel="stylesheet">
 
@@ -21,17 +33,9 @@ Based on [medium-editor-insert-plugin v3](https://github.com/orthes/medium-edito
     });
 </script>
 ```
-## New features  
-in comparison with [medium-editor-insert-plugin v3](https://github.com/orthes/medium-editor-insert-plugin/tree/3.0)
- 
-- onInsertButtonClick for call other upload widget (if you need)
-- add description for image 
-- show loading while image uploading
-- align image (left, center, right)
-- auto focus inserted image
 
-Example with [uploadcare](https://uploadcare.com/documentation/widget/):
- 
+Full example with uploadcare for image:
+
 ```js
 	var editor = new MediumEditor('.editable', {
             buttonLabels: 'fontawesome',
@@ -40,18 +44,26 @@ Example with [uploadcare](https://uploadcare.com/documentation/widget/):
                     addons: {
                         images: {
                             descriptionPlaceholder: 'Описание', // placeholder for description field
-                            onInsertButtonClick: function(insertImage, insertLoader) {                                                           
+                            onInsertButtonClick: function(insertImage, insertLoader) {
                               uploadcare.openDialog(null, {
                                 publicKey: 'your_uploadcare_pub_key',
                                 imagesOnly: true,
                               }).done(function (file) {
                                   if (file) {
-                                    insertLoader('./loader.gif'); // insert loader 
+                                    insertLoader('./loader.gif'); // insert loader
                                     file.done(function(fileInfo) {
                                       insertImage(fileInfo.cdnUrl); // replace loader with uploaded image in uploadcare (you can use other service)
                                     });
                                   }
                               });
+                            },
+                            embeds: {
+                                oembedProxy: '//iframe.ly/api/oembed?&api_key=' + IFRAMELY_API_KEY
+                            },
+                            htmlContent: {
+                              contentHTML: `
+                                <div>Test content for widget</div>
+                              `,
                             },
                         }
                     },
