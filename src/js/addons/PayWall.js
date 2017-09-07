@@ -1,11 +1,11 @@
 import utils from '../utils';
 import Toolbar from '../Toolbar';
 
-export default class Chapters {
+export default class PayWall {
 
   constructor(plugin, options) {
     this.options = {
-      label: '<span class="fa fa-bars"></span>',
+      label: '<span class="fa fa-scissors"></span>',
       captions: true,
       storeMeta: false,
       styles: {
@@ -35,8 +35,8 @@ export default class Chapters {
     this._plugin = plugin;
     this._editor = this._plugin.base;
 
-    this.activeClassName = 'medium-editor-insert-embed-chapters-active';
-    this.elementClassName = 'medium-editor-insert-embed-chapters';
+    this.activeClassName = 'medium-editor-insert-embed-paywall-active';
+    this.elementClassName = 'medium-editor-insert-embed-paywall';
 
     this.alignLeftClassName = 'align-left';
     this.alignCenterClassName = 'align-center-wide';
@@ -44,7 +44,6 @@ export default class Chapters {
     this.label = this.options.label;
     this.descriptionPlaceholder = this.options.descriptionPlaceholder;
 
-    this.initToolbar();
     this.events();
 
   }
@@ -87,17 +86,17 @@ export default class Chapters {
   }
 
   unselectEmbedCore(el) {
-    let clickedEmbed, clickedEmbedPlaceholder, chapters, embedsPlaceholders;
+    let clickedEmbed, clickedEmbedPlaceholder, paywall, embedsPlaceholders;
 
-    chapters = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-    if (!chapters || !chapters.length) {
+    paywall = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+    if (!paywall || !paywall.length) {
       return false;
     }
 
-    if (chapters) {
-      Array.prototype.forEach.call(chapters, (chapters) => {
-        if (chapters !== clickedEmbed) {
-          chapters.classList.remove(this.activeClassName);
+    if (paywall) {
+      Array.prototype.forEach.call(paywall, (paywall) => {
+        if (paywall !== clickedEmbed) {
+          paywall.classList.remove(this.activeClassName);
         }
       });
     }
@@ -123,38 +122,6 @@ export default class Chapters {
   handleKey(e) {
     const target = e.target;
 
-
-    // Enter key
-    if (e.which === 40 || e.which === 13) {
-      // Detect selected chapters
-      const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
-
-      if (selectedEmbedDOM) {
-        let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-        if (!nextSiblingParagraphDOM) {
-          // Insert paragraph and focus
-          const paragraph = document.createElement('p');
-          paragraph.innerHTML = '<br>';
-          selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
-        }
-
-        // Focus next paragraph
-        nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-        if (nextSiblingParagraphDOM) {
-          if (!nextSiblingParagraphDOM.innerHTML) {
-            nextSiblingParagraphDOM.innerHTML = '<br>';
-          }
-          window.getSelection().removeAllRanges();
-          this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-          selectedEmbedDOM.classList.remove(this.activeClassName);
-          MediumEditor.selection.clearSelection(document, true);
-          selectedEmbedDOM.classList.remove(this.activeClassName);
-          e.preventDefault();
-        }
-      }
-    }
     // Backspace, delete
     if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1) {
       this.removeEmbed(e);
@@ -178,7 +145,7 @@ export default class Chapters {
   handleClick() {
     this.el = this._plugin.getCore().selectedElement;
     this.setFocusOnElement(this.el);
-    this.embedChapter(this.el);
+    this.embedPaywall(this.el);
   }
 
   removeEmbed(e) {
@@ -191,39 +158,13 @@ export default class Chapters {
   }
 
   /**
-   * Init Toolbar for tuning chapters position
+   * Init Toolbar for tuning paywall position
    *
    * @param {string} url
    * @param {pasted} boolean
    * @return {void}
    */
   initToolbar() {
-    this.toolbar = new Toolbar({
-      plugin: this._plugin,
-      type: 'chapters',
-      activeClassName: this.activeClassName,
-      buttons: [{
-          name: 'chapters-align-left',
-          action: 'align-left',
-          className: 'btn-align-left',
-          label: 'Left',
-          onClick: (function(evt) {
-            this.changeAlign(this.alignLeftClassName, 'chapters-align-left', evt);
-          }).bind(this),
-        },
-        {
-          name: 'chapters-align-center-wide',
-          action: 'align-center-wide',
-          className: 'btn-align-center-wide',
-          label: 'Center',
-          onClick: (function(evt) {
-            this.changeAlign(this.alignCenterClassName, 'chapters-align-center', evt);
-          }).bind(this),
-        },
-      ]
-    });
-
-    this._editor.extensions.push(this.toolbar);
   }
 
   changeAlign(className, action, evt) {
@@ -255,25 +196,35 @@ export default class Chapters {
    * @return {void}
    */
 
-  embedChapter(el) {
-    const chapter = document.createElement('div');
-    chapter.classList.add(this.elementClassName);
+  embedPaywall(el) {
+    // Remove old paywall
+    const prevPaywallDOM = document.querySelector(`.${this.elementClassName}`);
+    if (prevPaywallDOM) {
+      prevPaywallDOM.remove();
+    }
 
-    let contentHTML;
-    if (this.options.contentHTML) {
-      if (typeof this.options.contentHTML === 'function') {
-        contentHTML = this.options.contentHTML();
-      } else {
-        contentHTML = this.options.contentHTML;
+    // Insert new paywall
+    const paywall = document.createElement('div');
+    paywall.setAttribute("contenteditable", false);
+    paywall.innerHTML = '<div></div>';
+    paywall.classList.add(this.elementClassName);
+
+    el.replaceWith(paywall);
+
+    const selectedEmbedDOM = document.querySelector(`.${this.elementClassName}`);
+
+    if (selectedEmbedDOM) {
+      let nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+      if (!nextSiblingParagraphDOM) {
+        // Insert paragraph and focus
+        const paragraph = document.createElement('p');
+        paragraph.innerHTML = '<br>';
+        selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
       }
     }
 
-    if (contentHTML) {
-      chapter.innerHTML = contentHTML;
-      el.replaceWith(chapter);
-
-      this.options.onInsert && this.options.onInsert();
-    }
+    this.options.onInsert && this.options.onInsert();
 
     return true;
   }

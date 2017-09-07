@@ -371,7 +371,24 @@ export default class Images {
     // Enter key in description
     if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
       if (isDescriptionElement) {
-        return e.preventDefault();
+        // Enter in description
+       e.preventDefault(); //Prevent default browser behavior
+
+       if (window.getSelection) {
+         const selection = window.getSelection();
+         const range = selection.getRangeAt(0);
+         const br = document.createElement("br");
+         const textNode = document.createTextNode("\u00a0");
+         range.deleteContents();
+         range.insertNode(br);
+         range.collapse(false);
+         range.insertNode(textNode);
+         range.selectNodeContents(textNode);
+
+         selection.removeAllRanges();
+         selection.addRange(range);
+       }
+        return false;
       }
     }
 
@@ -380,8 +397,8 @@ export default class Images {
       this.removeImage(e);
     }
 
-    // Down, enter
-    if (e.which === 40 || e.which === 13) {
+  // Down
+    if (e.which === 40) {
       // Detect selected image
       const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
       const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
@@ -408,6 +425,18 @@ export default class Images {
         }
       }
     }
+
+    // Enter
+    if (e.which === 13) {
+        const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
+        const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
+        if (selectedImageParentDOM) {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = '<br>';
+            selectedImageParentDOM.insertAdjacentElement('beforeBegin', paragraph);
+            e.preventDefault();
+        }
+    }
   }
 
   removeImage(e) {
@@ -421,9 +450,12 @@ export default class Images {
         focusedElement = MediumEditor.selection.getSelectedParentElement(range),
         caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
       let sibling;
-
       // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
       if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
+        if (focusedElement.innerHTML === '<br>') {
+            // If it is a empty paragraph than not remove prev image
+            return false;
+        }
         sibling = focusedElement.previousElementSibling;
         // Is del pressed and caret is at the end of a paragraph, get next element
       } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {

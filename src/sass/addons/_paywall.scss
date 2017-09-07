@@ -1,0 +1,12 @@
+.medium-editor-insert-embed-paywall {
+    padding-bottom: 20px;
+
+    > div {
+        height: 2px;
+        background: rgba(0, 0, 0, .3);
+    }
+}
+
+.medium-editor-insert-embed-paywall ~ p, .medium-editor-insert-embed-paywall ~ div {
+    opacity: .70;
+}

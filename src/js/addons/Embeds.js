@@ -162,8 +162,8 @@ export default class Embeds {
       this.removeEmbed(e);
     }
 
-    // Down, enter
-    if (e.which === 40 || e.which === 13) {
+    // Down
+    if (e.which === 40) {
       // Detect selected image
       const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
 
@@ -188,10 +188,21 @@ export default class Embeds {
           this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
           selectedEmbedDOM.classList.remove(this.activeClassName);
           MediumEditor.selection.clearSelection(document, true);
-          selectedEmbedDOM.classList.remove(this.activeClassName);
           e.preventDefault();
         }
       }
+    }
+
+    // Enter
+    if (e.which === 13) {
+        const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
+
+        if (selectedEmbedDOM) {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = '<br>';
+            selectedEmbedDOM.insertAdjacentElement('beforeBegin', paragraph);
+            e.preventDefault();
+        }
     }
   }
 

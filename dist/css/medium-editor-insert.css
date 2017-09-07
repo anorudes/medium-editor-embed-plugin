@@ -214,3 +214,12 @@
 
 .medium-editor-insert-embed-chapters.align-left {
   float: left; }
+
+.medium-editor-insert-embed-paywall {
+  padding-bottom: 20px; }
+  .medium-editor-insert-embed-paywall > div {
+    height: 2px;
+    background: rgba(0, 0, 0, 0.3); }
+
+.medium-editor-insert-embed-paywall ~ p, .medium-editor-insert-embed-paywall ~ div {
+  opacity: .70; }
