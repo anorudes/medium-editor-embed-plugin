@@ -201,9 +201,6 @@ export default class Embeds {
             const paragraph = document.createElement('p');
             paragraph.innerHTML = '<br>';
             selectedEmbedDOM.insertAdjacentElement('beforeBegin', paragraph);
-            window.getSelection().removeAllRanges();
-            this._plugin.getCore()._editor.selectElement(paragraph);
-            selectedEmbedDOM.classList.remove(this.activeClassName);
             e.preventDefault();
         }
     }

@@ -1229,9 +1229,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var _paragraph = document.createElement('p');
 	          _paragraph.innerHTML = '<br>';
 	          _selectedEmbedDOM.insertAdjacentElement('beforeBegin', _paragraph);
-	          window.getSelection().removeAllRanges();
-	          this._plugin.getCore()._editor.selectElement(_paragraph);
-	          _selectedEmbedDOM.classList.remove(this.activeClassName);
 	          e.preventDefault();
 	        }
 	      }
@@ -2063,10 +2060,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var paragraph = document.createElement('p');
 	          paragraph.innerHTML = '<br>';
 	          _selectedImageParentDOM.insertAdjacentElement('beforeBegin', paragraph);
-
-	          window.getSelection().removeAllRanges();
-	          this._plugin.getCore()._editor.selectElement(paragraph);
-	          _selectedImageDOM.classList.remove(this.activeClassName);
 	          e.preventDefault();
 	        }
 	      }

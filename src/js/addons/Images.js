@@ -434,10 +434,6 @@ export default class Images {
             const paragraph = document.createElement('p');
             paragraph.innerHTML = '<br>';
             selectedImageParentDOM.insertAdjacentElement('beforeBegin', paragraph);
-
-            window.getSelection().removeAllRanges();
-            this._plugin.getCore()._editor.selectElement(paragraph);
-            selectedImageDOM.classList.remove(this.activeClassName);
             e.preventDefault();
         }
     }
