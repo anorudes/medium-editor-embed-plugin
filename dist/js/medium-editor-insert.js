@@ -72,7 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  addons: {
 	    images: true,
 	    embeds: true,
-	    chapters: true,
+	    html: true,
 	    paywall: true
 	  },
 
@@ -438,7 +438,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._plugin._initializedAddons = {
 	        images: new _Images2.default(this._plugin, this._plugin.addons.images),
 	        embeds: new _Embeds2.default(this._plugin, this._plugin.addons.embeds),
-	        chapters: new _Chapters2.default(this._plugin, this._plugin.addons.chapters),
+	        html: new _Chapters2.default(this._plugin, this._plugin.addons.html),
 	        paywall: new _PayWall2.default(this._plugin, this._plugin.addons.paywall)
 	      };
 
@@ -685,9 +685,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Chapters = function () {
-	  function Chapters(plugin, options) {
-	    _classCallCheck(this, Chapters);
+	var Html = function () {
+	  function Html(plugin, options) {
+	    _classCallCheck(this, Html);
 
 	    this.options = {
 	      label: '<span class="fa fa-bars"></span>',
@@ -720,8 +720,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._plugin = plugin;
 	    this._editor = this._plugin.base;
 
-	    this.activeClassName = 'medium-editor-insert-embed-chapters-active';
-	    this.elementClassName = 'medium-editor-insert-embed-chapters';
+	    this.activeClassName = 'medium-editor-insert-embed-html-active';
+	    this.elementClassName = 'medium-editor-insert-embed-html';
 
 	    this.alignLeftClassName = 'align-left';
 	    this.alignCenterClassName = 'align-center-wide';
@@ -733,7 +733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.events();
 	  }
 
-	  _createClass(Chapters, [{
+	  _createClass(Html, [{
 	    key: 'events',
 	    value: function events() {
 	      var _this = this;
@@ -783,18 +783,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var clickedEmbed = void 0,
 	          clickedEmbedPlaceholder = void 0,
-	          chapters = void 0,
+	          html = void 0,
 	          embedsPlaceholders = void 0;
 
-	      chapters = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-	      if (!chapters || !chapters.length) {
+	      html = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+	      if (!html || !html.length) {
 	        return false;
 	      }
 
-	      if (chapters) {
-	        Array.prototype.forEach.call(chapters, function (chapters) {
-	          if (chapters !== clickedEmbed) {
-	            chapters.classList.remove(_this2.activeClassName);
+	      if (html) {
+	        Array.prototype.forEach.call(html, function (html) {
+	          if (html !== clickedEmbed) {
+	            html.classList.remove(_this2.activeClassName);
 	          }
 	        });
 	      }
@@ -824,7 +824,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Enter key
 	      if (e.which === 40 || e.which === 13) {
-	        // Detect selected chapters
+	        // Detect selected html
 	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
 
 	        if (selectedEmbedDOM) {
@@ -892,7 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Init Toolbar for tuning chapters position
+	     * Init Toolbar for tuning html position
 	     *
 	     * @param {string} url
 	     * @param {pasted} boolean
@@ -904,23 +904,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function initToolbar() {
 	      this.toolbar = new _Toolbar2.default({
 	        plugin: this._plugin,
-	        type: 'chapters',
+	        type: 'html',
 	        activeClassName: this.activeClassName,
 	        buttons: [{
-	          name: 'chapters-align-left',
+	          name: 'html-align-left',
 	          action: 'align-left',
 	          className: 'btn-align-left',
 	          label: 'Left',
 	          onClick: function (evt) {
-	            this.changeAlign(this.alignLeftClassName, 'chapters-align-left', evt);
+	            this.changeAlign(this.alignLeftClassName, 'html-align-left', evt);
 	          }.bind(this)
 	        }, {
-	          name: 'chapters-align-center-wide',
+	          name: 'html-align-center-wide',
 	          action: 'align-center-wide',
 	          className: 'btn-align-center-wide',
 	          label: 'Center',
 	          onClick: function (evt) {
-	            this.changeAlign(this.alignCenterClassName, 'chapters-align-center', evt);
+	            this.changeAlign(this.alignCenterClassName, 'html-align-center', evt);
 	          }.bind(this)
 	        }]
 	      });
@@ -957,8 +957,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'embedChapter',
 	    value: function embedChapter(el) {
-	      var chapter = document.createElement('div');
-	      chapter.classList.add(this.elementClassName);
+	      var html = document.createElement('div');
+	      html.classList.add(this.elementClassName);
 
 	      var contentHTML = void 0;
 	      if (this.options.contentHTML) {
@@ -970,8 +970,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (contentHTML) {
-	        chapter.innerHTML = contentHTML;
-	        el.replaceWith(chapter);
+	        html.innerHTML = contentHTML;
+	        el.replaceWith(html);
 
 	        this.options.onInsert && this.options.onInsert();
 	      }
@@ -985,10 +985,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return Chapters;
+	  return Html;
 	}();
 
-	exports.default = Chapters;
+	exports.default = Html;
 	module.exports = exports['default'];
 
 /***/ }),

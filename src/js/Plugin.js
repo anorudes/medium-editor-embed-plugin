@@ -6,7 +6,7 @@ const MediumEditorInsert = MediumEditor.Extension.extend({
   addons: {
     images: true,
     embeds: true,
-    chapters: true,
+    html: true,
     paywall: true,
   },
 

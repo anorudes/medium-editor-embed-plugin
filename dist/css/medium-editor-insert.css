@@ -206,13 +206,13 @@
   .medium-editor-insert-embeds.align-center-full img {
     width: 100%; }
 
-.medium-editor-insert-embed-chapters-active:not(.align-left) {
+.medium-editor-insert-embed-html-active:not(.align-left) {
   outline: 2px solid #000; }
 
-.medium-editor-insert-embed-chapters-active.align-left > div {
+.medium-editor-insert-embed-html-active.align-left > div {
   outline: 2px solid #000; }
 
-.medium-editor-insert-embed-chapters.align-left {
+.medium-editor-insert-embed-html.align-left {
   float: left; }
 
 .medium-editor-insert-embed-paywall {

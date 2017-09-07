@@ -1,7 +1,7 @@
 import utils from './utils';
 import Images from './addons/Images';
 import Embeds from './addons/Embeds';
-import Chapters from './addons/Chapters';
+import Html from './addons/Html';
 import PayWall from './addons/PayWall';
 
 export default class Core {
@@ -40,7 +40,7 @@ export default class Core {
     this._plugin._initializedAddons = {
       images: new Images(this._plugin, this._plugin.addons.images),
       embeds: new Embeds(this._plugin, this._plugin.addons.embeds),
-      chapters: new Chapters(this._plugin, this._plugin.addons.chapters),
+      html: new Html(this._plugin, this._plugin.addons.html),
       paywall: new PayWall(this._plugin, this._plugin.addons.paywall),
     };
 

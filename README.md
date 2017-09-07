@@ -60,7 +60,7 @@ Full example with uploadcare for image:
                             embeds: {
                                 oembedProxy: '//iframe.ly/api/oembed?&api_key=' + IFRAMELY_API_KEY
                             },
-                            htmlContent: {
+                            html: {
                               contentHTML: `
                                 <div>Test content for widget</div>
                               `,

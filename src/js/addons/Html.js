@@ -1,7 +1,7 @@
 import utils from '../utils';
 import Toolbar from '../Toolbar';
 
-export default class Chapters {
+export default class Html {
 
   constructor(plugin, options) {
     this.options = {
@@ -35,8 +35,8 @@ export default class Chapters {
     this._plugin = plugin;
     this._editor = this._plugin.base;
 
-    this.activeClassName = 'medium-editor-insert-embed-chapters-active';
-    this.elementClassName = 'medium-editor-insert-embed-chapters';
+    this.activeClassName = 'medium-editor-insert-embed-html-active';
+    this.elementClassName = 'medium-editor-insert-embed-html';
 
     this.alignLeftClassName = 'align-left';
     this.alignCenterClassName = 'align-center-wide';
@@ -87,17 +87,17 @@ export default class Chapters {
   }
 
   unselectEmbedCore(el) {
-    let clickedEmbed, clickedEmbedPlaceholder, chapters, embedsPlaceholders;
+    let clickedEmbed, clickedEmbedPlaceholder, html, embedsPlaceholders;
 
-    chapters = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-    if (!chapters || !chapters.length) {
+    html = utils.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+    if (!html || !html.length) {
       return false;
     }
 
-    if (chapters) {
-      Array.prototype.forEach.call(chapters, (chapters) => {
-        if (chapters !== clickedEmbed) {
-          chapters.classList.remove(this.activeClassName);
+    if (html) {
+      Array.prototype.forEach.call(html, (html) => {
+        if (html !== clickedEmbed) {
+          html.classList.remove(this.activeClassName);
         }
       });
     }
@@ -126,7 +126,7 @@ export default class Chapters {
 
     // Enter key
     if (e.which === 40 || e.which === 13) {
-      // Detect selected chapters
+      // Detect selected html
       const selectedEmbedDOM = document.querySelector(`.${this.activeClassName}`);
 
       if (selectedEmbedDOM) {
@@ -178,7 +178,7 @@ export default class Chapters {
   handleClick() {
     this.el = this._plugin.getCore().selectedElement;
     this.setFocusOnElement(this.el);
-    this.embedChapter(this.el);
+    this.embedHtml(this.el);
   }
 
   removeEmbed(e) {
@@ -191,7 +191,7 @@ export default class Chapters {
   }
 
   /**
-   * Init Toolbar for tuning chapters position
+   * Init Toolbar for tuning html position
    *
    * @param {string} url
    * @param {pasted} boolean
@@ -200,24 +200,24 @@ export default class Chapters {
   initToolbar() {
     this.toolbar = new Toolbar({
       plugin: this._plugin,
-      type: 'chapters',
+      type: 'html',
       activeClassName: this.activeClassName,
       buttons: [{
-          name: 'chapters-align-left',
+          name: 'html-align-left',
           action: 'align-left',
           className: 'btn-align-left',
           label: 'Left',
           onClick: (function(evt) {
-            this.changeAlign(this.alignLeftClassName, 'chapters-align-left', evt);
+            this.changeAlign(this.alignLeftClassName, 'html-align-left', evt);
           }).bind(this),
         },
         {
-          name: 'chapters-align-center-wide',
+          name: 'html-align-center-wide',
           action: 'align-center-wide',
           className: 'btn-align-center-wide',
           label: 'Center',
           onClick: (function(evt) {
-            this.changeAlign(this.alignCenterClassName, 'chapters-align-center', evt);
+            this.changeAlign(this.alignCenterClassName, 'html-align-center', evt);
           }).bind(this),
         },
       ]
@@ -255,9 +255,9 @@ export default class Chapters {
    * @return {void}
    */
 
-  embedChapter(el) {
-    const chapter = document.createElement('div');
-    chapter.classList.add(this.elementClassName);
+  embedHtml(el) {
+    const html = document.createElement('div');
+    html.classList.add(this.elementClassName);
 
     let contentHTML;
     if (this.options.contentHTML) {
@@ -269,8 +269,8 @@ export default class Chapters {
     }
 
     if (contentHTML) {
-      chapter.innerHTML = contentHTML;
-      el.replaceWith(chapter);
+      html.innerHTML = contentHTML;
+      el.replaceWith(html);
 
       this.options.onInsert && this.options.onInsert();
     }
