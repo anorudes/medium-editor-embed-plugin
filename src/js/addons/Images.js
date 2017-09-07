@@ -438,9 +438,12 @@ export default class Images {
         focusedElement = MediumEditor.selection.getSelectedParentElement(range),
         caretPosition = MediumEditor.selection.getCaretOffsets(focusedElement).left;
       let sibling;
-
       // Is backspace pressed and caret is at the beginning of a paragraph, get previous element
       if (e.which === MediumEditor.util.keyCode.BACKSPACE && caretPosition === 0) {
+        if (focusedElement.innerHTML === '<br>') {
+            // If it is a empty paragraph than not remove prev image
+            return false;
+        }
         sibling = focusedElement.previousElementSibling;
         // Is del pressed and caret is at the end of a paragraph, get next element
       } else if (e.which === MediumEditor.util.keyCode.DELETE && caretPosition === focusedElement.innerText.length) {
