@@ -374,11 +374,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _Images = __webpack_require__(6);
+	var _Images = __webpack_require__(7);
 
 	var _Images2 = _interopRequireDefault(_Images);
 
-	var _Embeds = __webpack_require__(8);
+	var _Embeds = __webpack_require__(6);
 
 	var _Embeds2 = _interopRequireDefault(_Embeds);
 
@@ -386,7 +386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Chapters2 = _interopRequireDefault(_Chapters);
 
-	var _PayWall = __webpack_require__(7);
+	var _PayWall = __webpack_require__(8);
 
 	var _PayWall2 = _interopRequireDefault(_PayWall);
 
@@ -1015,6 +1015,601 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var Embeds = function () {
+	  function Embeds(plugin, options) {
+	    _classCallCheck(this, Embeds);
+
+	    this.options = {
+	      label: '<span class="fa fa-youtube-play"></span>',
+	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
+	      oembedProxy: 'http://medium.iframe.ly/api/oembed?omit_script=1&iframe=1',
+	      captions: true,
+	      captionPlaceholder: 'Type caption (optional)',
+	      storeMeta: false,
+	      styles: {
+	        wide: {
+	          label: '<span class="fa fa-align-justify"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        left: {
+	          label: '<span class="fa fa-align-left"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        },
+	        right: {
+	          label: '<span class="fa fa-align-right"></span>'
+	          // added: function ($el) {},
+	          // removed: function ($el) {}
+	        }
+	      },
+	      actions: {
+	        remove: {
+	          label: '<span class="fa fa-times"></span>',
+	          clicked: function clicked() {
+	            // var $event = $.Event('keydown');
+
+	            // $event.which = 8;
+	            // $(document).trigger($event);
+	          }
+	        }
+	      },
+	      parseOnPaste: false,
+	      onChange: function onChange(action) {
+	        console.log('Embed change: ', action);
+	      }
+	    };
+
+	    Object.assign(this.options, options);
+
+	    this._plugin = plugin;
+	    this._editor = this._plugin.base;
+
+	    this.activeClassName = 'medium-editor-insert-embeds-active';
+	    this.placeholderClassName = 'medium-editor-insert-embeds-placeholder';
+	    this.elementClassName = 'medium-editor-insert-embeds';
+	    this.loadingClassName = 'medium-editor-insert-embeds-loading';
+	    this.activeClassName = 'medium-editor-insert-embed-active';
+	    this.descriptionContainerClassName = 'medium-editor-embed-embed-description-container';
+	    this.descriptionClassName = 'medium-editor-embed-embed-description';
+	    this.overlayClassName = 'medium-editor-insert-embeds-overlay';
+
+	    this.alignLeftClassName = 'align-left';
+	    this.alignRightClassName = 'align-right';
+	    this.alignCenterClassName = 'align-center';
+	    this.alignCenterWideClassName = 'align-center-wide';
+	    this.alignCenterFullClassName = 'align-center-full';
+
+	    this.label = this.options.label;
+	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
+
+	    this.initToolbar();
+	    this.events();
+	  }
+
+	  _createClass(Embeds, [{
+	    key: 'events',
+	    value: function events() {
+	      var _this = this;
+
+	      this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
+	      this._plugin.on(document, 'keydown', this.handleKey.bind(this));
+
+	      this._plugin.getEditorElements().forEach(function (editor) {
+	        _this._plugin.on(editor, 'click', _this.selectEmbed.bind(_this));
+	      });
+	    }
+	  }, {
+	    key: 'selectEmbed',
+	    value: function selectEmbed(e) {
+	      var el = e.target;
+	      this.selectEmbedCore(el);
+	    }
+	  }, {
+	    key: 'selectEmbedCore',
+	    value: function selectEmbedCore(el) {
+	      if (el.classList.contains(this.overlayClassName)) {
+	        var selectedEl = _utils2.default.getClosestWithClassName(el, this.elementClassName);
+	        if (!selectedEl.classList.contains(this.loadingClassName)) {
+	          selectedEl.classList.add(this.activeClassName);
+	          this._editor.selectElement(selectedEl);
+	          this.activeEmbedElement = selectedEl;
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'unselectEmbed',
+	    value: function unselectEmbed(e) {
+	      var el = e.target;
+	      this.unselectEmbedCore(el);
+	    }
+	  }, {
+	    key: 'unselectEmbedCore',
+	    value: function unselectEmbedCore(el) {
+	      var _this2 = this;
+
+	      var clickedEmbed = void 0,
+	          clickedEmbedPlaceholder = void 0,
+	          embeds = void 0,
+	          embedsPlaceholders = void 0;
+
+	      if (el.classList.contains(this.descriptionClassName)) return false;
+
+	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
+
+	      if (!embeds || !embeds.length) {
+	        return false;
+	      }
+
+	      // Unselect all selected images. If an image is clicked, unselect all except this one.
+	      if (el.classList.contains(this.overlayClassName)) {
+	        clickedEmbed = _utils2.default.getClosestWithClassName(el, this.elementClassName);
+	      }
+
+	      if (embeds) {
+	        Array.prototype.forEach.call(embeds, function (embed) {
+	          if (embed !== clickedEmbed) {
+	            embed.classList.remove(_this2.activeClassName);
+	          }
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'getSiblingParagraph',
+	    value: function getSiblingParagraph(el) {
+	      if (!el) return false;
+
+	      var nextSiblingDOM = el.nextSibling;
+	      var nextSiblingParagraphDOM = void 0;
+
+	      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
+	        if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
+	          nextSiblingParagraphDOM = nextSiblingDOM;
+	        } else {
+	          nextSiblingDOM = nextSiblingDOM.nextSibling;
+	        }
+	      }
+
+	      return nextSiblingParagraphDOM;
+	    }
+	  }, {
+	    key: 'handleKey',
+	    value: function handleKey(e) {
+	      var target = e.target;
+	      var isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
+
+	      // Enter key in description
+	      if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
+	        if (isDescriptionElement) {
+	          e.preventDefault();
+	        }
+	      }
+
+	      // Backspace, delete
+	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
+	        this.removeEmbed(e);
+	      }
+
+	      // Down
+	      if (e.which === 40) {
+	        // Detect selected image
+	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+
+	        if (selectedEmbedDOM) {
+	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (!nextSiblingParagraphDOM) {
+	            // Insert paragraph and focus
+	            var paragraph = document.createElement('p');
+	            paragraph.innerHTML = '<br>';
+	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
+	          }
+
+	          // Focus next paragraph
+	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
+
+	          if (nextSiblingParagraphDOM) {
+	            if (!nextSiblingParagraphDOM.innerHTML) {
+	              nextSiblingParagraphDOM.innerHTML = '<br>';
+	            }
+	            window.getSelection().removeAllRanges();
+	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
+	            selectedEmbedDOM.classList.remove(this.activeClassName);
+	            MediumEditor.selection.clearSelection(document, true);
+	            e.preventDefault();
+	          }
+	        }
+	      }
+
+	      // Enter
+	      if (e.which === 13) {
+	        var _selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+
+	        if (_selectedEmbedDOM) {
+	          var _paragraph = document.createElement('p');
+	          _paragraph.innerHTML = '<br>';
+	          _selectedEmbedDOM.insertAdjacentElement('beforeBegin', _paragraph);
+	          window.getSelection().removeAllRanges();
+	          this._plugin.getCore()._editor.selectElement(_paragraph);
+	          _selectedEmbedDOM.classList.remove(this.activeClassName);
+	          e.preventDefault();
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'setFocusOnElement',
+	    value: function setFocusOnElement(el) {
+	      // this._editor.elements[0].focus();
+	      setTimeout(function () {
+	        var currentSelection = window.getSelection();
+	        var range = document.createRange();
+	        range.setStart(el, 0);
+	        currentSelection.removeAllRanges();
+	        currentSelection.addRange(range);
+	      }, 300);
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      this.el = this._plugin.getCore().selectedElement;
+	      this.el.classList.add(this.loadingClassName);
+	      this.el.classList.add(this.placeholderClassName);
+	      this.el.setAttribute('data-placeholder', this.options.placeholder);
+
+	      this.instanceHandlePaste = this.handlePaste.bind(this);
+	      this.instanceHandleKeyDown = this.handleKeyDown.bind(this);
+
+	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
+
+	      // FIXME: it doesn't work yet.  :(
+	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
+
+	      this.setFocusOnElement(this.el);
+	    }
+	  }, {
+	    key: 'handleKeyDown',
+	    value: function handleKeyDown(evt) {
+	      if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
+	      && (evt.which === 27 || this._plugin.selectedElement !== this.el)) {
+	        // Escape
+	        this.cancelEmbed();
+	        return false;
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'handlePaste',
+	    value: function handlePaste(evt) {
+	      var pastedUrl = evt.clipboardData.getData('text');
+	      var linkRegEx = new RegExp('^(http(s?):)?\/\/', 'i');
+	      var linkRegEx2 = new RegExp('^(www\.)?', 'i');
+
+	      if (linkRegEx.test(pastedUrl) || linkRegEx2.test(pastedUrl)) {
+	        var html = this.options.oembedProxy ? this.oembed(pastedUrl, true) : this.parseUrl(pastedUrl, true);
+	      }
+
+	      this.cancelEmbed();
+	    }
+	  }, {
+	    key: 'removeEmbed',
+	    value: function removeEmbed(e) {
+	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
+	      if (selectedEmbedDOM) {
+	        selectedEmbedDOM.remove();
+	      }
+	    }
+
+	    /**
+	     * Init Toolbar for tuning embed position
+	     *
+	     * @param {string} url
+	     * @param {pasted} boolean
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'initToolbar',
+	    value: function initToolbar() {
+	      this.toolbar = new _Toolbar2.default({
+	        plugin: this._plugin,
+	        type: 'embeds',
+	        activeClassName: this.activeClassName,
+	        buttons: [{
+	          name: 'embed-align-left',
+	          action: 'align-left',
+	          className: 'btn-align-left',
+	          label: 'Left',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignLeftClassName, 'embed-align-left', evt);
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-center',
+	          action: 'align-center',
+	          className: 'btn-align-center',
+	          label: 'Center',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignCenterClassName, 'embed-align-center', evt);
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-center-wide',
+	          action: 'align-center-wide',
+	          className: 'btn-align-center-wide',
+	          label: 'Wide',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide', evt);
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-center-full',
+	          action: 'align-center-full',
+	          className: 'btn-align-center-full',
+	          label: 'Full',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full', evt);
+	          }.bind(this)
+	        }, {
+	          name: 'embed-align-right',
+	          action: 'align-right',
+	          className: 'btn-align-right',
+	          label: 'Right',
+	          onClick: function (evt) {
+	            this.changeAlign(this.alignRightClassName, 'embed-align-right', evt);
+	          }.bind(this)
+	        }]
+	      });
+
+	      this._editor.extensions.push(this.toolbar);
+	    }
+	  }, {
+	    key: 'changeAlign',
+	    value: function changeAlign(className, action, evt) {
+	      if (evt) {
+	        evt.preventDefault();
+	        evt.stopPropagation();
+	      }
+	      var el = this.activeEmbedElement;
+	      el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
+	      el.classList.add(className);
+
+	      this.toolbar.setToolbarPosition();
+
+	      if (this.options.onChange) {
+	        this.options.onChange(action);
+	      }
+	    }
+
+	    /**
+	     * Get HTML via oEmbed proxy
+	     *
+	     * @param {string} url
+	     * @param {pasted} boolean
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'oembed',
+	    value: function oembed(url, pasted) {
+	      var _this3 = this;
+
+	      var urlOut = this.options.oembedProxy + '&url=' + url;
+	      var xhr = new XMLHttpRequest();
+
+	      // console.log(urlOut);
+	      xhr.open("GET", urlOut, true);
+	      xhr.onreadystatechange = function () {
+	        if (xhr.readyState === 4 && xhr.status === 200) {
+	          var data = JSON.parse(xhr.responseText);
+	          _this3.embed(data.html, url, data);
+	        }
+	      };
+
+	      xhr.send();
+
+	      return true;
+	    }
+
+	    /**
+	     * Get HTML using regexp
+	     *
+	     * @param {string} url
+	     * @param {bool} pasted
+	     * @return {void}
+	     */
+
+	  }, {
+	    key: 'parseUrl',
+	    value: function parseUrl(url, pasted) {
+	      var html = void 0;
+
+	      if (!new RegExp(['youtube', 'youtu.be', 'vimeo', 'instagram', 'twitter', 'facebook'].join('|')).test(url)) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
+
+	      html = url.replace(/\n?/g, '').replace(/^((http(s)?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|v\/)?)([a-zA-Z0-9\-_]+)(.*)?$/, '<div class="video video-youtube"><iframe width="420" height="315" src="//www.youtube.com/embed/$7" frameborder="0" allowfullscreen></iframe></div>').replace(/^https?:\/\/vimeo\.com(\/.+)?\/([0-9]+)$/, '<div class="video video-vimeo"><iframe src="//player.vimeo.com/video/$2" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>').replace(/^https:\/\/twitter\.com\/(\w+)\/status\/(\d+)\/?$/, '<blockquote class="twitter-tweet" align="center" lang="en"><a href="https://twitter.com/$1/statuses/$2"></a></blockquote><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>').replace(/^(https:\/\/www\.facebook\.com\/(.*))$/, '<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script><div class="fb-post" data-href="$1"><div class="fb-xfbml-parse-ignore"><a href="$1">Loading Facebook post...</a></div></div>').replace(/^https?:\/\/instagram\.com\/p\/(.+)\/?$/, '<span class="instagram"><iframe src="//instagram.com/p/$1/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe></span>');
+
+	      if (/<("[^"]*"|'[^']*'|[^'">])*>/.test(html) === false) {
+	        // $.proxy(this, 'convertBadEmbed', url)();
+	        return false;
+	      }
+
+	      if (pasted) {
+	        return this.embed(html, url);
+	      } else {
+	        return this.embed(html);
+	      }
+	    }
+	  }, {
+	    key: 'embed',
+
+
+	    /**
+	     * Add html to page
+	     *
+	     * @param {string} html
+	     * @param {string} pastedUrl
+	     * @return {void}
+	     */
+
+	    value: function embed(html, pastedUrl, info) {
+	      var el = void 0,
+	          figure = void 0,
+	          descriptionContainer = void 0,
+	          description = void 0,
+	          metacontainer = void 0,
+	          container = void 0,
+	          overlay = void 0,
+	          lastEl = void 0,
+	          paragraph = void 0;
+
+	      if (!html) {
+	        console.error('Incorrect URL format specified: ', pastedUrl);
+	        return false;
+	      }
+
+	      if (info && info.type === 'link') {
+	        console.error('Just common link — no any embeds to insert: ', pastedUrl);
+	        return false;
+	      }
+
+	      el = this._plugin.getCore().selectedElement;
+	      figure = document.createElement('figure');
+	      figure.classList.add('medium-editor-insert-embeds-item');
+
+	      descriptionContainer = document.createElement('div');
+	      descriptionContainer.classList.add(this.descriptionContainerClassName);
+
+	      description = document.createElement('figcaption');
+	      description.classList.add(this.descriptionClassName);
+	      description.setAttribute('contenteditable', true);
+	      description.setAttribute('data-placeholder', 'Type caption for embed (optional)');
+
+	      metacontainer = document.createElement('div');
+	      metacontainer.classList.add(this.elementClassName);
+	      metacontainer.classList.add(this.alignCenterClassName);
+	      paragraph = document.createElement('p');
+	      paragraph.innerHTML = '<br>';
+
+	      // metacontainer.classList.add(this.activeClassName);
+
+	      metacontainer.setAttribute('contenteditable', false);
+
+	      container = document.createElement('div');
+	      container.classList.add('medium-editor-insert-embeds-item-container');
+
+	      overlay = document.createElement('div');
+	      overlay.classList.add(this.overlayClassName);
+
+	      metacontainer.appendChild(figure);
+	      figure.appendChild(container);
+	      figure.appendChild(overlay);
+
+	      descriptionContainer.classList.add(this.descriptionContainerClassName);
+	      description.contentEditable = true;
+	      description.classList.add(this.descriptionClassName);
+	      description.dataset.placeholder = this.descriptionPlaceholder;
+
+	      el.replaceWith(metacontainer);
+	      // Insert a empty paragraph
+	      if (!el.nextSibling) {
+	        el.insertAdjacentElement('afterend', paragraph);
+	      }
+
+	      // check if embed is last element, then add one more p after it
+	      lastEl = metacontainer.parentNode.lastChild;
+
+	      while (lastEl && lastEl.nodeType !== 1) {
+	        lastEl = lastEl.previousSibling;
+	      }
+
+	      if (lastEl === metacontainer) {
+	        var lastP = document.createElement('p');
+	        lastP.appendChild(document.createElement('br'));
+	        metacontainer.parentNode.appendChild(lastP);
+	      }
+
+	      container.innerHTML = html;
+
+	      this._editor.selectElement(metacontainer);
+
+	      // console.log(html);
+	      // this.core.triggerInput();
+
+	      if (html.indexOf('facebook') !== -1) {
+	        if (typeof FB !== 'undefined') {
+	          setTimeout(function () {
+	            FB.XFBML.parse();
+	          }, 2000);
+	        }
+	      }
+
+	      this.options.onInsert && this.options.onInsert(html);
+
+	      setTimeout(function () {
+	        overlay.click();
+	      }, 100);
+
+	      return true;
+	    }
+	  }, {
+	    key: 'handleBlur',
+	    value: function handleBlur() {
+	      console.log('blur');
+	      // this.cancelEmbed();
+	    }
+	  }, {
+	    key: 'hidePlaceholder',
+	    value: function hidePlaceholder() {
+	      this.el.removeAttribute('data-placeholder');
+	      this.el.classList.remove('medium-editor-insert-embeds-placeholder');
+	    }
+	  }, {
+	    key: 'cancelEmbed',
+	    value: function cancelEmbed() {
+	      this.hidePlaceholder();
+	      this.el.classList.remove(this.activeClassName);
+	      this.el.classList.remove(this.loadingClassName);
+
+	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
+	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.cancelEmbed();
+	    }
+	  }]);
+
+	  return Embeds;
+	}();
+
+	exports.default = Embeds;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _utils = __webpack_require__(1);
+
+	var _utils2 = _interopRequireDefault(_utils);
+
+	var _Toolbar = __webpack_require__(2);
+
+	var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 	var Images = function () {
 	  function Images(plugin, options) {
 	    _classCallCheck(this, Images);
@@ -1585,7 +2180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1865,601 +2460,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	exports.default = PayWall;
-	module.exports = exports['default'];
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _utils = __webpack_require__(1);
-
-	var _utils2 = _interopRequireDefault(_utils);
-
-	var _Toolbar = __webpack_require__(2);
-
-	var _Toolbar2 = _interopRequireDefault(_Toolbar);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var Embeds = function () {
-	  function Embeds(plugin, options) {
-	    _classCallCheck(this, Embeds);
-
-	    this.options = {
-	      label: '<span class="fa fa-youtube-play"></span>',
-	      placeholder: 'Paste a YouTube, Vimeo, Facebook, Twitter or Instagram link and press Enter',
-	      oembedProxy: 'http://medium.iframe.ly/api/oembed?omit_script=1&iframe=1',
-	      captions: true,
-	      captionPlaceholder: 'Type caption (optional)',
-	      storeMeta: false,
-	      styles: {
-	        wide: {
-	          label: '<span class="fa fa-align-justify"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        },
-	        left: {
-	          label: '<span class="fa fa-align-left"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        },
-	        right: {
-	          label: '<span class="fa fa-align-right"></span>'
-	          // added: function ($el) {},
-	          // removed: function ($el) {}
-	        }
-	      },
-	      actions: {
-	        remove: {
-	          label: '<span class="fa fa-times"></span>',
-	          clicked: function clicked() {
-	            // var $event = $.Event('keydown');
-
-	            // $event.which = 8;
-	            // $(document).trigger($event);
-	          }
-	        }
-	      },
-	      parseOnPaste: false,
-	      onChange: function onChange(action) {
-	        console.log('Embed change: ', action);
-	      }
-	    };
-
-	    Object.assign(this.options, options);
-
-	    this._plugin = plugin;
-	    this._editor = this._plugin.base;
-
-	    this.activeClassName = 'medium-editor-insert-embeds-active';
-	    this.placeholderClassName = 'medium-editor-insert-embeds-placeholder';
-	    this.elementClassName = 'medium-editor-insert-embeds';
-	    this.loadingClassName = 'medium-editor-insert-embeds-loading';
-	    this.activeClassName = 'medium-editor-insert-embed-active';
-	    this.descriptionContainerClassName = 'medium-editor-embed-embed-description-container';
-	    this.descriptionClassName = 'medium-editor-embed-embed-description';
-	    this.overlayClassName = 'medium-editor-insert-embeds-overlay';
-
-	    this.alignLeftClassName = 'align-left';
-	    this.alignRightClassName = 'align-right';
-	    this.alignCenterClassName = 'align-center';
-	    this.alignCenterWideClassName = 'align-center-wide';
-	    this.alignCenterFullClassName = 'align-center-full';
-
-	    this.label = this.options.label;
-	    this.descriptionPlaceholder = this.options.descriptionPlaceholder;
-
-	    this.initToolbar();
-	    this.events();
-	  }
-
-	  _createClass(Embeds, [{
-	    key: 'events',
-	    value: function events() {
-	      var _this = this;
-
-	      this._plugin.on(document, 'click', this.unselectEmbed.bind(this));
-	      this._plugin.on(document, 'keydown', this.handleKey.bind(this));
-
-	      this._plugin.getEditorElements().forEach(function (editor) {
-	        _this._plugin.on(editor, 'click', _this.selectEmbed.bind(_this));
-	      });
-	    }
-	  }, {
-	    key: 'selectEmbed',
-	    value: function selectEmbed(e) {
-	      var el = e.target;
-	      this.selectEmbedCore(el);
-	    }
-	  }, {
-	    key: 'selectEmbedCore',
-	    value: function selectEmbedCore(el) {
-	      if (el.classList.contains(this.overlayClassName)) {
-	        var selectedEl = _utils2.default.getClosestWithClassName(el, this.elementClassName);
-	        if (!selectedEl.classList.contains(this.loadingClassName)) {
-	          selectedEl.classList.add(this.activeClassName);
-	          this._editor.selectElement(selectedEl);
-	          this.activeEmbedElement = selectedEl;
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'unselectEmbed',
-	    value: function unselectEmbed(e) {
-	      var el = e.target;
-	      this.unselectEmbedCore(el);
-	    }
-	  }, {
-	    key: 'unselectEmbedCore',
-	    value: function unselectEmbedCore(el) {
-	      var _this2 = this;
-
-	      var clickedEmbed = void 0,
-	          clickedEmbedPlaceholder = void 0,
-	          embeds = void 0,
-	          embedsPlaceholders = void 0;
-
-	      if (el.classList.contains(this.descriptionClassName)) return false;
-
-	      embeds = _utils2.default.getElementsByClassName(this._plugin.getEditorElements(), this.elementClassName);
-
-	      if (!embeds || !embeds.length) {
-	        return false;
-	      }
-
-	      // Unselect all selected images. If an image is clicked, unselect all except this one.
-	      if (el.classList.contains(this.overlayClassName)) {
-	        clickedEmbed = _utils2.default.getClosestWithClassName(el, this.elementClassName);
-	      }
-
-	      if (embeds) {
-	        Array.prototype.forEach.call(embeds, function (embed) {
-	          if (embed !== clickedEmbed) {
-	            embed.classList.remove(_this2.activeClassName);
-	          }
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'getSiblingParagraph',
-	    value: function getSiblingParagraph(el) {
-	      if (!el) return false;
-
-	      var nextSiblingDOM = el.nextSibling;
-	      var nextSiblingParagraphDOM = void 0;
-
-	      while (nextSiblingDOM && !nextSiblingParagraphDOM) {
-	        if (nextSiblingDOM && nextSiblingDOM.tagName === 'P') {
-	          nextSiblingParagraphDOM = nextSiblingDOM;
-	        } else {
-	          nextSiblingDOM = nextSiblingDOM.nextSibling;
-	        }
-	      }
-
-	      return nextSiblingParagraphDOM;
-	    }
-	  }, {
-	    key: 'handleKey',
-	    value: function handleKey(e) {
-	      var target = e.target;
-	      var isDescriptionElement = target && target.classList && target.classList.contains(this.descriptionClassName);
-
-	      // Enter key in description
-	      if ([MediumEditor.util.keyCode.ENTER].indexOf(e.which) > -1) {
-	        if (isDescriptionElement) {
-	          e.preventDefault();
-	        }
-	      }
-
-	      // Backspace, delete
-	      if ([MediumEditor.util.keyCode.BACKSPACE, MediumEditor.util.keyCode.DELETE].indexOf(e.which) > -1 && !isDescriptionElement) {
-	        this.removeEmbed(e);
-	      }
-
-	      // Down
-	      if (e.which === 40) {
-	        // Detect selected image
-	        var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
-
-	        if (selectedEmbedDOM) {
-	          var nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-	          if (!nextSiblingParagraphDOM) {
-	            // Insert paragraph and focus
-	            var paragraph = document.createElement('p');
-	            paragraph.innerHTML = '<br>';
-	            selectedEmbedDOM.insertAdjacentElement('afterend', paragraph);
-	          }
-
-	          // Focus next paragraph
-	          nextSiblingParagraphDOM = this.getSiblingParagraph(selectedEmbedDOM);
-
-	          if (nextSiblingParagraphDOM) {
-	            if (!nextSiblingParagraphDOM.innerHTML) {
-	              nextSiblingParagraphDOM.innerHTML = '<br>';
-	            }
-	            window.getSelection().removeAllRanges();
-	            this._plugin.getCore()._editor.selectElement(nextSiblingParagraphDOM);
-	            selectedEmbedDOM.classList.remove(this.activeClassName);
-	            MediumEditor.selection.clearSelection(document, true);
-	            e.preventDefault();
-	          }
-	        }
-	      }
-
-	      // Enter
-	      if (e.which === 13) {
-	        var _selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
-
-	        if (_selectedEmbedDOM) {
-	          var _paragraph = document.createElement('p');
-	          _paragraph.innerHTML = '<br>';
-	          _selectedEmbedDOM.insertAdjacentElement('beforeBegin', _paragraph);
-	          window.getSelection().removeAllRanges();
-	          this._plugin.getCore()._editor.selectElement(_paragraph);
-	          _selectedEmbedDOM.classList.remove(this.activeClassName);
-	          e.preventDefault();
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'setFocusOnElement',
-	    value: function setFocusOnElement(el) {
-	      // this._editor.elements[0].focus();
-	      setTimeout(function () {
-	        var currentSelection = window.getSelection();
-	        var range = document.createRange();
-	        range.setStart(el, 0);
-	        currentSelection.removeAllRanges();
-	        currentSelection.addRange(range);
-	      }, 300);
-	    }
-	  }, {
-	    key: 'handleClick',
-	    value: function handleClick() {
-	      this.el = this._plugin.getCore().selectedElement;
-	      this.el.classList.add(this.loadingClassName);
-	      this.el.classList.add(this.placeholderClassName);
-	      this.el.setAttribute('data-placeholder', this.options.placeholder);
-
-	      this.instanceHandlePaste = this.handlePaste.bind(this);
-	      this.instanceHandleKeyDown = this.handleKeyDown.bind(this);
-
-	      this._plugin.on(document, 'paste', this.instanceHandlePaste);
-	      this._plugin.on(document, 'keydown', this.instanceHandleKeyDown);
-
-	      // FIXME: it doesn't work yet.  :(
-	      this._plugin.on(this.el, 'blur', this.handleBlur.bind(this));
-
-	      this.setFocusOnElement(this.el);
-	    }
-	  }, {
-	    key: 'handleKeyDown',
-	    value: function handleKeyDown(evt) {
-	      if (evt.which !== 17 && evt.which !== 91 && evt.which !== 224 // Cmd or Ctrl pressed (user probably preparing to paste url via hot keys)
-	      && (evt.which === 27 || this._plugin.selectedElement !== this.el)) {
-	        // Escape
-	        this.cancelEmbed();
-	        return false;
-	      }
-	      return true;
-	    }
-	  }, {
-	    key: 'handlePaste',
-	    value: function handlePaste(evt) {
-	      var pastedUrl = evt.clipboardData.getData('text');
-	      var linkRegEx = new RegExp('^(http(s?):)?\/\/', 'i');
-	      var linkRegEx2 = new RegExp('^(www\.)?', 'i');
-
-	      if (linkRegEx.test(pastedUrl) || linkRegEx2.test(pastedUrl)) {
-	        var html = this.options.oembedProxy ? this.oembed(pastedUrl, true) : this.parseUrl(pastedUrl, true);
-	      }
-
-	      this.cancelEmbed();
-	    }
-	  }, {
-	    key: 'removeEmbed',
-	    value: function removeEmbed(e) {
-	      var selectedEmbedDOM = document.querySelector('.' + this.activeClassName);
-	      if (selectedEmbedDOM) {
-	        selectedEmbedDOM.remove();
-	      }
-	    }
-
-	    /**
-	     * Init Toolbar for tuning embed position
-	     *
-	     * @param {string} url
-	     * @param {pasted} boolean
-	     * @return {void}
-	     */
-
-	  }, {
-	    key: 'initToolbar',
-	    value: function initToolbar() {
-	      this.toolbar = new _Toolbar2.default({
-	        plugin: this._plugin,
-	        type: 'embeds',
-	        activeClassName: this.activeClassName,
-	        buttons: [{
-	          name: 'embed-align-left',
-	          action: 'align-left',
-	          className: 'btn-align-left',
-	          label: 'Left',
-	          onClick: function (evt) {
-	            this.changeAlign(this.alignLeftClassName, 'embed-align-left', evt);
-	          }.bind(this)
-	        }, {
-	          name: 'embed-align-center',
-	          action: 'align-center',
-	          className: 'btn-align-center',
-	          label: 'Center',
-	          onClick: function (evt) {
-	            this.changeAlign(this.alignCenterClassName, 'embed-align-center', evt);
-	          }.bind(this)
-	        }, {
-	          name: 'embed-align-center-wide',
-	          action: 'align-center-wide',
-	          className: 'btn-align-center-wide',
-	          label: 'Wide',
-	          onClick: function (evt) {
-	            this.changeAlign(this.alignCenterWideClassName, 'embed-align-center-wide', evt);
-	          }.bind(this)
-	        }, {
-	          name: 'embed-align-center-full',
-	          action: 'align-center-full',
-	          className: 'btn-align-center-full',
-	          label: 'Full',
-	          onClick: function (evt) {
-	            this.changeAlign(this.alignCenterFullClassName, 'embed-align-center-full', evt);
-	          }.bind(this)
-	        }, {
-	          name: 'embed-align-right',
-	          action: 'align-right',
-	          className: 'btn-align-right',
-	          label: 'Right',
-	          onClick: function (evt) {
-	            this.changeAlign(this.alignRightClassName, 'embed-align-right', evt);
-	          }.bind(this)
-	        }]
-	      });
-
-	      this._editor.extensions.push(this.toolbar);
-	    }
-	  }, {
-	    key: 'changeAlign',
-	    value: function changeAlign(className, action, evt) {
-	      if (evt) {
-	        evt.preventDefault();
-	        evt.stopPropagation();
-	      }
-	      var el = this.activeEmbedElement;
-	      el.classList.remove(this.alignLeftClassName, this.alignRightClassName, this.alignCenterClassName, this.alignCenterWideClassName, this.alignCenterFullClassName);
-	      el.classList.add(className);
-
-	      this.toolbar.setToolbarPosition();
-
-	      if (this.options.onChange) {
-	        this.options.onChange(action);
-	      }
-	    }
-
-	    /**
-	     * Get HTML via oEmbed proxy
-	     *
-	     * @param {string} url
-	     * @param {pasted} boolean
-	     * @return {void}
-	     */
-
-	  }, {
-	    key: 'oembed',
-	    value: function oembed(url, pasted) {
-	      var _this3 = this;
-
-	      var urlOut = this.options.oembedProxy + '&url=' + url;
-	      var xhr = new XMLHttpRequest();
-
-	      // console.log(urlOut);
-	      xhr.open("GET", urlOut, true);
-	      xhr.onreadystatechange = function () {
-	        if (xhr.readyState === 4 && xhr.status === 200) {
-	          var data = JSON.parse(xhr.responseText);
-	          _this3.embed(data.html, url, data);
-	        }
-	      };
-
-	      xhr.send();
-
-	      return true;
-	    }
-
-	    /**
-	     * Get HTML using regexp
-	     *
-	     * @param {string} url
-	     * @param {bool} pasted
-	     * @return {void}
-	     */
-
-	  }, {
-	    key: 'parseUrl',
-	    value: function parseUrl(url, pasted) {
-	      var html = void 0;
-
-	      if (!new RegExp(['youtube', 'youtu.be', 'vimeo', 'instagram', 'twitter', 'facebook'].join('|')).test(url)) {
-	        // $.proxy(this, 'convertBadEmbed', url)();
-	        return false;
-	      }
-
-	      html = url.replace(/\n?/g, '').replace(/^((http(s)?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|v\/)?)([a-zA-Z0-9\-_]+)(.*)?$/, '<div class="video video-youtube"><iframe width="420" height="315" src="//www.youtube.com/embed/$7" frameborder="0" allowfullscreen></iframe></div>').replace(/^https?:\/\/vimeo\.com(\/.+)?\/([0-9]+)$/, '<div class="video video-vimeo"><iframe src="//player.vimeo.com/video/$2" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>').replace(/^https:\/\/twitter\.com\/(\w+)\/status\/(\d+)\/?$/, '<blockquote class="twitter-tweet" align="center" lang="en"><a href="https://twitter.com/$1/statuses/$2"></a></blockquote><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>').replace(/^(https:\/\/www\.facebook\.com\/(.*))$/, '<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script><div class="fb-post" data-href="$1"><div class="fb-xfbml-parse-ignore"><a href="$1">Loading Facebook post...</a></div></div>').replace(/^https?:\/\/instagram\.com\/p\/(.+)\/?$/, '<span class="instagram"><iframe src="//instagram.com/p/$1/embed/" width="612" height="710" frameborder="0" scrolling="no" allowtransparency="true"></iframe></span>');
-
-	      if (/<("[^"]*"|'[^']*'|[^'">])*>/.test(html) === false) {
-	        // $.proxy(this, 'convertBadEmbed', url)();
-	        return false;
-	      }
-
-	      if (pasted) {
-	        return this.embed(html, url);
-	      } else {
-	        return this.embed(html);
-	      }
-	    }
-	  }, {
-	    key: 'embed',
-
-
-	    /**
-	     * Add html to page
-	     *
-	     * @param {string} html
-	     * @param {string} pastedUrl
-	     * @return {void}
-	     */
-
-	    value: function embed(html, pastedUrl, info) {
-	      var el = void 0,
-	          figure = void 0,
-	          descriptionContainer = void 0,
-	          description = void 0,
-	          metacontainer = void 0,
-	          container = void 0,
-	          overlay = void 0,
-	          lastEl = void 0,
-	          paragraph = void 0;
-
-	      if (!html) {
-	        console.error('Incorrect URL format specified: ', pastedUrl);
-	        return false;
-	      }
-
-	      if (info && info.type === 'link') {
-	        console.error('Just common link — no any embeds to insert: ', pastedUrl);
-	        return false;
-	      }
-
-	      el = this._plugin.getCore().selectedElement;
-	      figure = document.createElement('figure');
-	      figure.classList.add('medium-editor-insert-embeds-item');
-
-	      descriptionContainer = document.createElement('div');
-	      descriptionContainer.classList.add(this.descriptionContainerClassName);
-
-	      description = document.createElement('figcaption');
-	      description.classList.add(this.descriptionClassName);
-	      description.setAttribute('contenteditable', true);
-	      description.setAttribute('data-placeholder', 'Type caption for embed (optional)');
-
-	      metacontainer = document.createElement('div');
-	      metacontainer.classList.add(this.elementClassName);
-	      metacontainer.classList.add(this.alignCenterClassName);
-	      paragraph = document.createElement('p');
-	      paragraph.innerHTML = '<br>';
-
-	      // metacontainer.classList.add(this.activeClassName);
-
-	      metacontainer.setAttribute('contenteditable', false);
-
-	      container = document.createElement('div');
-	      container.classList.add('medium-editor-insert-embeds-item-container');
-
-	      overlay = document.createElement('div');
-	      overlay.classList.add(this.overlayClassName);
-
-	      metacontainer.appendChild(figure);
-	      figure.appendChild(container);
-	      figure.appendChild(overlay);
-
-	      descriptionContainer.classList.add(this.descriptionContainerClassName);
-	      description.contentEditable = true;
-	      description.classList.add(this.descriptionClassName);
-	      description.dataset.placeholder = this.descriptionPlaceholder;
-
-	      el.replaceWith(metacontainer);
-	      // Insert a empty paragraph
-	      if (!el.nextSibling) {
-	        el.insertAdjacentElement('afterend', paragraph);
-	      }
-
-	      // check if embed is last element, then add one more p after it
-	      lastEl = metacontainer.parentNode.lastChild;
-
-	      while (lastEl && lastEl.nodeType !== 1) {
-	        lastEl = lastEl.previousSibling;
-	      }
-
-	      if (lastEl === metacontainer) {
-	        var lastP = document.createElement('p');
-	        lastP.appendChild(document.createElement('br'));
-	        metacontainer.parentNode.appendChild(lastP);
-	      }
-
-	      container.innerHTML = html;
-
-	      this._editor.selectElement(metacontainer);
-
-	      // console.log(html);
-	      // this.core.triggerInput();
-
-	      if (html.indexOf('facebook') !== -1) {
-	        if (typeof FB !== 'undefined') {
-	          setTimeout(function () {
-	            FB.XFBML.parse();
-	          }, 2000);
-	        }
-	      }
-
-	      this.options.onInsert && this.options.onInsert(html);
-
-	      setTimeout(function () {
-	        overlay.click();
-	      }, 100);
-
-	      return true;
-	    }
-	  }, {
-	    key: 'handleBlur',
-	    value: function handleBlur() {
-	      console.log('blur');
-	      // this.cancelEmbed();
-	    }
-	  }, {
-	    key: 'hidePlaceholder',
-	    value: function hidePlaceholder() {
-	      this.el.removeAttribute('data-placeholder');
-	      this.el.classList.remove('medium-editor-insert-embeds-placeholder');
-	    }
-	  }, {
-	    key: 'cancelEmbed',
-	    value: function cancelEmbed() {
-	      this.hidePlaceholder();
-	      this.el.classList.remove(this.activeClassName);
-	      this.el.classList.remove(this.loadingClassName);
-
-	      this._plugin.off(document, 'paste', this.instanceHandlePaste);
-	      this._plugin.off(document, 'keyup', this.instanceHandleKeyUp);
-	    }
-	  }, {
-	    key: 'destroy',
-	    value: function destroy() {
-	      this.cancelEmbed();
-	    }
-	  }]);
-
-	  return Embeds;
-	}();
-
-	exports.default = Embeds;
 	module.exports = exports['default'];
 
 /***/ })
