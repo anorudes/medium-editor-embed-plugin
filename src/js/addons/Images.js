@@ -397,8 +397,8 @@ export default class Images {
       this.removeImage(e);
     }
 
-  // Down, enter
-    if (e.which === 40 || e.which === 13) {
+  // Down
+    if (e.which === 40) {
       // Detect selected image
       const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
       const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
@@ -424,6 +424,22 @@ export default class Images {
           e.preventDefault();
         }
       }
+    }
+
+    // Enter
+    if (e.which === 13) {
+        const selectedImageDOM = document.querySelector(`.${this.activeClassName}`);
+        const selectedImageParentDOM = selectedImageDOM && selectedImageDOM.parentNode.parentNode;
+        if (selectedImageParentDOM) {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = '<br>';
+            selectedImageParentDOM.insertAdjacentElement('beforeBegin', paragraph);
+
+            window.getSelection().removeAllRanges();
+            this._plugin.getCore()._editor.selectElement(paragraph);
+            selectedImageDOM.classList.remove(this.activeClassName);
+            e.preventDefault();
+        }
     }
   }
 
