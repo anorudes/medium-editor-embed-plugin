@@ -34,8 +34,7 @@ in comparison with [medium-editor-insert-plugin v3](https://github.com/orthes/me
 </script>
 ```
 
-Full example with uploadcare for image:
-
+Full example with [uploadcare](https://uploadcare.com/documentation/widget/) for image:
 ```js
 	var editor = new MediumEditor('.editable', {
             buttonLabels: 'fontawesome',
