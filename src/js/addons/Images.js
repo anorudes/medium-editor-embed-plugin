@@ -196,8 +196,6 @@ export default class Images {
       this._plugin.getCore().selectElement(div);
       paragraph.remove();
     }
-    // const el = this._plugin.getCore().selectedElement
-    // const image = el.querySelector(`[data-uid="${uid}"]`);
 
     this._plugin.getCore().hideButtons();
 

@@ -19,12 +19,6 @@ export default class Html {
       actions: {
         remove: {
           label: '<span class="fa fa-times"></span>',
-          clicked: function() {
-            // var $event = $.Event('keydown');
-
-            // $event.which = 8;
-            // $(document).trigger($event);
-          }
         }
       },
       parseOnPaste: false,
@@ -122,7 +116,6 @@ export default class Html {
 
   handleKey(e) {
     const target = e.target;
-
 
     // Enter key
     if (e.which === 40 || e.which === 13) {
